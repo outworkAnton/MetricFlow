@@ -2,10 +2,10 @@
 
 namespace MetricFlow.Interfaces
 {
-    public interface IApartment
+    public interface ILocation
     {
-        int ApartmentId { get; set; }
-        string ApartmentName { get; set; }
+        int LocationId { get; set; }
+        string LocationName { get; set; }
         IEnumerable<IService> Services { get; set; }
     }
 }

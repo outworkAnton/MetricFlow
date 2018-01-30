@@ -62,7 +62,17 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Interfaces\IApartment.cs" />
+    <Compile Include="BLL\FormulaBLL.cs" />
+    <Compile Include="BLL\LocationBLL.cs" />
+    <Compile Include="BLL\MetricBLL.cs" />
+    <Compile Include="BLL\ServiceBLL.cs" />
+    <Compile Include="DAL\FormulaDAL.cs" />
+    <Compile Include="DAL\LocationDAL.cs" />
+    <Compile Include="DAL\MetricDAL.cs" />
+    <Compile Include="DAL\ServiceDAL.cs" />
+    <Compile Include="Interfaces\IFormula.cs" />
+    <Compile Include="Interfaces\ILocation.cs" />
+    <Compile Include="Interfaces\IMetric.cs" />
     <Compile Include="Interfaces\IService.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -70,6 +80,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Formula.cs" />
+    <Compile Include="Models\Location.cs" />
+    <Compile Include="Models\Metric.cs" />
+    <Compile Include="Models\Service.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -95,10 +109,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="BLL\" />
-    <Folder Include="DAL\" />
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
