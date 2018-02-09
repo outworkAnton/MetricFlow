@@ -106,19 +106,18 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BLL\FormulaBLL.cs" />
-    <Compile Include="BLL\LocationBLL.cs" />
-    <Compile Include="BLL\MetricBLL.cs" />
-    <Compile Include="BLL\ServiceBLL.cs" />
     <Compile Include="DAL\FormulaDAL.cs" />
     <Compile Include="DAL\LocationDAL.cs" />
     <Compile Include="DAL\MetricDAL.cs" />
     <Compile Include="DAL\ServiceDAL.cs" />
+    <Compile Include="DAL\StatisticDAL.cs" />
+    <Compile Include="Helpers\DBHelper.cs" />
     <Compile Include="Helpers\GoogleDriveHelper.cs" />
     <Compile Include="Interfaces\IFormula.cs" />
     <Compile Include="Interfaces\ILocation.cs" />
     <Compile Include="Interfaces\IMetric.cs" />
     <Compile Include="Interfaces\IService.cs" />
+    <Compile Include="Interfaces\IStatistic.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -129,6 +128,7 @@
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\Metric.cs" />
     <Compile Include="Models\Service.cs" />
+    <Compile Include="Models\Statistic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -9,7 +9,7 @@ using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using System.Windows;
 using Google.Apis.Download;
-using MetricFlow.Helpers;
+using static MetricFlow.Helpers.GoogleDriveHelper;
 using static System.Configuration.ConfigurationManager;
 
 namespace MetricFlow
@@ -26,7 +26,7 @@ namespace MetricFlow
         {
             try
             {
-                var status = GoogleDriveHelper.SyncDatabase();
+                var status = SyncDatabase();
 
                 if (status.Status == DownloadStatus.NotStarted)
                 {

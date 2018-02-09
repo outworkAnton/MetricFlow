@@ -17,5 +17,14 @@ namespace MetricFlow.Models
             LocationName = locationName;
             Services = services;
         }
+
+        public Location(int locationId, string locationName)
+        {
+            LocationId = locationId;
+            LocationName = locationName;
+            Services = new List<IService>();
+        }
+
+        public Location() { }
     }
 }
