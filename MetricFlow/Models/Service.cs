@@ -15,5 +15,14 @@ namespace MetricFlow.Models
             ServiceName = serviceName;
             Metrics = metrics;
         }
+
+        public Service(int serviceId, string serviceName)
+        {
+            ServiceId = serviceId;
+            ServiceName = serviceName;
+            Metrics = new List<IMetric>();
+        }
+
+        public Service() { }
     }
 }

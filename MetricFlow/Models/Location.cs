@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using MetricFlow.Interfaces;
+using static MetricFlow.Helpers.DataAccessProvider;
+using MetricFlow.BLL;
 
 namespace MetricFlow.Models
 {
@@ -26,5 +28,11 @@ namespace MetricFlow.Models
         }
 
         public Location() { }
+
+        public void GetLocationServices()
+        {
+            var dal = new ServiceBLL().GetServicesByLocationId(LocationId);
+            Services = ConvertFromDAL<Service>(dal);
+        }
     }
 }
