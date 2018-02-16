@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SQLite;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Threading.Tasks;
 using System.Windows;
 using Google.Apis.Download;
+using MetricFlow.Helpers;
 using static MetricFlow.Helpers.GoogleDriveHelper;
 using static System.Configuration.ConfigurationManager;
 
@@ -20,45 +14,42 @@ namespace MetricFlow
     /// </summary>
     public partial class App : Application
     {
-        public static string DbConnectionString { get; set; }
+        public static string DbConnectionString { get; private set; }
 
         void App_Startup(object sender, StartupEventArgs e)
         {
             try
             {
-                var status = SyncDatabase();
+                var status = DownloadDatabase();
 
-                if (status.Status == DownloadStatus.NotStarted)
+                if (status != null)
                 {
-                    throw new NetworkInformationException();
-                }
+                    while (status.Status == DownloadStatus.Downloading)
+                    {
+                        Debug.WriteLine("Downloading database file: " + status.BytesDownloaded);
+                    }
 
-                while (status.Status == DownloadStatus.Downloading)
-                {
-                    Debug.WriteLine("Downloading database file: " + status.BytesDownloaded);
-                }
+                    if (status.Status == DownloadStatus.Failed)
+                    {
+                        throw new ServiceException(status.Exception?.Message);
+                    }
 
-                if (status.Status == DownloadStatus.Failed)
-                {
-                    throw new FileLoadException(status.Exception?.Message);
+                    Debug.WriteLine("Database file updated from server");
                 }
-
-                Debug.WriteLine("Database file updated from server");
-                DbConnectionString = ConnectionStrings["MetricFlowDatabase"].ConnectionString;
             }
-            catch (NetworkInformationException networkInformationException)
+            catch (NetworkException networkException)
             {
-                MessageBox.Show("Cannot connect to server\n" + networkInformationException.Message, "Cannot start application",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-                throw;
+                ConfirmOnException(networkException, "\nUnable to get database file from server\nWould you like to work with a local copy?",
+                    "Connection problem was occurred");
             }
-            catch (FileLoadException fileLoadException)
+            catch (FileException fileException)
             {
-                MessageBox.Show("Database file update or locate is failed\n" + fileLoadException.Message, "Cannot start application",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-                throw;
+                throw new Exception("Database file update or locate is failed\n" + fileException.Message);
+            }
+            catch (ServiceException serviceException)
+            {
+                ConfirmOnException(serviceException, "\nThere was a problem with the Google Drive service\nWould you like to work with a local copy?",
+                    "Service problem was occurred");
             }
             catch (Exception exception)
             {
@@ -66,6 +57,22 @@ namespace MetricFlow
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
                 Current.Shutdown();
+            }
+
+            DbConnectionString = ConnectionStrings["MetricFlowDatabase"].ConnectionString;
+        }
+
+        private static void ConfirmOnException(Exception exception, string textBody, string caption)
+        {
+            switch (MessageBox.Show(exception.Message + textBody, caption,
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Error))
+            {
+                case MessageBoxResult.Yes:
+                    Debug.WriteLine("Service failed. Working with a local copy");
+                    break;
+                case MessageBoxResult.No:
+                    throw new Exception("Loading application was canceled by user");
             }
         }
     }

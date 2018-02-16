@@ -113,6 +113,7 @@
     <Compile Include="BLL\StatisticBLL.cs" />
     <Compile Include="Helpers\DataAccessProvider.cs" />
     <Compile Include="Helpers\GoogleDriveHelper.cs" />
+    <Compile Include="Helpers\MetricFlowExceptions.cs" />
     <Compile Include="Interfaces\IFormula.cs" />
     <Compile Include="Interfaces\ILocation.cs" />
     <Compile Include="Interfaces\IMetric.cs" />
