@@ -127,12 +127,14 @@ namespace MetricFlow.Helpers
 
         static bool NeedSync(bool downloadDirection = true)
         {
-            DateTime? remoteMod = _service?.Revisions?.List(_fileId)?.Execute()?.Revisions
-                                          ?.OrderByDescending(revision => revision.ModifiedTime)?.FirstOrDefault()
-                                          ?.ModifiedTime;
+            var revisions = _service?.Revisions?.List(_fileId);
+            revisions.Fields = "*";
+            var remoteDbFile = revisions?.Execute()?.Revisions
+                                       ?.OrderByDescending(revision => revision.ModifiedTime)?.FirstOrDefault();
+            DateTime? remoteMod = remoteDbFile?.ModifiedTime;
+            long? remoteSize = remoteDbFile?.Size;
+
             DateTime? localMod = System.IO.File.GetLastWriteTime(_databaseFileName);
-            long? remoteSize = _service?.Revisions?.List(_fileId)?.Execute()?.Revisions
-                                       ?.OrderByDescending(revision => revision.ModifiedTime)?.FirstOrDefault()?.Size;
             long? localSize = new FileInfo(_databaseFileName).Length;
 
             if (downloadDirection)
