@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -14,8 +15,10 @@ using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 using Google.Apis.Upload;
 using Google.Apis.Util.Store;
+using MetricFlow.Models;
 using Microsoft.Win32;
 using File = Google.Apis.Drive.v3.Data.File;
+using static MetricFlow.Helpers.DataAccessProvider;
 
 namespace MetricFlow.Helpers
 {
@@ -129,20 +132,24 @@ namespace MetricFlow.Helpers
         {
             var revisions = _service?.Revisions?.List(_fileId);
             revisions.Fields = "*";
-            var remoteDbFile = revisions?.Execute()?.Revisions
+            var remoteRevision = revisions?.Execute()?.Revisions
                                        ?.OrderByDescending(revision => revision.ModifiedTime)?.FirstOrDefault();
-            DateTime? remoteMod = remoteDbFile?.ModifiedTime;
-            long? remoteSize = remoteDbFile?.Size;
+            var remoteMod = remoteRevision?.ModifiedTime;
+            var remoteRevId = remoteRevision?.Id;
+            var remoteSize = remoteRevision?.Size;
 
-            DateTime? localMod = System.IO.File.GetLastWriteTime(_databaseFileName);
-            long? localSize = new FileInfo(_databaseFileName).Length;
+            var localRevision = ConvertFromDAL<DatabaseRevision>(SelectFromByValue("Versions", "Id", remoteRevId))
+                .FirstOrDefault();
+            var localMod = localRevision?.Modified;
+            var localId = localRevision?.RevisioId;
+            var localSize = localRevision?.Size;
 
             if (downloadDirection)
             {
-                return (remoteMod == null) || (!(localMod > remoteMod)) || (remoteSize != localSize);
+                return (remoteMod == null) || (!(localMod > remoteMod)) || (remoteRevId != localId);
             }
 
-            return (remoteMod == null) || (!(localMod < remoteMod)) || (remoteSize != localSize);
+            return (remoteMod == null) || (!(localMod < remoteMod)) || (remoteRevId != localId);
         }
 
         #endregion

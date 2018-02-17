@@ -125,6 +125,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\DatabaseRevision.cs" />
     <Compile Include="Models\Formula.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\Metric.cs" />
