@@ -131,17 +131,20 @@ namespace MetricFlow.Helpers
         static bool NeedSync(bool downloadDirection = true)
         {
             var revisions = _service?.Revisions?.List(_fileId);
-            revisions.Fields = "*";
+            if (revisions != null)
+            {
+                revisions.Fields = "*";
+            }
             var remoteRevision = revisions?.Execute()?.Revisions
                                        ?.OrderByDescending(revision => revision.ModifiedTime)?.FirstOrDefault();
             var remoteMod = remoteRevision?.ModifiedTime;
             var remoteRevId = remoteRevision?.Id;
             var remoteSize = remoteRevision?.Size;
 
-            var localRevision = ConvertFromDAL<DatabaseRevision>(SelectFromByValue("Versions", "Id", remoteRevId))
+            var localRevision = ConvertFromDAL<DatabaseRevision>(SelectFromByValue("Revisions", "Id", remoteRevId))
                 .FirstOrDefault();
             var localMod = localRevision?.Modified;
-            var localId = localRevision?.RevisioId;
+            var localId = localRevision?.Id;
             var localSize = localRevision?.Size;
 
             if (downloadDirection)
@@ -154,14 +157,15 @@ namespace MetricFlow.Helpers
 
         #endregion
 
-        public static IDownloadProgress DownloadDatabase()
+        public static void DownloadDatabase()
         {
             try
             {
-                if (!NeedSync()) return null;
+                if (!NeedSync()) return;
 
                 var request = _service.Files.Get(_fileId);
                 Debug.WriteLine("Gets database file from server");
+                IDownloadProgress status;
 
                 using (var stream = new FileStream(
                     _databaseFileName,
@@ -170,7 +174,22 @@ namespace MetricFlow.Helpers
                     FileShare.ReadWrite)
                 )
                 {
-                    return request.DownloadWithStatus(stream);
+                    status = request.DownloadWithStatus(stream);
+                }
+
+                if (status != null)
+                {
+                    while (status.Status == DownloadStatus.Downloading)
+                    {
+                        Debug.WriteLine("Downloading database file: " + status.BytesDownloaded);
+                    }
+
+                    if (status.Status == DownloadStatus.Failed)
+                    {
+                        throw new ServiceException(status.Exception?.Message);
+                    }
+
+                    Debug.WriteLine("Database file updated from server");
                 }
             }
             catch (Exception exception)

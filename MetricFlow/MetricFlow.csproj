@@ -109,6 +109,7 @@
     <Compile Include="BLL\FormulaBLL.cs" />
     <Compile Include="BLL\LocationBLL.cs" />
     <Compile Include="BLL\MetricBLL.cs" />
+    <Compile Include="BLL\RevisionBLL.cs" />
     <Compile Include="BLL\ServiceBLL.cs" />
     <Compile Include="BLL\StatisticBLL.cs" />
     <Compile Include="Helpers\DataAccessProvider.cs" />

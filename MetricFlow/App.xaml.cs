@@ -20,22 +20,7 @@ namespace MetricFlow
         {
             try
             {
-                var status = DownloadDatabase();
-
-                if (status != null)
-                {
-                    while (status.Status == DownloadStatus.Downloading)
-                    {
-                        Debug.WriteLine("Downloading database file: " + status.BytesDownloaded);
-                    }
-
-                    if (status.Status == DownloadStatus.Failed)
-                    {
-                        throw new ServiceException(status.Exception?.Message);
-                    }
-
-                    Debug.WriteLine("Database file updated from server");
-                }
+                DownloadDatabase();
             }
             catch (NetworkException networkException)
             {
