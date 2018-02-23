@@ -5,14 +5,14 @@ namespace MetricFlow.Models
     public class DatabaseRevision
     {
         public string Id { get; }
+        public long Size { get; }
         public DateTime Modified { get; }
-        public int Size { get; }
 
-        public DatabaseRevision(string id, DateTime modified, int size)
+        public DatabaseRevision(string id, long size, string modified)
         {
             Id = id;
-            Modified = modified;
             Size = size;
+            Modified = DateTime.Parse(modified);
         }
 
         public DatabaseRevision()

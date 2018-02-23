@@ -22,8 +22,11 @@ namespace MetricFlow.BLL
 
         public Location CreateLocation(string locationName)
         {
-            var location = new List<string> { locationName };
-            DataAccessProvider.InsertValuesIntoColumn(TABLE_NAME, "Name", location);
+            var parms = new Dictionary<string, dynamic>
+            {
+                {"Name", locationName}
+            };
+            DataAccessProvider.InsertRowsIntoTable(TABLE_NAME, parms);
             var data = DataAccessProvider.SelectFromByValue(TABLE_NAME, "Name", locationName);
             return data == null ? null : DataAccessProvider.ConvertFromDAL<Location>(data).FirstOrDefault();
         }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows;
-using Google.Apis.Download;
 using MetricFlow.Helpers;
 using static MetricFlow.Helpers.GoogleDriveHelper;
 using static System.Configuration.ConfigurationManager;
@@ -14,7 +13,7 @@ namespace MetricFlow
     /// </summary>
     public partial class App : Application
     {
-        public static string DbConnectionString { get; private set; }
+        public static string DbConnectionString => ConnectionStrings["MetricFlowDatabase"].ConnectionString;
 
         void App_Startup(object sender, StartupEventArgs e)
         {
@@ -44,7 +43,6 @@ namespace MetricFlow
                 Current.Shutdown();
             }
 
-            DbConnectionString = ConnectionStrings["MetricFlowDatabase"].ConnectionString;
         }
 
         private static void ConfirmOnException(Exception exception, string textBody, string caption)

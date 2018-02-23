@@ -1,24 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Threading;
 using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Download;
 using Google.Apis.Drive.v3;
+using Google.Apis.Drive.v3.Data;
 using Google.Apis.Services;
 using Google.Apis.Upload;
 using Google.Apis.Util.Store;
-using MetricFlow.Models;
+using MetricFlow.BLL;
 using Microsoft.Win32;
 using File = Google.Apis.Drive.v3.Data.File;
-using static MetricFlow.Helpers.DataAccessProvider;
 
 namespace MetricFlow.Helpers
 {
@@ -32,6 +30,7 @@ namespace MetricFlow.Helpers
         private static readonly DriveService _service;
         private const string _fileId = "1OPaCtIMT89zY6gg5PZMQ3ygbIRn-gUJ6";
         private static readonly string _databaseFileName;
+        private static Revision _remoteRevision;
 
         static GoogleDriveHelper()
         {
@@ -99,8 +98,8 @@ namespace MetricFlow.Helpers
             try
             {
                 var databaseDirectory = Path.GetDirectoryName(Process.GetCurrentProcess()
-                                                                     .MainModule
-                                                                     .FileName) + "\\Database";
+                                            .MainModule
+                                            .FileName) + "\\Database";
                 if (!Directory.Exists(databaseDirectory))
                 {
                     Debug.WriteLine("Directory of database not exist");
@@ -131,28 +130,23 @@ namespace MetricFlow.Helpers
         static bool NeedSync(bool downloadDirection = true)
         {
             var revisions = _service?.Revisions?.List(_fileId);
-            if (revisions != null)
-            {
-                revisions.Fields = "*";
-            }
-            var remoteRevision = revisions?.Execute()?.Revisions
-                                       ?.OrderByDescending(revision => revision.ModifiedTime)?.FirstOrDefault();
-            var remoteMod = remoteRevision?.ModifiedTime;
-            var remoteRevId = remoteRevision?.Id;
-            var remoteSize = remoteRevision?.Size;
+            revisions.Fields = "*";
+            _remoteRevision = revisions?.Execute()?.Revisions
+                ?.OrderByDescending(revision => revision.ModifiedTime)?.FirstOrDefault();
 
-            var localRevision = ConvertFromDAL<DatabaseRevision>(SelectFromByValue("Revisions", "Id", remoteRevId))
-                .FirstOrDefault();
-            var localMod = localRevision?.Modified;
-            var localId = localRevision?.Id;
-            var localSize = localRevision?.Size;
+            var localRevision = new RevisionBLL().GetLocalRevision(_remoteRevision.Id);
 
             if (downloadDirection)
             {
-                return (remoteMod == null) || (!(localMod > remoteMod)) || (remoteRevId != localId);
+                if (localRevision == null) return true;
+                return (localRevision.Modified < _remoteRevision.ModifiedTime)
+                       || (_remoteRevision.Id != localRevision.Id)
+                       || (_remoteRevision.Size != localRevision.Size);
             }
 
-            return (remoteMod == null) || (!(localMod < remoteMod)) || (remoteRevId != localId);
+            return (localRevision.Modified > _remoteRevision.ModifiedTime)
+                   || (_remoteRevision.Id != localRevision.Id)
+                   || (_remoteRevision.Size != localRevision.Size);
         }
 
         #endregion
@@ -190,6 +184,7 @@ namespace MetricFlow.Helpers
                     }
 
                     Debug.WriteLine("Database file updated from server");
+                    new RevisionBLL().SaveLocalRevision(_remoteRevision.Id, _remoteRevision.ModifiedTime.Value, _remoteRevision.Size.Value);
                 }
             }
             catch (Exception exception)

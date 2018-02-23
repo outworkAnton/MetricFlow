@@ -55,6 +55,13 @@ namespace MetricFlow.Helpers
             }
         }
 
+        private static string ConvertDateTimeToDBFormat(DateTime datetime)
+        {
+            var dateTimeFormat = "{0}-{1}-{2} {3}:{4}:{5}.{6}";
+            return string.Format(dateTimeFormat, datetime.Year, datetime.Month, datetime.Day, datetime.Hour,
+                datetime.Minute, datetime.Second, datetime.Millisecond);
+        }
+
         #endregion
 
         public static IEnumerable<T> ConvertFromDAL<T>(DataTable dataFromDAL) where T : new()
@@ -63,7 +70,7 @@ namespace MetricFlow.Helpers
 
             foreach (DataRow dataRow in dataFromDAL.Rows)
             {
-                var parms = new List<object>(dataRow.ItemArray);
+                var parms = new List<dynamic>(dataRow.ItemArray).ToArray();
                 result.Add((T) Activator.CreateInstance(typeof(T), parms));
             }
 
@@ -81,7 +88,7 @@ namespace MetricFlow.Helpers
 
         public class StoredProcedureParameters
         {
-            readonly Dictionary<string, dynamic> _innerCollection = new Dictionary<string, dynamic>();
+            private readonly Dictionary<string, dynamic> _innerCollection = new Dictionary<string, dynamic>();
 
             public void AddParameter<T>(string name, T value)
             {
@@ -116,6 +123,7 @@ namespace MetricFlow.Helpers
                             {
                                 dlm = "'";
                             }
+
                             newParmValue += string.Join($"{dlm}, {dlm}", parmValue);
                             newParmValue += ")";
                             break;
@@ -142,7 +150,9 @@ namespace MetricFlow.Helpers
 
         public static DataTable SelectFromByValue<T>(string tableName, string paramName, T paramValue)
         {
-            var dlm = typeof(T) == Type.GetType("String") ? "'" : string.Empty;
+            var dlm = (typeof(T) == Type.GetType("System.String") || (typeof(T) == Type.GetType("System.DateTime")))
+                ? "'"
+                : string.Empty;
             var query = $"SELECT * FROM {tableName} WHERE {paramName} = {dlm}{paramValue}{dlm};";
             return ExecuteSelectQuery(query);
         }
@@ -151,16 +161,6 @@ namespace MetricFlow.Helpers
 
         #region Insert Statements
 
-        public static void InsertValuesIntoColumn<T>(string tableName, string columnName, IEnumerable<T> values)
-        {
-            if (!values.Any()) throw new ArgumentNullException();
-            var dlm = typeof(T) == Type.GetType("String") ? "'" : string.Empty;
-            var query = $"INSERT INTO {tableName} ({columnName}) VALUES ({dlm}";
-            query += string.Join($"{dlm}, {dlm}", values);
-            query += $"{dlm});";
-            ExecuteUpsertQuery(query);
-        }
-
         public static void InsertRowsIntoTable(string tableName, Dictionary<string, dynamic> rows)
         {
             if (!rows.Any()) throw new ArgumentNullException();
@@ -168,9 +168,23 @@ namespace MetricFlow.Helpers
             var query = $"INSERT INTO {tableName} ({string.Join(", ", columns)}) VALUES(";
             foreach (var value in rows.Values.ToList())
             {
-                var dlm = value.GetType() == Type.GetType("String") ? "'" : string.Empty;
-                query += dlm + value + dlm;
+                var dlm = string.Empty;
+                string dtValue = null;
+                switch (value)
+                {
+                    case string str:
+                        dlm = "'";
+                        break;
+                    case DateTime dt:
+                        dlm = "'";
+                        dtValue = ConvertDateTimeToDBFormat(value);
+                        break;
+                }
+
+                query += dlm + (dtValue ?? value) + dlm + ", ";
             }
+
+            query = query.Remove(query.Length - 2, 2);
             query += $");";
             ExecuteUpsertQuery(query);
         }
