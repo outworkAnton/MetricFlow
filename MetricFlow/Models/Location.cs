@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MetricFlow.Interfaces;
 using static MetricFlow.Helpers.DataAccessProvider;
 using MetricFlow.BLL;
@@ -29,10 +30,9 @@ namespace MetricFlow.Models
 
         public Location() { }
 
-        public void GetLocationServices()
+        public async Task GetLocationServices()
         {
-            var dal = new ServiceBLL().GetServicesByLocationId(LocationId);
-            Services = ConvertFromDAL<Service>(dal);
+            Services = ConvertFromDAL<Service>(await new ServiceBLL().GetServicesByLocationId(LocationId).ConfigureAwait(false));
         }
     }
 }

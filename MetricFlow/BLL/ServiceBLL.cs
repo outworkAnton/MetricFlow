@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Threading.Tasks;
 using static MetricFlow.Helpers.DataAccessProvider;
 
 namespace MetricFlow.BLL
@@ -7,16 +8,16 @@ namespace MetricFlow.BLL
     {
         private const string TABLE_NAME = "Services";
 
-        public DataTable GetServiceById(int serviceId)
+        public async Task<DataTable> GetServiceById(int serviceId)
         {
-            return SelectFromByValue(TABLE_NAME, "Id", serviceId);
+            return await SelectFromByValue(TABLE_NAME, "Id", serviceId).ConfigureAwait(false);
         }
 
-        public DataTable GetServicesByLocationId(int locationId)
+        public async Task<DataTable> GetServicesByLocationId(int locationId)
         {
             var parms = new StoredProcedureParameters();
             parms.AddParameter("Id", locationId);
-            return ExecuteStoredProcedure("GetServicesByLocationId", parms);
+            return await ExecuteStoredProcedure("GetServicesByLocationId", parms).ConfigureAwait(false);
         }
     }
 }

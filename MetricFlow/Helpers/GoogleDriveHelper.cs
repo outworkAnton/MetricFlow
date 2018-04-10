@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Download;
@@ -34,7 +35,7 @@ namespace MetricFlow.Helpers
 
         static GoogleDriveHelper()
         {
-            _service = GetService();
+            _service = GetService().GetAwaiter().GetResult();
             _databaseFileName = GetDatabaseFileName();
         }
 
@@ -45,7 +46,7 @@ namespace MetricFlow.Helpers
             return InternetGetConnectedState(out _, 0);
         }
 
-        static DriveService GetService()
+        static async Task<DriveService> GetService()
         {
             try
             {
@@ -61,12 +62,12 @@ namespace MetricFlow.Helpers
                     credPath = Path.Combine(credPath, ".credentials/metric-flow.json");
                     Debug.WriteLine("Credential file saved to: " + credPath);
 
-                    userCredential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    userCredential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                         GoogleClientSecrets.Load(stream).Secrets,
                         Scopes,
                         Environment.UserName,
                         CancellationToken.None,
-                        new FileDataStore(credPath, true)).Result;
+                        new FileDataStore(credPath, true)).ConfigureAwait(false);
                 }
 
                 var service = new DriveService(new BaseClientService.Initializer
@@ -127,14 +128,14 @@ namespace MetricFlow.Helpers
             return mimeType;
         }
 
-        static bool NeedSync(bool downloadDirection = true)
+        static async Task<bool> NeedSync(bool downloadDirection = true)
         {
             var revisions = _service?.Revisions?.List(_fileId);
             revisions.Fields = "*";
             _remoteRevision = revisions?.Execute()?.Revisions
                 ?.OrderByDescending(revision => revision.ModifiedTime)?.FirstOrDefault();
 
-            var localRevision = new RevisionBLL().GetLocalRevision(_remoteRevision.Id);
+            var localRevision = await new RevisionBLL().GetLocalRevision(_remoteRevision.Id).ConfigureAwait(false);
 
             if (downloadDirection)
             {
@@ -151,11 +152,11 @@ namespace MetricFlow.Helpers
 
         #endregion
 
-        public static void DownloadDatabase()
+        public static async Task DownloadDatabase()
         {
             try
             {
-                if (!NeedSync()) return;
+                if (!await NeedSync().ConfigureAwait(false)) return;
 
                 var request = _service.Files.Get(_fileId);
                 Debug.WriteLine("Gets database file from server");
@@ -184,7 +185,7 @@ namespace MetricFlow.Helpers
                     }
 
                     Debug.WriteLine("Database file updated from server");
-                    new RevisionBLL().SaveLocalRevision(_remoteRevision.Id, _remoteRevision.ModifiedTime.Value, _remoteRevision.Size.Value);
+                    await new RevisionBLL().SaveLocalRevision(_remoteRevision.Id, _remoteRevision.ModifiedTime.Value, _remoteRevision.Size.Value).ConfigureAwait(false);
                 }
             }
             catch (Exception exception)
@@ -193,11 +194,11 @@ namespace MetricFlow.Helpers
             }
         }
 
-        public static IUploadProgress UploadDatabase()
+        public static async Task<IUploadProgress> UploadDatabase()
         {
             try
             {
-                if (!NeedSync(false)) return null;
+                if (!await NeedSync(false).ConfigureAwait(false)) return null;
 
                 var body = new File
                 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MetricFlow.Models;
 using static MetricFlow.Helpers.DataAccessProvider;
 
@@ -10,7 +11,7 @@ namespace MetricFlow.BLL
     {
         private const string TABLE_NAME = "Revisions";
 
-        public void SaveLocalRevision(string revisionId, DateTime modifieDateTime, long size)
+        public async Task SaveLocalRevision(string revisionId, DateTime modifieDateTime, long size)
         {
             var parms = new Dictionary<string, dynamic>
             {
@@ -18,14 +19,14 @@ namespace MetricFlow.BLL
                 {"Modified", modifieDateTime},
                 {"Size", size}
             };
-            InsertRowsIntoTable(TABLE_NAME, parms);
+            await InsertRowsIntoTable(TABLE_NAME, parms).ConfigureAwait(false);
         }
 
-        public DatabaseRevision GetLocalRevision(string id)
+        public async Task<DatabaseRevision> GetLocalRevision(string id)
         {
             try
             {
-                return ConvertFromDAL<DatabaseRevision>(SelectFromByValue(TABLE_NAME, "Id", id))
+                return ConvertFromDAL<DatabaseRevision>(await SelectFromByValue(TABLE_NAME, "Id", id).ConfigureAwait(false))
                         .FirstOrDefault();
             }
             catch (Exception exception)

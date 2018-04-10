@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MetricFlow.Helpers
 {
@@ -12,16 +13,16 @@ namespace MetricFlow.Helpers
     {
         #region Internal logic methods
 
-        static DataTable ExecuteSelectQuery(string query)
+        static async Task<DataTable> ExecuteSelectQuery(string query)
         {
             var tmpTable = new DataTable();
-            using (var connection = new SQLiteConnection(App.DbConnectionString).OpenAndReturn())
+            using (var connection = new SQLiteConnection(App.DbConnectionString))
             {
                 try
                 {
+                    await connection.OpenAsync().ConfigureAwait(false);
                     var command = connection.CreateCommand().CommandText = query;
-                    var adapter = new SQLiteDataAdapter(command, connection);
-                    adapter.Fill(tmpTable);
+                    await Task.Run(() => new SQLiteDataAdapter(command, connection).Fill(tmpTable));
                 }
                 catch (SQLiteException exception)
                 {
@@ -32,17 +33,18 @@ namespace MetricFlow.Helpers
             return tmpTable;
         }
 
-        static void ExecuteUpsertQuery(string query)
+        static async Task ExecuteUpsertQuery(string query)
         {
-            using (var connection = new SQLiteConnection(App.DbConnectionString).OpenAndReturn())
+            using (var connection = new SQLiteConnection(App.DbConnectionString))
             {
+                await connection.OpenAsync().ConfigureAwait(false);
                 var transaction = connection.BeginTransaction();
                 try
                 {
                     using (var command = new SQLiteCommand(query, connection))
                     {
                         command.Transaction = transaction;
-                        command.ExecuteNonQuery();
+                        await command.ExecuteNonQueryAsync();
                     }
                 }
                 catch (SQLiteException exception)
@@ -79,11 +81,11 @@ namespace MetricFlow.Helpers
 
         #region Stored procedures
 
-        public static DataTable ExecuteStoredProcedure(string name, StoredProcedureParameters paramValues)
+        public static async Task<DataTable> ExecuteStoredProcedure(string name, StoredProcedureParameters paramValues)
         {
-            var spBody = SelectFromByValue("StoredProcedures", "Name", name).Rows[0].ItemArray[1].ToString();
+            var spBody = (await SelectFromByValue("StoredProcedures", "Name", name).ConfigureAwait(false)).Rows[0].ItemArray[1].ToString();
             var query = paramValues.InjectValues(spBody);
-            return ExecuteSelectQuery(query);
+            return await ExecuteSelectQuery(query);
         }
 
         public class StoredProcedureParameters
@@ -142,26 +144,26 @@ namespace MetricFlow.Helpers
 
         #region Select Statements
 
-        public static DataTable SelectAllFrom(string tableName)
+        public static async Task<DataTable> SelectAllFrom(string tableName)
         {
             var query = $"SELECT * FROM {tableName};";
-            return ExecuteSelectQuery(query);
+            return await ExecuteSelectQuery(query).ConfigureAwait(false);
         }
 
-        public static DataTable SelectFromByValue<T>(string tableName, string paramName, T paramValue)
+        public static async Task<DataTable> SelectFromByValue<T>(string tableName, string paramName, T paramValue)
         {
             var dlm = (typeof(T) == Type.GetType("System.String") || (typeof(T) == Type.GetType("System.DateTime")))
                 ? "'"
                 : string.Empty;
             var query = $"SELECT * FROM {tableName} WHERE {paramName} = {dlm}{paramValue}{dlm};";
-            return ExecuteSelectQuery(query);
+            return await ExecuteSelectQuery(query).ConfigureAwait(false);
         }
 
         #endregion
 
         #region Insert Statements
 
-        public static void InsertRowsIntoTable(string tableName, Dictionary<string, dynamic> rows)
+        public static async Task InsertRowsIntoTable(string tableName, Dictionary<string, dynamic> rows)
         {
             if (!rows.Any()) throw new ArgumentNullException();
             var columns = rows.Keys.ToList();
@@ -186,7 +188,7 @@ namespace MetricFlow.Helpers
 
             query = query.Remove(query.Length - 2, 2);
             query += $");";
-            ExecuteUpsertQuery(query);
+            await ExecuteUpsertQuery(query).ConfigureAwait(false);
         }
 
         #endregion

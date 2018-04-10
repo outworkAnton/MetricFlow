@@ -15,11 +15,11 @@ namespace MetricFlow
     {
         public static string DbConnectionString => ConnectionStrings["MetricFlowDatabase"].ConnectionString;
 
-        void App_Startup(object sender, StartupEventArgs e)
+        async void App_Startup(object sender, StartupEventArgs e)
         {
             try
             {
-                DownloadDatabase();
+                await DownloadDatabase().ConfigureAwait(false);
             }
             catch (NetworkException networkException)
             {
