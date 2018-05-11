@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <LangVersion>7.2</LangVersion>
+    <TargetFrameworks>netcoreapp2.0;net471</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="client_id.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Google.Apis" Version="1.33.1" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.33.1.1219" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="4.4.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Win32.Registry" Condition="'$(TargetFramework)' == 'net471'" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MetricFlowExceptions\MetricFlowExceptions.csproj" />
+  </ItemGroup>
+</Project>

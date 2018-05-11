@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows;
-using MetricFlow.Helpers;
-using static MetricFlow.Helpers.GoogleDriveHelper;
-using static System.Configuration.ConfigurationManager;
+using BusinessLogic.Interfaces;
+using BusinessLogic.Services;
+using MetricFlowExceptions;
 
 namespace MetricFlow
 {
@@ -13,13 +13,13 @@ namespace MetricFlow
     /// </summary>
     public partial class App : Application
     {
-        public static string DbConnectionString => ConnectionStrings["MetricFlowDatabase"].ConnectionString;
+        private readonly IRevisionService _service = new RevisionService();
 
         async void App_Startup(object sender, StartupEventArgs e)
         {
             try
             {
-                await DownloadDatabase().ConfigureAwait(false);
+                await _service.DownloadLatestDatabaseRevision().ConfigureAwait(false);
             }
             catch (NetworkException networkException)
             {

@@ -15,11 +15,11 @@ using Google.Apis.Drive.v3.Data;
 using Google.Apis.Services;
 using Google.Apis.Upload;
 using Google.Apis.Util.Store;
-using MetricFlow.BLL;
+using MetricFlowExceptions;
 using Microsoft.Win32;
 using File = Google.Apis.Drive.v3.Data.File;
 
-namespace MetricFlow.Helpers
+namespace Utilities
 {
     public static class GoogleDriveHelper
     {
@@ -27,16 +27,16 @@ namespace MetricFlow.Helpers
         private static extern bool InternetGetConnectedState(out int description, int reservedValue);
 
         static readonly string[] Scopes = {DriveService.Scope.DriveReadonly};
-        private const string APPLICATION_NAME = "MetricFlow";
-        private static readonly DriveService _service;
-        private const string _fileId = "1OPaCtIMT89zY6gg5PZMQ3ygbIRn-gUJ6";
-        private static readonly string _databaseFileName;
+        private const string ApplicationName = "MetricFlow";
+        private static readonly DriveService Service;
+        private const string FileId = "1OPaCtIMT89zY6gg5PZMQ3ygbIRn-gUJ6";
+        private static readonly string DatabaseFileName;
         private static Revision _remoteRevision;
 
         static GoogleDriveHelper()
         {
-            _service = GetService().GetAwaiter().GetResult();
-            _databaseFileName = GetDatabaseFileName();
+            Service = GetService().GetAwaiter().GetResult();
+            DatabaseFileName = GetDatabaseFileName();
         }
 
         #region Private methods
@@ -73,7 +73,7 @@ namespace MetricFlow.Helpers
                 var service = new DriveService(new BaseClientService.Initializer
                 {
                     HttpClientInitializer = userCredential,
-                    ApplicationName = APPLICATION_NAME
+                    ApplicationName = ApplicationName
                 });
                 Debug.WriteLine("Drive API service was created");
                 return service;
@@ -130,7 +130,7 @@ namespace MetricFlow.Helpers
 
         static async Task<bool> NeedSync(bool downloadDirection = true)
         {
-            var revisions = _service?.Revisions?.List(_fileId);
+            var revisions = Service?.Revisions?.List(FileId);
             revisions.Fields = "*";
             _remoteRevision = revisions?.Execute()?.Revisions
                 ?.OrderByDescending(revision => revision.ModifiedTime)?.FirstOrDefault();
@@ -158,12 +158,12 @@ namespace MetricFlow.Helpers
             {
                 if (!await NeedSync().ConfigureAwait(false)) return;
 
-                var request = _service.Files.Get(_fileId);
+                var request = Service.Files.Get(FileId);
                 Debug.WriteLine("Gets database file from server");
                 IDownloadProgress status;
 
                 using (var stream = new FileStream(
-                    _databaseFileName,
+                    DatabaseFileName,
                     FileMode.OpenOrCreate,
                     FileAccess.ReadWrite,
                     FileShare.ReadWrite)
@@ -202,18 +202,18 @@ namespace MetricFlow.Helpers
 
                 var body = new File
                 {
-                    Name = Path.GetFileName(_databaseFileName),
+                    Name = Path.GetFileName(DatabaseFileName),
                     Description = "File update automatically by MetricFlow application",
-                    MimeType = GetMimeType(_databaseFileName),
+                    MimeType = GetMimeType(DatabaseFileName),
                     Parents = new List<string> {"1ylBG0aHKWIKhi2w6hSCmEz9vW9DVBpgU"}
                 };
 
                 using (var stream =
-                    new FileStream(_databaseFileName
+                    new FileStream(DatabaseFileName
                         , FileMode.Open, FileAccess.Read,
                         FileShare.Read))
                 {
-                    var request = _service.Files.Update(body, _fileId, stream, body.MimeType);
+                    var request = Service.Files.Update(body, FileId, stream, body.MimeType);
                     Debug.WriteLine("Gets database file from server");
                     request.Upload();
                     return request.GetProgress();

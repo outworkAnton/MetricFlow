@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.0;net471</TargetFrameworks>
+    <LangVersion>7.2</LangVersion>
+    <AssemblyName>Entities</AssemblyName>
+    <RootNamespace>Entities</RootNamespace>
+  </PropertyGroup>
+</Project>
