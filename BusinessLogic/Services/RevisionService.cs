@@ -1,25 +1,31 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using BusinessLogic.Interfaces;
-using DataAccess.Interfaces;
-using DataAccess.Repositories;
+using DataAccess;
+using Entities.Interfaces;
 using Entities.Models;
+using Utilities;
 
 namespace BusinessLogic.Services
 {
     public class RevisionService : IRevisionService
     {
-        private readonly IDatabaseRevisionRepository _repository = new DatabaseRevisionRepository();
+        private readonly IDataAccessRepository _repository = new DataAccessRepository();
 
         public Task<DatabaseRevision> GetRevisionById(string id)
         {
             throw new System.NotImplementedException();
         }
 
-        public async Task<DatabaseRevision> DownloadLatestDatabaseRevision()
+        public async Task DownloadLatestDatabaseRevision()
         {
-            var revisions = await _repository.Get().ConfigureAwait(false);
-            return revisions.OrderByDescending(revision => revision.Modified).FirstOrDefault();
+            var revisions = await _repository.Get<IDatabaseRevision>().ConfigureAwait(false);
+            var latestLocalRevision = revisions.OrderByDescending(revision => revision.Modified).FirstOrDefault();
+            var updatedRevision = await GoogleDriveHelper.DownloadDatabase(latestLocalRevision).ConfigureAwait(false);
+            if (updatedRevision != null)
+            {
+                await _repository.Create(updatedRevision).ConfigureAwait(false);
+            }
         }
     }
 }

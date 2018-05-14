@@ -7,4 +7,7 @@
     <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
     <ProjectReference Include="..\Entities\Entities.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CompareNETObjects" Version="4.53.0" />
+  </ItemGroup>
 </Project>

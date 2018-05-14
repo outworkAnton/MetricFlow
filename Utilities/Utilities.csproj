@@ -9,6 +9,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CompareNETObjects" Version="4.53.0" />
     <PackageReference Include="Google.Apis" Version="1.33.1" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.33.1.1219" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.4.0" />
@@ -17,6 +18,7 @@
     <Reference Include="Microsoft.Win32.Registry" Condition="'$(TargetFramework)' == 'net471'" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Entities\Entities.csproj" />
     <ProjectReference Include="..\MetricFlowExceptions\MetricFlowExceptions.csproj" />
   </ItemGroup>
 </Project>

@@ -7,6 +7,8 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Entities.Interfaces;
+using Entities.Models;
 using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Download;
@@ -128,14 +130,12 @@ namespace Utilities
             return mimeType;
         }
 
-        static async Task<bool> NeedSync(bool downloadDirection = true)
+        static bool NeedSync(IDatabaseRevision localRevision, bool downloadDirection = true)
         {
             var revisions = Service?.Revisions?.List(FileId);
             revisions.Fields = "*";
             _remoteRevision = revisions?.Execute()?.Revisions
                 ?.OrderByDescending(revision => revision.ModifiedTime)?.FirstOrDefault();
-
-            var localRevision = await new RevisionBLL().GetLocalRevision(_remoteRevision.Id).ConfigureAwait(false);
 
             if (downloadDirection)
             {
@@ -152,11 +152,11 @@ namespace Utilities
 
         #endregion
 
-        public static async Task DownloadDatabase()
+        public static async Task<IDatabaseRevision> DownloadDatabase(IDatabaseRevision localRevision)
         {
             try
             {
-                if (!await NeedSync().ConfigureAwait(false)) return;
+                if (!NeedSync(localRevision)) return null;
 
                 var request = Service.Files.Get(FileId);
                 Debug.WriteLine("Gets database file from server");
@@ -169,7 +169,7 @@ namespace Utilities
                     FileShare.ReadWrite)
                 )
                 {
-                    status = request.DownloadWithStatus(stream);
+                    status = await request.DownloadAsync(stream).ConfigureAwait(false);
                 }
 
                 if (status != null)
@@ -185,8 +185,10 @@ namespace Utilities
                     }
 
                     Debug.WriteLine("Database file updated from server");
-                    await new RevisionBLL().SaveLocalRevision(_remoteRevision.Id, _remoteRevision.ModifiedTime.Value, _remoteRevision.Size.Value).ConfigureAwait(false);
+                    return new DatabaseRevision(_remoteRevision.Id, _remoteRevision.ModifiedTime.Value, _remoteRevision.Size.Value);
                 }
+
+                return null;
             }
             catch (Exception exception)
             {
@@ -194,11 +196,11 @@ namespace Utilities
             }
         }
 
-        public static async Task<IUploadProgress> UploadDatabase()
+        public static IUploadProgress UploadDatabase(IDatabaseRevision localRevision)
         {
             try
             {
-                if (!await NeedSync(false).ConfigureAwait(false)) return null;
+                if (!NeedSync(localRevision, false)) return null;
 
                 var body = new File
                 {
@@ -214,7 +216,7 @@ namespace Utilities
                         FileShare.Read))
                 {
                     var request = Service.Files.Update(body, FileId, stream, body.MimeType);
-                    Debug.WriteLine("Gets database file from server");
+                    Debug.WriteLine("Send database file to server");
                     request.Upload();
                     return request.GetProgress();
                 }

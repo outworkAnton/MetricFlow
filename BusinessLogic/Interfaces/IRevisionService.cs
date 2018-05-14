@@ -6,6 +6,6 @@ namespace BusinessLogic.Interfaces
     public interface IRevisionService
     {
         Task<DatabaseRevision> GetRevisionById(string Id);
-        Task<DatabaseRevision> DownloadLatestDatabaseRevision();
+        Task DownloadLatestDatabaseRevision();
     }
 }
