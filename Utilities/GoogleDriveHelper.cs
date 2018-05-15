@@ -65,11 +65,12 @@ namespace Utilities
                     Debug.WriteLine("Credential file saved to: " + credPath);
 
                     userCredential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                        GoogleClientSecrets.Load(stream).Secrets,
-                        Scopes,
-                        Environment.UserName,
-                        CancellationToken.None,
-                        new FileDataStore(credPath, true)).ConfigureAwait(false);
+                                                                           GoogleClientSecrets.Load(stream).Secrets,
+                                                                           Scopes,
+                                                                           Environment.UserName,
+                                                                           CancellationToken.None,
+                                                                           new FileDataStore(credPath, true))
+                                                                       .ConfigureAwait(false);
                 }
 
                 var service = new DriveService(new BaseClientService.Initializer
@@ -101,8 +102,8 @@ namespace Utilities
             try
             {
                 var databaseDirectory = Path.GetDirectoryName(Process.GetCurrentProcess()
-                                            .MainModule
-                                            .FileName) + "\\Database";
+                                                                     .MainModule
+                                                                     .FileName) + "\\Database";
                 if (!Directory.Exists(databaseDirectory))
                 {
                     Debug.WriteLine("Directory of database not exist");
@@ -130,36 +131,29 @@ namespace Utilities
             return mimeType;
         }
 
-        static bool NeedSync(IDatabaseRevision localRevision, bool downloadDirection = true)
+        static bool NeedDownload(IDatabaseRevision localRevision)
         {
             var revisions = Service?.Revisions?.List(FileId);
             revisions.Fields = "*";
             _remoteRevision = revisions?.Execute()?.Revisions
-                ?.OrderByDescending(revision => revision.ModifiedTime)?.FirstOrDefault();
+                                       ?.OrderByDescending(revision => revision.ModifiedTime)?.FirstOrDefault();
 
-            if (downloadDirection)
-            {
-                if (localRevision == null) return true;
-                return (localRevision.Modified < _remoteRevision.ModifiedTime)
-                       || (_remoteRevision.Id != localRevision.Id)
-                       || (_remoteRevision.Size != localRevision.Size);
-            }
-
-            return (localRevision.Modified > _remoteRevision.ModifiedTime)
+            if (localRevision == null) return true;
+            return (localRevision.Modified < _remoteRevision.ModifiedTime)
                    || (_remoteRevision.Id != localRevision.Id)
                    || (_remoteRevision.Size != localRevision.Size);
         }
 
         #endregion
 
-        public static async Task<IDatabaseRevision> DownloadDatabase(IDatabaseRevision localRevision)
+        public static async Task<IDatabaseRevision> GetLatestRevision(IDatabaseRevision localRevision)
         {
             try
             {
-                if (!NeedSync(localRevision)) return null;
+                if (!NeedDownload(localRevision)) return null;
 
                 var request = Service.Files.Get(FileId);
-                Debug.WriteLine("Gets database file from server");
+                Debug.WriteLine("Get database file from server");
                 IDownloadProgress status;
 
                 using (var stream = new FileStream(
@@ -185,7 +179,8 @@ namespace Utilities
                     }
 
                     Debug.WriteLine("Database file updated from server");
-                    return new DatabaseRevision(_remoteRevision.Id, _remoteRevision.ModifiedTime.Value, _remoteRevision.Size.Value);
+                    return new DatabaseRevision(_remoteRevision.Id, _remoteRevision.ModifiedTime.Value,
+                        _remoteRevision.Size.Value);
                 }
 
                 return null;
@@ -196,11 +191,11 @@ namespace Utilities
             }
         }
 
-        public static IUploadProgress UploadDatabase(IDatabaseRevision localRevision)
+        public static IUploadProgress UpdateRemoteRevision(IDatabaseRevision localRevision)
         {
             try
             {
-                if (!NeedSync(localRevision, false)) return null;
+                //TODO: implement method for detect local DB changes
 
                 var body = new File
                 {

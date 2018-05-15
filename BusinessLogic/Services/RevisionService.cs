@@ -21,7 +21,7 @@ namespace BusinessLogic.Services
         {
             var revisions = await _repository.Get<IDatabaseRevision>().ConfigureAwait(false);
             var latestLocalRevision = revisions.OrderByDescending(revision => revision.Modified).FirstOrDefault();
-            var updatedRevision = await GoogleDriveHelper.DownloadDatabase(latestLocalRevision).ConfigureAwait(false);
+            var updatedRevision = await GoogleDriveHelper.GetLatestRevision(latestLocalRevision).ConfigureAwait(false);
             if (updatedRevision != null)
             {
                 await _repository.Create(updatedRevision).ConfigureAwait(false);
