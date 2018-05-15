@@ -1,11 +1,12 @@
 ﻿using System.Threading.Tasks;
+using Entities.Interfaces;
 using Entities.Models;
 
 namespace BusinessLogic.Interfaces
 {
     public interface IRevisionService
     {
-        Task<DatabaseRevision> GetRevisionById(string Id);
+        Task<IDatabaseRevision> GetRevisionById(string Id);
         Task DownloadLatestDatabaseRevision();
     }
 }

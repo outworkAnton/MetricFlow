@@ -12,9 +12,10 @@ namespace BusinessLogic.Services
     {
         private readonly IDataAccessRepository _repository = new DataAccessRepository();
 
-        public Task<DatabaseRevision> GetRevisionById(string id)
+        public async Task<IDatabaseRevision> GetRevisionById(string id)
         {
-            throw new System.NotImplementedException();
+            var revisions = await _repository.Get<IDatabaseRevision>().ConfigureAwait(false);
+            return revisions.FirstOrDefault(revision => revision.Id == id);
         }
 
         public async Task DownloadLatestDatabaseRevision()
