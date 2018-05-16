@@ -4,11 +4,6 @@
     <TargetFrameworks>netcoreapp2.0;net471</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="client_id.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="CompareNETObjects" Version="4.53.0" />
     <PackageReference Include="Google.Apis" Version="1.33.1" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.33.1.1219" />

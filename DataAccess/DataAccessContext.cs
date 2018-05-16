@@ -1,7 +1,7 @@
 ﻿using System.Configuration;
-using Entities.Models;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using DataAccess.Models;
 
 namespace DataAccess
 {

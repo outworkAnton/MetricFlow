@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows;
-using BusinessLogic.Interfaces;
-using BusinessLogic.Services;
-using MetricFlowExceptions;
+using BusinessLogic.BusinessLogic.Contract.Exceptions;
+using BusinessLogic.BusinessLogic.Contract.Services;
 
 namespace MetricFlow
 {
@@ -13,7 +12,7 @@ namespace MetricFlow
     /// </summary>
     public partial class App : Application
     {
-        private readonly IRevisionService _service = new RevisionService();
+        private readonly IRevisionService _service;
 
         async void App_Startup(object sender, StartupEventArgs e)
         {

@@ -38,16 +38,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da">
+      <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Core.4.2.1\lib\net45\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="FluentAssertions, Version=5.2.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentAssertions.5.2.0\lib\net47\FluentAssertions.dll</HintPath>
     </Reference>
     <Reference Include="KellermanSoftware.Compare-NET-Objects, Version=4.53.0.0, Culture=neutral, PublicKeyToken=d970ace04cc85217">
       <HintPath>..\packages\CompareNETObjects.4.53.0.0\lib\net46\KellermanSoftware.Compare-NET-Objects.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Extensions.Caching.Abstractions, Version=2.0.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
       <HintPath>..\packages\Microsoft.Extensions.Caching.Abstractions.2.0.2\lib\netstandard2.0\Microsoft.Extensions.Caching.Abstractions.dll</HintPath>
       <Private>True</Private>
@@ -223,17 +225,21 @@
     <Resource Include="App_Readme\Compare-NET-Objects-Help.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BusinessLogic\BusinessLogic.csproj">
-      <Project>{7c8e7c64-8247-4649-acdc-c9c2abebbdf7}</Project>
-      <Name>BusinessLogic</Name>
+    <ProjectReference Include="..\BusinessLogic\BusinessLogic.Contract\BusinessLogic.Contract.csproj">
+      <Project>{3993488a-09d2-4687-86f8-ee3da4f55f07}</Project>
+      <Name>BusinessLogic.Contract</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Entities\Entities.csproj">
-      <Project>{176885d5-d94d-4220-b2ff-225d0653825f}</Project>
-      <Name>Entities</Name>
+    <ProjectReference Include="..\BusinessLogic\BusinessLogic.DI\BusinessLogic.DI.csproj">
+      <Project>{af71888e-73e7-431f-b56c-7054e4e46e1d}</Project>
+      <Name>BusinessLogic.DI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MetricFlowExceptions\MetricFlowExceptions.csproj">
-      <Project>{27fec368-7e9f-4397-ad4c-6cb2a0be056f}</Project>
-      <Name>MetricFlowExceptions</Name>
+    <ProjectReference Include="..\DataAccess\DataAccess.Contract\DataAccess.Contract.csproj">
+      <Project>{971d06aa-e276-4f9d-924f-e2f060be9b31}</Project>
+      <Name>DataAccess.Contract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataAccess\DataAccess.DI\DataAccess.DI.csproj">
+      <Project>{e251f3b5-3533-407f-88bb-a8c068f9d491}</Project>
+      <Name>DataAccess.DI</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

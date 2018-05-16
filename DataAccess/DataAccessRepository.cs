@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Entities.Interfaces;
-using Entities.Models;
+using DataAccess.Contract;
+using DataAccess.DataAccess.Contract;
+using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess
@@ -13,106 +14,132 @@ namespace DataAccess
 
         public async Task<IEnumerable<T>> Get<T>()
         {
-            if (typeof(T) == typeof(ILocation))
+            switch (typeof(T))
             {
-                await _context.Locations.LoadAsync().ConfigureAwait(false);
-                return _context.Locations.Local.AsEnumerable() as IEnumerable<T>;
+                case ILocation _:
+                    await _context.Locations.LoadAsync().ConfigureAwait(false);
+                    return await _context.Locations.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
+                case IService _:
+                    await _context.Services.LoadAsync().ConfigureAwait(false);
+                    return await _context.Services.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
+                case IMetric _:
+                    await _context.Metrics.LoadAsync().ConfigureAwait(false);
+                    return await _context.Metrics.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
+                case IFormula _:
+                    await _context.Formulas.LoadAsync().ConfigureAwait(false);
+                    return await _context.Formulas.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
+                case IStatistic _:
+                    await _context.Statistics.LoadAsync().ConfigureAwait(false);
+                    return await _context.Statistics.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
+                case IDatabaseRevision _:
+                    await _context.DatabaseRevisions.LoadAsync().ConfigureAwait(false);
+                    return await _context.DatabaseRevisions.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
+                default:
+                    return null;
             }
-
-            if (typeof(T) == typeof(IService))
-            {
-                await _context.Services.LoadAsync().ConfigureAwait(false);
-                return _context.Services.Local.AsEnumerable() as IEnumerable<T>;
-            }
-
-            if (typeof(T) == typeof(IMetric))
-            {
-                await _context.Metrics.LoadAsync().ConfigureAwait(false);
-                return _context.Metrics.Local.AsEnumerable() as IEnumerable<T>;
-            }
-
-            if (typeof(T) == typeof(IFormula))
-            {
-                await _context.Formulas.LoadAsync().ConfigureAwait(false);
-                return _context.Formulas.Local.AsEnumerable() as IEnumerable<T>;
-            }
-
-            if (typeof(T) == typeof(IStatistic))
-            {
-                await _context.Statistics.LoadAsync().ConfigureAwait(false);
-                return _context.Statistics.Local.AsEnumerable() as IEnumerable<T>;
-            }
-
-            if (typeof(T) == typeof(IDatabaseRevision))
-            {
-                await _context.DatabaseRevisions.LoadAsync().ConfigureAwait(false);
-                return _context.DatabaseRevisions.Local.AsEnumerable() as IEnumerable<T>;
-            }
-
-            return null;
         }
 
-        public Task Update<T>(T item)
+        public async Task Update<T>(T item)
         {
-            throw new System.NotImplementedException();
+            switch (typeof(T))
+            {
+                case ILocation _:
+                    _context.Locations.Update(item as Location);
+                    break;
+                case IService _:
+                    _context.Services.Update(item as Service);
+                    break;
+                case IMetric _:
+                    _context.Metrics.Update(item as Metric);
+                    break;
+                case IFormula _:
+                    _context.Formulas.Update(item as Formula);
+                    break;
+                case IStatistic _:
+                    _context.Statistics.Update(item as Statistic);
+                    break;
+                case IDatabaseRevision _:
+                    _context.DatabaseRevisions.Update(item as DatabaseRevision);
+                    break;
+                default:
+                    return;
+            }
+
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+            OnDatabaseChange();
         }
 
-        public Task Delete<T>(T item)
+        public async Task Delete<T>(T item)
         {
-            throw new System.NotImplementedException();
+            switch (typeof(T))
+            {
+                case ILocation _:
+                    _context.Locations.Remove(item as Location);
+                    break;
+                case IService _:
+                    _context.Services.Remove(item as Service);
+                    break;
+                case IMetric _:
+                    _context.Metrics.Remove(item as Metric);
+                    break;
+                case IFormula _:
+                    _context.Formulas.Remove(item as Formula);
+                    break;
+                case IStatistic _:
+                    _context.Statistics.Remove(item as Statistic);
+                    break;
+                case IDatabaseRevision _:
+                    _context.DatabaseRevisions.Remove(item as DatabaseRevision);
+                    break;
+                default:
+                    return;
+            }
+
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+            OnDatabaseChange();
         }
 
         public async Task<T> Create<T>(T item) where T : class
         {
-            if (typeof(T) == typeof(ILocation))
+//            T createdItem;
+            switch (typeof(T))
             {
-                await _context.Locations.LoadAsync().ConfigureAwait(false);
-                await _context.Locations.AddAsync(item as Location).ConfigureAwait(false);
-                await _context.SaveChangesAsync().ConfigureAwait(false);
-                return await _context.Locations.FindAsync((item as Location).Id).ConfigureAwait(false) as T;
+                case ILocation _:
+                    await _context.Locations.AddAsync(item as Location).ConfigureAwait(false);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
+                    break;
+                case IService _:
+                    await _context.Services.AddAsync(item as Service).ConfigureAwait(false);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
+                    break;
+                case IMetric _:
+                    await _context.Metrics.AddAsync(item as Metric).ConfigureAwait(false);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
+                    break;
+                case IFormula _:
+                    await _context.Formulas.AddAsync(item as Formula).ConfigureAwait(false);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
+                    break;
+                case IStatistic _:
+                    await _context.Statistics.AddAsync(item as Statistic).ConfigureAwait(false);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
+                    break;
+                case IDatabaseRevision _:
+                    await _context.DatabaseRevisions.AddAsync(item as DatabaseRevision).ConfigureAwait(false);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
+//                    createdItem = await _context.DatabaseRevisions.FindAsync((item as DatabaseRevision).Id)
+//                                                .ConfigureAwait(false) as T;
+                    break;
+                default:
+                    return null;
             }
 
-            if (typeof(T) == typeof(IService))
-            {
-                await _context.Services.LoadAsync().ConfigureAwait(false);
-                await _context.Services.AddAsync(item as Service).ConfigureAwait(false);
-                await _context.SaveChangesAsync().ConfigureAwait(false);
-                return await _context.Locations.FindAsync((item as Service).Id).ConfigureAwait(false) as T;
-            }
-
-            if (typeof(T) == typeof(IMetric))
-            {
-                await _context.Metrics.LoadAsync().ConfigureAwait(false);
-                await _context.Metrics.AddAsync(item as Metric).ConfigureAwait(false);
-                await _context.SaveChangesAsync().ConfigureAwait(false);
-                return await _context.Locations.FindAsync((item as Metric).Id).ConfigureAwait(false) as T;
-            }
-
-            if (typeof(T) == typeof(IFormula))
-            {
-                await _context.Formulas.LoadAsync().ConfigureAwait(false);
-                await _context.Formulas.AddAsync(item as Formula).ConfigureAwait(false);
-                await _context.SaveChangesAsync().ConfigureAwait(false);
-                return await _context.Locations.FindAsync((item as Formula).Id).ConfigureAwait(false) as T;
-            }
-
-            if (typeof(T) == typeof(IStatistic))
-            {
-                await _context.Statistics.LoadAsync().ConfigureAwait(false);
-                await _context.Statistics.AddAsync(item as Statistic).ConfigureAwait(false);
-                await _context.SaveChangesAsync().ConfigureAwait(false);
-                return await _context.Locations.FindAsync((item as Statistic).Id).ConfigureAwait(false) as T;
-            }
-
-            if (typeof(T) == typeof(IDatabaseRevision))
-            {
-                await _context.DatabaseRevisions.LoadAsync().ConfigureAwait(false);
-                await _context.DatabaseRevisions.AddAsync(item as DatabaseRevision).ConfigureAwait(false);
-                await _context.SaveChangesAsync().ConfigureAwait(false);
-                return await _context.Locations.FindAsync((item as DatabaseRevision).Id).ConfigureAwait(false) as T;
-            }
-
-            return null;
+            OnDatabaseChange();
+            var items = await Get<T>().ConfigureAwait(false);
+            return items.FirstOrDefault(arg => arg == item);
         }
+
+        private void OnDatabaseChange()
+        { }
     }
 }

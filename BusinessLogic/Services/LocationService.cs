@@ -1,6 +1,4 @@
-﻿using DataAccess.Repositories;
-
-namespace BusinessLogic.Services
+﻿namespace BusinessLogic.Services
 {
     public class LocationService
     {

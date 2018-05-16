@@ -1,31 +1,33 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using BusinessLogic.Interfaces;
-using DataAccess;
-using Entities.Interfaces;
-using Entities.Models;
-using Utilities;
+using DataAccess.DataAccess.Contract;
+using IDatabaseRevision = BusinessLogic.BusinessLogic.Contract.Models.IDatabaseRevision;
+using IRevisionService = BusinessLogic.BusinessLogic.Contract.Services.IRevisionService;
 
 namespace BusinessLogic.Services
 {
     public class RevisionService : IRevisionService
     {
-        private readonly IDataAccessRepository _repository = new DataAccessRepository();
+        private readonly IDataAccessRepository _repository;
 
         public async Task<IDatabaseRevision> GetRevisionById(string id)
         {
             var revisions = await _repository.Get<IDatabaseRevision>().ConfigureAwait(false);
-            return revisions.FirstOrDefault(revision => revision.Id == id);
+            return revisions?.FirstOrDefault(revision => revision.Id == id);
         }
 
         public async Task DownloadLatestDatabaseRevision()
         {
             var revisions = await _repository.Get<IDatabaseRevision>().ConfigureAwait(false);
-            var latestLocalRevision = revisions.OrderByDescending(revision => revision.Modified).FirstOrDefault();
-            var updatedRevision = await GoogleDriveHelper.GetLatestRevision(latestLocalRevision).ConfigureAwait(false);
-            if (updatedRevision != null)
+            var latestLocalRevision = revisions?.OrderByDescending(revision => revision.Modified).FirstOrDefault();
+            if (GoogleDriveHelper.NeedDownload(latestLocalRevision))
             {
-                await _repository.Create(updatedRevision).ConfigureAwait(false);
+                var latestRemoteRevision =
+                    await GoogleDriveHelper.GetLatestLocalRevision().ConfigureAwait(false);
+                if (latestRemoteRevision != null)
+                {
+                    await _repository.Create(latestRemoteRevision).ConfigureAwait(false);
+                }
             }
         }
     }

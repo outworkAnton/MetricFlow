@@ -5,4 +5,12 @@
     <AssemblyName>Entities</AssemblyName>
     <RootNamespace>Entities</RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.8.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="AutofacModules" />
+    <Folder Include="Interfaces" />
+    <Folder Include="Models" />
+  </ItemGroup>
 </Project>
