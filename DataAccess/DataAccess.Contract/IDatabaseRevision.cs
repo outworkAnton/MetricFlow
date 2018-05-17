@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DataAccess.DataAccess.Contract
+namespace DataAccess.Contract
 {
     public interface IDatabaseRevision
     {

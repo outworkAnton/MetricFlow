@@ -1,4 +1,4 @@
-﻿using DataAccess.DataAccess.Contract;
+﻿using DataAccess.Contract;
 
 namespace DataAccess.Models
 {

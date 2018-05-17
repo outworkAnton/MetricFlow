@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using DataAccess.Contract;
-using DataAccess.DataAccess.Contract;
 using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 

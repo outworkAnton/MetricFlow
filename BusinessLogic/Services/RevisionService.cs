@@ -1,8 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using DataAccess.DataAccess.Contract;
-using IDatabaseRevision = BusinessLogic.BusinessLogic.Contract.Models.IDatabaseRevision;
-using IRevisionService = BusinessLogic.BusinessLogic.Contract.Services.IRevisionService;
+using BusinessLogic.BusinessLogic.Contract.Services;
+using DataAccess.Contract;
 
 namespace BusinessLogic.Services
 {
