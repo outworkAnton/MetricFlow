@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BusinessLogic.BusinessLogic.Contract.Exceptions
+namespace BusinessLogic.Contract.Exceptions
 {
     public class ServiceException : Exception
     {

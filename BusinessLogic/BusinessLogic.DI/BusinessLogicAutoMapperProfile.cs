@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using BaseModels = DataAccess.Models;
-using ContractModels = DataAccess.Contract.Models;
+using BaseModels = BusinessLogic.Models;
+using ContractModels = BusinessLogic.Contract.Models;
 
-namespace DataAccess.DI
+namespace BusinessLogic.DI
 {
-    public class DataAccessAutoMapperProfile : Profile
+    public class BusinessLogicAutoMapperProfile : Profile
     {
-        public DataAccessAutoMapperProfile()
+        public BusinessLogicAutoMapperProfile()
         {
             CreateMap<BaseModels.DatabaseRevision, ContractModels.DatabaseRevision>()
                     .ReverseMap();

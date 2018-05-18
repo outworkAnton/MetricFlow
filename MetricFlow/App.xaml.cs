@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows;
-using BusinessLogic.BusinessLogic.Contract.Exceptions;
-using BusinessLogic.BusinessLogic.Contract.Services;
+using BusinessLogic.Contract;
+using BusinessLogic.Contract.Exceptions;
 
 namespace MetricFlow
 {
