@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using BusinessLogic.Contract;
+using BusinessLogic.Contract.Interfaces;
 using DataAccess.Contract;
 using DataAccess.Contract.Interfaces;
 
@@ -9,6 +10,11 @@ namespace BusinessLogic
     public class RevisionService : IRevisionService
     {
         private readonly IDataAccessRepository _repository;
+
+        public RevisionService(IDataAccessRepository repository)
+        {
+            _repository = repository;
+        }
 
         public async Task<IDatabaseRevision> GetRevisionById(string id)
         {
@@ -23,7 +29,7 @@ namespace BusinessLogic
             if (GoogleDriveHelper.NeedDownload(latestLocalRevision))
             {
                 var latestRemoteRevision =
-                    await GoogleDriveHelper.GetLatestLocalRevision().ConfigureAwait(false);
+                    await GoogleDriveHelper.GetLatestRemoteRevision().ConfigureAwait(false);
                 if (latestRemoteRevision != null)
                 {
                     await _repository.Create(latestRemoteRevision).ConfigureAwait(false);

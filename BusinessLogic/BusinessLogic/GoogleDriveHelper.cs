@@ -147,7 +147,7 @@ namespace BusinessLogic
                    || (_remoteRevision.Size != localRevision.Size);
         }
 
-        public static async Task<DatabaseRevision> GetLatestLocalRevision()
+        public static async Task<IDatabaseRevision> GetLatestRemoteRevision()
         {
             try
             {

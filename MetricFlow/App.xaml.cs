@@ -12,13 +12,13 @@ namespace MetricFlow
     /// </summary>
     public partial class App : Application
     {
-        private readonly IRevisionService _service;
+        private readonly IRevisionService _revisionService;
 
         async void App_Startup(object sender, StartupEventArgs e)
         {
             try
             {
-                await _service.DownloadLatestDatabaseRevision().ConfigureAwait(false);
+                await _revisionService.DownloadLatestDatabaseRevision().ConfigureAwait(false);
             }
             catch (NetworkException networkException)
             {
