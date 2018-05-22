@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLogic", "BusinessLogic\BusinessLogic\BusinessLogic.csproj", "{E242E6D1-06E7-4D30-A70F-D42847AF823A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{127DF807-0A57-4404-82C4-0E5E6F44CBE3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricFlow.Tests", "Tests\MetricFlow.Tests\MetricFlow.Tests.csproj", "{DE929EEB-28CF-4F2F-9543-484453565A30}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +61,10 @@ Global
 		{E242E6D1-06E7-4D30-A70F-D42847AF823A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E242E6D1-06E7-4D30-A70F-D42847AF823A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E242E6D1-06E7-4D30-A70F-D42847AF823A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE929EEB-28CF-4F2F-9543-484453565A30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE929EEB-28CF-4F2F-9543-484453565A30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE929EEB-28CF-4F2F-9543-484453565A30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE929EEB-28CF-4F2F-9543-484453565A30}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,5 +80,6 @@ Global
 		{E251F3B5-3533-407F-88BB-A8C068F9D491} = {72C1D2F8-3263-4CF2-877F-DC91AF10D0D3}
 		{100A216B-DBA5-4783-9055-CE68FCE201B2} = {72C1D2F8-3263-4CF2-877F-DC91AF10D0D3}
 		{E242E6D1-06E7-4D30-A70F-D42847AF823A} = {61EB2317-DC9C-4984-9E26-D7E2D8BA0533}
+		{DE929EEB-28CF-4F2F-9543-484453565A30} = {127DF807-0A57-4404-82C4-0E5E6F44CBE3}
 	EndGlobalSection
 EndGlobal
