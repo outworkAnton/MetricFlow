@@ -10,7 +10,12 @@ namespace DataAccess
 {
     public class DataAccessRepository : IDataAccessRepository
     {
-        private readonly DataAccessContext _context = new DataAccessContext();
+        private readonly DataAccessContext _context;
+
+        public DataAccessRepository(DataAccessContext context)
+        {
+            _context = context;
+        }
 
         public async Task<IEnumerable<T>> Get<T>()
         {

@@ -5,7 +5,7 @@ namespace BusinessLogic.Contract
 {
     public interface IRevisionService
     {
-        Task<IDatabaseRevision> GetRevisionById(string id);
+        IDatabaseRevision GetRevisionById(string id);
         Task DownloadLatestDatabaseRevision();
     }
 }
