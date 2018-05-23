@@ -70,11 +70,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BusinessLogic\BusinessLogicAutoMapperProfileTests.cs" />
     <Compile Include="BusinessLogic\RevisionServiceTests.cs" />
+    <Compile Include="DataAccess\DataAccessAutoMapperProfileTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UI" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -98,6 +97,10 @@
     <ProjectReference Include="..\..\DataAccess\DataAccess.Contract\DataAccess.Contract.csproj">
       <Project>{971d06aa-e276-4f9d-924f-e2f060be9b31}</Project>
       <Name>DataAccess.Contract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataAccess\DataAccess.DI\DataAccess.DI.csproj">
+      <Project>{e251f3b5-3533-407f-88bb-a8c068f9d491}</Project>
+      <Name>DataAccess.DI</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\MetricFlow\MetricFlow.csproj">
       <Project>{801f0cd3-9aad-4c0b-a2e1-0aac3a80d40c}</Project>

@@ -75,7 +75,6 @@ namespace MetricFlow.Tests.BusinessLogic
             _revisionService = new Mock<IRevisionService>().Object;
         }
 
-
         [Test]
         public void GetRevisionById_HasValidId_Success()
         {
