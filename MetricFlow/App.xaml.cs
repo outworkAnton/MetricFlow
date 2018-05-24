@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using BusinessLogic.Contract;
 using BusinessLogic.Contract.Exceptions;
+using MetricFlow.DI;
 
 namespace MetricFlow
 {
@@ -14,7 +16,15 @@ namespace MetricFlow
     {
         private readonly IRevisionService _revisionService;
 
-        async void App_Startup(object sender, StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            var bootstapper = new Bootstrapper();
+            bootstapper.Run();
+            await CheckDatabase().ConfigureAwait(false);
+        }
+
+        async Task CheckDatabase()
         {
             try
             {
@@ -22,7 +32,8 @@ namespace MetricFlow
             }
             catch (NetworkException networkException)
             {
-                ConfirmOnException(networkException, "\nUnable to get database file from server\nWould you like to work with a local copy?",
+                ConfirmOnException(networkException,
+                    "\nUnable to get database file from server\nWould you like to work with a local copy?",
                     "Connection problem was occurred");
             }
             catch (FileException fileException)
@@ -31,7 +42,8 @@ namespace MetricFlow
             }
             catch (ServiceException serviceException)
             {
-                ConfirmOnException(serviceException, "\nThere was a problem with the Google Drive service\nWould you like to work with a local copy?",
+                ConfirmOnException(serviceException,
+                    "\nThere was a problem with the Google Drive service\nWould you like to work with a local copy?",
                     "Service problem was occurred");
             }
             catch (Exception exception)
@@ -41,7 +53,6 @@ namespace MetricFlow
                     MessageBoxImage.Error);
                 Current.Shutdown();
             }
-
         }
 
         private static void ConfirmOnException(Exception exception, string textBody, string caption)
