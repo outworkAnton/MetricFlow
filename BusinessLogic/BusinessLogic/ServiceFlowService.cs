@@ -1,6 +1,8 @@
-﻿namespace BusinessLogic
+﻿using BusinessLogic.Contract;
+
+namespace BusinessLogic
 {
-    public class ServiceFlowService
+    public class ServiceFlowService : IServiceFlowService
     {
 
     }

@@ -2,6 +2,7 @@
 using Autofac;
 using BusinessLogic;
 using BusinessLogic.Contract;
+using BusinessLogic.DI;
 using DataAccess;
 using DataAccess.Contract;
 using MetricFlow.Views;
@@ -33,14 +34,15 @@ namespace MetricFlow.DI
             Application.Current.MainWindow.Show();
         }
 
-        /// <summary>
-        /// Creates the <see cref="T:Autofac.ContainerBuilder" /> that will be used to create the default container.
-        /// </summary>
-        /// <returns>A new instance of <see cref="T:Autofac.ContainerBuilder" />.</returns>
-        protected override ContainerBuilder CreateContainerBuilder()
+        protected override void ConfigureContainerBuilder(ContainerBuilder builder)
         {
-            var builder = new ContainerBuilder();
-
+            base.ConfigureContainerBuilder(builder);
+            builder.Register(e => new DataAccessContext())
+                   .As<DataAccessContext>()
+                   .InstancePerLifetimeScope();
+            builder.RegisterType<DataAccessRepository>()
+                   .As<IDataAccessRepository>()
+                   .InstancePerLifetimeScope();
             builder.RegisterType<LocationService>()
                    .As<ILocationService>()
                    .InstancePerLifetimeScope();
@@ -62,8 +64,6 @@ namespace MetricFlow.DI
             builder.RegisterType<DataAccessRepository>()
                    .As<IDataAccessRepository>()
                    .InstancePerLifetimeScope();
-
-            return builder;
         }
     }
 }
