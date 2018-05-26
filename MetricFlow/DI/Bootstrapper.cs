@@ -5,6 +5,8 @@ using BusinessLogic.Contract;
 using BusinessLogic.DI;
 using DataAccess;
 using DataAccess.Contract;
+using DataAccess.DI;
+using MetricFlow.ViewModels;
 using MetricFlow.Views;
 using Prism.Autofac;
 
@@ -34,36 +36,14 @@ namespace MetricFlow.DI
             Application.Current.MainWindow.Show();
         }
 
-        protected override void ConfigureContainerBuilder(ContainerBuilder builder)
+        protected override ContainerBuilder CreateContainerBuilder()
         {
-            base.ConfigureContainerBuilder(builder);
-            builder.Register(e => new DataAccessContext())
-                   .As<DataAccessContext>()
-                   .InstancePerLifetimeScope();
-            builder.RegisterType<DataAccessRepository>()
-                   .As<IDataAccessRepository>()
-                   .InstancePerLifetimeScope();
-            builder.RegisterType<LocationService>()
-                   .As<ILocationService>()
-                   .InstancePerLifetimeScope();
-            builder.RegisterType<FormulaService>()
-                   .As<IFormulaService>()
-                   .InstancePerLifetimeScope();
-            builder.RegisterType<MetricService>()
-                   .As<IMetricService>()
-                   .InstancePerLifetimeScope();
-            builder.RegisterType<RevisionService>()
-                   .As<IRevisionService>()
-                   .InstancePerLifetimeScope();
-            builder.RegisterType<ServiceFlowService>()
-                   .As<IServiceFlowService>()
-                   .InstancePerLifetimeScope();
-            builder.RegisterType<StatisticService>()
-                   .As<IStatisticService>()
-                   .InstancePerLifetimeScope();
-            builder.RegisterType<DataAccessRepository>()
-                   .As<IDataAccessRepository>()
-                   .InstancePerLifetimeScope();
+            var builder = new ContainerBuilder();
+            builder.Register(c => new MainViewModel());
+            builder.RegisterModule<BusinessLogicAutofacModule>();
+            builder.RegisterModule<DataAccessAutofacModule>();
+            ConfigureContainerBuilder(builder);
+            return builder;
         }
     }
 }
