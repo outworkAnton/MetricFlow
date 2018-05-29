@@ -1,9 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Windows;
-using BusinessLogic.Contract;
-using BusinessLogic.Contract.Exceptions;
+﻿using System.Windows;
 using MetricFlow.DI;
 
 namespace MetricFlow

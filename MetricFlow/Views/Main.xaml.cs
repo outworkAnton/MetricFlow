@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using MetricFlow.ViewModels;
 
 namespace MetricFlow.Views
 {

@@ -1,12 +1,7 @@
 ﻿using System.Windows;
 using Autofac;
-using BusinessLogic;
-using BusinessLogic.Contract;
 using BusinessLogic.DI;
-using DataAccess;
-using DataAccess.Contract;
 using DataAccess.DI;
-using MetricFlow.ViewModels;
 using MetricFlow.Views;
 using Prism.Autofac;
 
@@ -41,7 +36,6 @@ namespace MetricFlow.DI
             var builder = new ContainerBuilder();
             builder.RegisterModule<BusinessLogicAutofacModule>();
             builder.RegisterModule<DataAccessAutofacModule>();
-            //builder.Register(c => new MainViewModel(Container.Resolve<RevisionService>()));
             ConfigureContainerBuilder(builder);
             return builder;
         }
