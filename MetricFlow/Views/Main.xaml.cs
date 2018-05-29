@@ -8,7 +8,6 @@ namespace MetricFlow.Views
         public Main()
         {
             InitializeComponent();
-            DataContext = new MainViewModel();
         }
     }
 }

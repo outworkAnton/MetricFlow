@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using AutoMapper;
 using BusinessLogic.Contract;
 
 namespace BusinessLogic.DI
@@ -24,6 +25,10 @@ namespace BusinessLogic.DI
                    .InstancePerLifetimeScope();
             builder.RegisterType<StatisticService>()
                    .As<IStatisticService>()
+                   .InstancePerLifetimeScope();
+            builder.Register(c => c.Resolve<MapperConfiguration>()
+                   .CreateMapper(c.Resolve))
+                   .As<IMapper>()
                    .InstancePerLifetimeScope();
         }
     }

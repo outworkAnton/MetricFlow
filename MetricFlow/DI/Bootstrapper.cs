@@ -39,9 +39,9 @@ namespace MetricFlow.DI
         protected override ContainerBuilder CreateContainerBuilder()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new MainViewModel());
             builder.RegisterModule<BusinessLogicAutofacModule>();
             builder.RegisterModule<DataAccessAutofacModule>();
+            //builder.Register(c => new MainViewModel(Container.Resolve<RevisionService>()));
             ConfigureContainerBuilder(builder);
             return builder;
         }
