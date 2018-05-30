@@ -34,10 +34,10 @@ namespace BusinessLogic
             if (GoogleDriveHelper.NeedDownload(_mapper.Map<BL.IDatabaseRevision>(latestLocalRevision)))
             {
                 var latestRemoteRevision =
-                    await GoogleDriveHelper.GetLatestRemoteRevision().ConfigureAwait(false);
+                    _mapper.Map<DA.IDatabaseRevision>(await GoogleDriveHelper.GetLatestRemoteRevision().ConfigureAwait(false));
                 if (latestRemoteRevision != null)
                 {
-                    await _repository.Create(_mapper.Map<DA.IDatabaseRevision>(latestRemoteRevision)).ConfigureAwait(false);
+                    await _repository.Create(latestRemoteRevision).ConfigureAwait(false);
                 }
             }
         }
