@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using MetricFlow.ViewModels;
 
 namespace MetricFlow.Views
 {
@@ -7,6 +8,7 @@ namespace MetricFlow.Views
         public Main()
         {
             InitializeComponent();
+            Loaded += delegate { MainViewModel.OnLoaded(); };
         }
     }
 }

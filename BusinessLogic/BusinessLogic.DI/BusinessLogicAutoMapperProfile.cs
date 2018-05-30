@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
-using BaseModels = BusinessLogic.Models;
-using ContractModels = BusinessLogic.Contract.Models;
-using DA = DataAccess.Contract;
-using BL = BusinessLogic.Contract;
+using BLBaseModels = BusinessLogic.Models;
+using BLContractModels = BusinessLogic.Contract.Models;
+using BLContractInterfaces = BusinessLogic.Contract.Interfaces;
+using DAContractModels = DataAccess.Contract.Models;
+using DAContractInterfaces = DataAccess.Contract.Interfaces;
 
 namespace BusinessLogic.DI
 {
@@ -10,49 +11,49 @@ namespace BusinessLogic.DI
     {
         public BusinessLogicAutoMapperProfile()
         {
-            CreateMap<DA.Interfaces.IDatabaseRevision, BL.Interfaces.IDatabaseRevision>()
-                .Include<DA.Models.DatabaseRevision, BL.Models.DatabaseRevision>()
+            CreateMap<DAContractInterfaces.IDatabaseRevision, BLContractInterfaces.IDatabaseRevision>()
+                .Include<DAContractModels.DatabaseRevision, BLContractModels.DatabaseRevision>()
                 .ReverseMap();
-            CreateMap<DA.Interfaces.IFormula, BL.Interfaces.IFormula>()
-                .Include<DA.Models.Formula, BL.Models.Formula>()
+            CreateMap<DAContractInterfaces.IFormula, BLContractInterfaces.IFormula>()
+                .Include<DAContractModels.Formula, BLContractModels.Formula>()
                 .ReverseMap();
-            CreateMap<DA.Interfaces.ILocation, BL.Interfaces.ILocation>()
-                .Include<DA.Models.Location, BL.Models.Location>()
+            CreateMap<DAContractInterfaces.ILocation, BLContractInterfaces.ILocation>()
+                .Include<DAContractModels.Location, BLContractModels.Location>()
                 .ReverseMap();
-            CreateMap<DA.Interfaces.IMetric, BL.Interfaces.IMetric>()
-                .Include<DA.Models.Metric, BL.Models.Metric>()
+            CreateMap<DAContractInterfaces.IMetric, BLContractInterfaces.IMetric>()
+                .Include<DAContractModels.Metric, BLContractModels.Metric>()
                 .ReverseMap();
-            CreateMap<DA.Interfaces.IService, BL.Interfaces.IService>()
-                .Include<DA.Models.Service, BL.Models.Service>()
+            CreateMap<DAContractInterfaces.IService, BLContractInterfaces.IService>()
+                .Include<DAContractModels.Service, BLContractModels.Service>()
                 .ReverseMap();
-            CreateMap<DA.Interfaces.IStatistic, BL.Interfaces.IStatistic>()
-                .Include<DA.Models.Statistic, BL.Models.Statistic>()
-                .ReverseMap();
-
-            CreateMap<DA.Models.DatabaseRevision, ContractModels.DatabaseRevision>()
-                .ReverseMap();
-            CreateMap<DA.Models.Formula, ContractModels.Formula>()
-                .ReverseMap();
-            CreateMap<DA.Models.Location, ContractModels.Location>()
-                .ReverseMap();
-            CreateMap<DA.Models.Metric, ContractModels.Metric>()
-                .ReverseMap();
-            CreateMap<DA.Models.Service, ContractModels.Service>()
-                .ReverseMap();
-            CreateMap<DA.Models.Statistic, ContractModels.Statistic>()
+            CreateMap<DAContractInterfaces.IStatistic, BLContractInterfaces.IStatistic>()
+                .Include<DAContractModels.Statistic, BLContractModels.Statistic>()
                 .ReverseMap();
 
-            CreateMap<BaseModels.DatabaseRevision, ContractModels.DatabaseRevision>()
+            CreateMap<DAContractModels.DatabaseRevision, BLContractModels.DatabaseRevision>()
                 .ReverseMap();
-            CreateMap<BaseModels.Formula, ContractModels.Formula>()
+            CreateMap<DAContractModels.Formula, BLContractModels.Formula>()
                 .ReverseMap();
-            CreateMap<BaseModels.Location, ContractModels.Location>()
+            CreateMap<DAContractModels.Location, BLContractModels.Location>()
                 .ReverseMap();
-            CreateMap<BaseModels.Metric, ContractModels.Metric>()
+            CreateMap<DAContractModels.Metric, BLContractModels.Metric>()
                 .ReverseMap();
-            CreateMap<BaseModels.Service, ContractModels.Service>()
+            CreateMap<DAContractModels.Service, BLContractModels.Service>()
                 .ReverseMap();
-            CreateMap<BaseModels.Statistic, ContractModels.Statistic>()
+            CreateMap<DAContractModels.Statistic, BLContractModels.Statistic>()
+                .ReverseMap();
+
+            CreateMap<BLBaseModels.DatabaseRevision, BLContractModels.DatabaseRevision>()
+                .ReverseMap();
+            CreateMap<BLBaseModels.Formula, BLContractModels.Formula>()
+                .ReverseMap();
+            CreateMap<BLBaseModels.Location, BLContractModels.Location>()
+                .ReverseMap();
+            CreateMap<BLBaseModels.Metric, BLContractModels.Metric>()
+                .ReverseMap();
+            CreateMap<BLBaseModels.Service, BLContractModels.Service>()
+                .ReverseMap();
+            CreateMap<BLBaseModels.Statistic, BLContractModels.Statistic>()
                 .ReverseMap();
         }
     }

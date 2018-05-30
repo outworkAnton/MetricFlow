@@ -31,7 +31,7 @@ namespace BusinessLogic
         static readonly string[] Scopes = {DriveService.Scope.DriveReadonly};
         private const string ApplicationName = "MetricFlow";
         private static readonly DriveService Service;
-        private const string FileId = "1OPaCtIMT89zY6gg5PZMQ3ygbIRn-gUJ6";
+        private const string FileId = "1tElrrts1g2GR8Tny-xxd3p0N4gAaoGJm";
         private static readonly string DatabaseFileName;
         private static Revision _remoteRevision;
 
@@ -135,12 +135,22 @@ namespace BusinessLogic
 
         public static bool NeedDownload(IDatabaseRevision localRevision)
         {
-            if (localRevision == null) return true;
-
             var revisions = Service?.Revisions?.List(FileId);
-            revisions.Fields = "*";
-            _remoteRevision = revisions?.Execute()?.Revisions
-                                       ?.OrderByDescending(revision => revision.ModifiedTime)?.FirstOrDefault();
+            if (revisions != null)
+            {
+                revisions.Fields = "*";
+                _remoteRevision = revisions?.Execute()?.Revisions
+                                           ?.OrderByDescending(revision => revision.ModifiedTime)?.FirstOrDefault();
+            }
+            else
+            {
+                return false;
+            }
+
+            if (localRevision == null)
+            {
+                return true;
+            }
 
             return (localRevision.Modified < _remoteRevision.ModifiedTime)
                    || (_remoteRevision.Id != localRevision.Id)
@@ -177,9 +187,14 @@ namespace BusinessLogic
                         throw new ServiceException(status.Exception?.Message);
                     }
 
+                    var remoteRevisionId = _remoteRevision.Id ??
+                                           throw new ArgumentNullException($"Remote revision has no Id value");
+                    var remoteRevisionModified = _remoteRevision.ModifiedTime ??
+                                           throw new ArgumentNullException($"Remote revision has no ModifiedTime value");
+                    var remoteRevisionSize = _remoteRevision.Size ??
+                                           throw new ArgumentNullException($"Remote revision has no Size value");
                     Debug.WriteLine("Database file updated from server");
-                    return new DatabaseRevision(_remoteRevision.Id, _remoteRevision.ModifiedTime.Value,
-                        _remoteRevision.Size.Value);
+                    return new DatabaseRevision(remoteRevisionId, remoteRevisionModified, remoteRevisionSize);
                 }
 
                 return null;

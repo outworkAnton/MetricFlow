@@ -10,7 +10,7 @@ namespace MetricFlow.ViewModels
 {
     public class MainViewModel : BindableBase
     {
-        #region property DisplayName
+        #region Backing fields
 
         /// <summary>
         /// Represent DisplayName property
@@ -26,17 +26,17 @@ namespace MetricFlow.ViewModels
         /// </summary>
         private string _displayName = "MetricFlow - Utility Services Manager";
 
-        private readonly IRevisionService _revisionService;
 
         #endregion
+
+        private static IRevisionService _revisionService;
 
         public MainViewModel(IRevisionService revisionService)
         {
             _revisionService = revisionService;
-            CheckDatabase().GetAwaiter().GetResult();
         }
 
-        async Task CheckDatabase()
+        static async Task CheckDatabase()
         {
             try
             {
@@ -79,6 +79,11 @@ namespace MetricFlow.ViewModels
                 case MessageBoxResult.No:
                     throw new Exception("Loading application was canceled by user");
             }
+        }
+
+        public static async void OnLoaded()
+        {
+            await CheckDatabase().ConfigureAwait(false);
         }
     }
 }

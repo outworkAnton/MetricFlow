@@ -37,7 +37,7 @@ namespace BusinessLogic
                     await GoogleDriveHelper.GetLatestRemoteRevision().ConfigureAwait(false);
                 if (latestRemoteRevision != null)
                 {
-                    await _repository.Create(latestRemoteRevision).ConfigureAwait(false);
+                    await _repository.Create(_mapper.Map<DA.IDatabaseRevision>(latestRemoteRevision)).ConfigureAwait(false);
                 }
             }
         }
