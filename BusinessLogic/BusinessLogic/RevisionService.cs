@@ -33,11 +33,11 @@ namespace BusinessLogic
             var latestLocalRevision = _revisions?.OrderByDescending(revision => revision.Modified).FirstOrDefault();
             if (GoogleDriveHelper.NeedDownload(_mapper.Map<BL.IDatabaseRevision>(latestLocalRevision)))
             {
-                var latestRemoteRevision =
-                    _mapper.Map<DA.IDatabaseRevision>(await GoogleDriveHelper.GetLatestRemoteRevision().ConfigureAwait(false));
+                var latestRemoteRevision = await GoogleDriveHelper.GetLatestRemoteRevision().ConfigureAwait(false);
                 if (latestRemoteRevision != null)
                 {
-                    await _repository.Create(latestRemoteRevision).ConfigureAwait(false);
+                    var convertedModel = _mapper.Map<DA.IDatabaseRevision>(latestRemoteRevision);
+                    await _repository.Create(convertedModel).ConfigureAwait(false);
                 }
             }
         }
