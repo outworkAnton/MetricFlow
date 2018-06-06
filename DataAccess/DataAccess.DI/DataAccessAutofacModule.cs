@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using DataAccess.Contract;
+using DataAccess.Contract.Interfaces;
 
 namespace DataAccess.DI
 {
@@ -7,8 +8,8 @@ namespace DataAccess.DI
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<DataAccessRepository>()
-                   .As<IDataAccessRepository>()
+            builder.RegisterType<DatabaseRevisionRepository>()
+                   .As<IDatabaseRevisionRepository>()
                    .InstancePerLifetimeScope();
 
             builder.Register(e => new DataAccessContext())

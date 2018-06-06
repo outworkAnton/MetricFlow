@@ -13,19 +13,19 @@ namespace BusinessLogic
     public class RevisionService : IRevisionService
     {
         private readonly IMapper _mapper;
-        private readonly IDataAccessRepository _repository;
+        private readonly IDatabaseRevisionRepository _repository;
         private readonly IEnumerable<DA.IDatabaseRevision> _revisions;
 
-        public RevisionService(IDataAccessRepository repository, IMapper mapper)
+        public RevisionService(IDatabaseRevisionRepository repository, IMapper mapper)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _revisions = _repository.Get<DA.IDatabaseRevision>().GetAwaiter().GetResult();
+            _revisions = _repository.Get().GetAwaiter().GetResult();
         }
 
         public BL.IDatabaseRevision GetRevisionById(string id)
         {
-            return _mapper.Map<BL.IDatabaseRevision>(_revisions.FirstOrDefault(revision => revision.Id == id));
+            return _mapper.Map<BL.IDatabaseRevision>(_revisions?.FirstOrDefault(revision => revision.Id == id));
         }
 
         public async Task DownloadLatestDatabaseRevision()

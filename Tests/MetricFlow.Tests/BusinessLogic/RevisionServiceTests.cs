@@ -20,7 +20,7 @@ namespace MetricFlow.Tests.BusinessLogic
     [TestFixture]
     public class RevisionServiceTests
     {
-        private IDataAccessRepository _repository;
+        private IDatabaseRevisionRepository _repository;
         private IRevisionService _revisionService;
         private IMapper _mapper;
 
@@ -42,8 +42,8 @@ namespace MetricFlow.Tests.BusinessLogic
         {
             var config = new MapperConfiguration(cfg => cfg.AddProfile(new BusinessLogicAutoMapperProfile()));
             _mapper = config.CreateMapper();
-            var repositoryMock = new Mock<IDataAccessRepository>();
-            repositoryMock.Setup(repository => repository.Get<DAI.IDatabaseRevision>())
+            var repositoryMock = new Mock<IDatabaseRevisionRepository>();
+            repositoryMock.Setup(repository => repository.Get())
                           .Returns(Task.FromResult(new List<DAI.IDatabaseRevision>
                               {
                                   new DAM.DatabaseRevision()
