@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -43,34 +42,34 @@ namespace MetricFlow.Tests.BusinessLogic
             var config = new MapperConfiguration(cfg => cfg.AddProfile(new BusinessLogicAutoMapperProfile()));
             _mapper = config.CreateMapper();
             var repositoryMock = new Mock<IDatabaseRevisionRepository>();
-            repositoryMock.Setup(repository => repository.Get())
-                          .Returns(Task.FromResult(new List<DAI.IDatabaseRevision>
-                              {
-                                  new DAM.DatabaseRevision()
-                                  {
-                                      Id = "62cff683-a485-4eab-8cba-0be75db507cf",
-                                      Modified = new DateTime(2018, 12, 24),
-                                      Size = 12345
-                                  },
-                                  new DAM.DatabaseRevision()
-                                  {
-                                      Id = "5b21ef66-d4d3-435c-835c-dac5e59b6dbf",
-                                      Modified = new DateTime(2017, 03, 05),
-                                      Size = 25874
-                                  },
-                                  new DAM.DatabaseRevision()
-                                  {
-                                      Id = "31d4f4bd-67ff-4f51-af70-59e3ce983a9c",
-                                      Modified = new DateTime(2018, 11, 22),
-                                      Size = 54321
-                                  },
-                                  new DAM.DatabaseRevision()
-                                  {
-                                      Id = "fc37fe97-c355-4f6e-80f7-3641787e0624",
-                                      Modified = new DateTime(2018, 05, 22),
-                                      Size = 53216
-                                  }
-                              }.AsEnumerable()));
+//            repositoryMock.Setup(repository => repository.Get())
+//                          .Returns(Task.FromResult(new []
+//                              {
+//                                  new DAM.DatabaseRevision()
+//                                  {
+//                                      Id = "62cff683-a485-4eab-8cba-0be75db507cf",
+//                                      Modified = new DateTime(2018, 12, 24),
+//                                      Size = 12345
+//                                  },
+//                                  new DAM.DatabaseRevision()
+//                                  {
+//                                      Id = "5b21ef66-d4d3-435c-835c-dac5e59b6dbf",
+//                                      Modified = new DateTime(2017, 03, 05),
+//                                      Size = 25874
+//                                  },
+//                                  new DAM.DatabaseRevision()
+//                                  {
+//                                      Id = "31d4f4bd-67ff-4f51-af70-59e3ce983a9c",
+//                                      Modified = new DateTime(2018, 11, 22),
+//                                      Size = 54321
+//                                  },
+//                                  new DAM.DatabaseRevision()
+//                                  {
+//                                      Id = "fc37fe97-c355-4f6e-80f7-3641787e0624",
+//                                      Modified = new DateTime(2018, 05, 22),
+//                                      Size = 53216
+//                                  }
+//                              }.AsEnumerable()));
             _repository = repositoryMock.Object;
             _revisionService = new Mock<IRevisionService>().Object;
         }

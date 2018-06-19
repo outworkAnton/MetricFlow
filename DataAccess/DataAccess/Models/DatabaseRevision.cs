@@ -4,7 +4,7 @@ using DataAccess.Contract.Interfaces;
 
 namespace DataAccess.Models
 {
-    public class Revision : IDatabaseRevision
+    public class DatabaseRevision : IDatabaseRevision
     {
         [Key]
         public string Id { get; set; }

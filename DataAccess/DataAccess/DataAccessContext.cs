@@ -12,7 +12,7 @@ namespace DataAccess
         public DbSet<Metric> Metrics { get; set; }
         public DbSet<Formula> Formulas { get; set; }
         public DbSet<Statistic> Statistics { get; set; }
-        public DbSet<Revision> Revisions { get; set; }
+        public DbSet<DatabaseRevision> Revisions { get; set; }
         public DbSet<Log> Logs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

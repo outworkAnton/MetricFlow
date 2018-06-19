@@ -1,36 +1,38 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
 using System.Threading.Tasks;
+using AutoMapper;
 using DataAccess.Contract;
-using DataAccess.Contract.Interfaces;
 using DataAccess.Contract.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess
 {
     public class DatabaseRevisionRepository : DataAccessRepository<DatabaseRevision>, IDatabaseRevisionRepository
     {
-        public DatabaseRevisionRepository(DataAccessContext context) : base(context)
-        { }
+        private readonly IMapper _mapper;
 
-        public new async Task<IEnumerable<IDatabaseRevision>> Get()
+        public DatabaseRevisionRepository(DataAccessContext context, IMapper mapper) : base(context, mapper)
         {
-            await Context.Revisions.LoadAsync().ConfigureAwait(false);
-            return await Context.Revisions.ToListAsync().ConfigureAwait(false);
+            _mapper = mapper;
         }
 
-        public Task Update(IDatabaseRevision item)
+        public override async Task<IEnumerable> Get()
         {
-            throw new System.NotImplementedException();
+            return await base.Get().ConfigureAwait(false);
         }
 
-        public Task Delete(IDatabaseRevision item)
+        public override async Task Update(DatabaseRevision databaseRevision)
         {
-            throw new System.NotImplementedException();
+            await base.Update(databaseRevision).ConfigureAwait(false);
         }
 
-        public Task<IDatabaseRevision> Create(IDatabaseRevision item)
+        public override async Task Delete(DatabaseRevision databaseRevision)
         {
-            throw new System.NotImplementedException();
+            await base.Delete(databaseRevision).ConfigureAwait(false);
+        }
+
+        public override async Task<DatabaseRevision> Create(DatabaseRevision databaseRevision)
+        {
+            return await base.Create(databaseRevision).ConfigureAwait(false);
         }
     }
 }

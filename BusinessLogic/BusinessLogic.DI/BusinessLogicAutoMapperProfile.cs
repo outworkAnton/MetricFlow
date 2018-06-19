@@ -50,7 +50,8 @@ namespace BusinessLogic.DI
             CreateMap<BLBaseModels.Statistic, BLContractModels.Statistic>()
                 .ReverseMap();
 
-            CreateMap<BLBaseModels.DatabaseRevision, DAContractInterfaces.IDatabaseRevision>();
+            CreateMap<BLBaseModels.DatabaseRevision, DAContractModels.DatabaseRevision>()
+                .ReverseMap();
 //            CreateMap<BLBaseModels.Formula, DAContractModels.Formula>();
 //            CreateMap<BLBaseModels.Location, DAContractModels.Location>();
 //            CreateMap<BLBaseModels.Metric, DAContractModels.Metric>();

@@ -6,6 +6,7 @@ using AutoMapper;
 using BusinessLogic.Contract;
 using BL = BusinessLogic.Contract.Interfaces;
 using DataAccess.Contract;
+using DataAccess.Contract.Models;
 using DA = DataAccess.Contract.Interfaces;
 
 namespace BusinessLogic
@@ -20,7 +21,7 @@ namespace BusinessLogic
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _revisions = _repository.Get().GetAwaiter().GetResult();
+            _revisions = _repository.Get().GetAwaiter().GetResult().OfType<DA.IDatabaseRevision>();
         }
 
         public BL.IDatabaseRevision GetRevisionById(string id)
@@ -36,7 +37,7 @@ namespace BusinessLogic
                 var latestRemoteRevision = await GoogleDriveHelper.GetLatestRemoteRevision().ConfigureAwait(false);
                 if (latestRemoteRevision != null)
                 {
-                    var convertedModel = _mapper.Map<DA.IDatabaseRevision>(latestRemoteRevision);
+                    var convertedModel = _mapper.Map<DatabaseRevision>(latestRemoteRevision);
                     await _repository.Create(convertedModel).ConfigureAwait(false);
                 }
             }

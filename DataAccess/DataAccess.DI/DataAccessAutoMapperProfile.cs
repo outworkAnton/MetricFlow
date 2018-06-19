@@ -8,7 +8,7 @@ namespace DataAccess.DI
     {
         public DataAccessAutoMapperProfile()
         {
-            CreateMap<BaseModels.Revision, ContractModels.DatabaseRevision>()
+            CreateMap<BaseModels.DatabaseRevision, ContractModels.DatabaseRevision>()
                     .ReverseMap();
             CreateMap<BaseModels.Formula, ContractModels.Formula>()
                     .ReverseMap();

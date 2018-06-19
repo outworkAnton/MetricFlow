@@ -1,137 +1,155 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using DataAccess.Contract;
-using DataAccess.Contract.Interfaces;
-using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
+using ContractInterfaces = DataAccess.Contract.Interfaces;
+using ContractModels = DataAccess.Contract.Models;
+using BaseModels = DataAccess.Models;
 
 namespace DataAccess
 {
     public abstract class DataAccessRepository<T> : IDataAccessRepository<T> where T : class
     {
-        protected readonly DataAccessContext Context;
+        private readonly DataAccessContext _context;
+        private readonly IMapper _mapper;
 
-        protected DataAccessRepository(DataAccessContext context)
+        protected DataAccessRepository(DataAccessContext context, IMapper mapper)
         {
-            Context = context;
+            _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<T>> Get()
+        public virtual async Task<IEnumerable> Get()
         {
-            switch (typeof(T))
+            if (typeof(ContractInterfaces.ILocation).IsAssignableFrom(typeof(T)))
             {
-                case ILocation _:
-                    await Context.Locations.LoadAsync().ConfigureAwait(false);
-                    return await Context.Locations.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
-                case IService _:
-                    await Context.Services.LoadAsync().ConfigureAwait(false);
-                    return await Context.Services.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
-                case IMetric _:
-                    await Context.Metrics.LoadAsync().ConfigureAwait(false);
-                    return await Context.Metrics.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
-                case IFormula _:
-                    await Context.Formulas.LoadAsync().ConfigureAwait(false);
-                    return await Context.Formulas.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
-                case IStatistic _:
-                    await Context.Statistics.LoadAsync().ConfigureAwait(false);
-                    return await Context.Statistics.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
-                case IDatabaseRevision _:
-                    await Context.Revisions.LoadAsync().ConfigureAwait(false);
-                    return await Context.Revisions.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
-                default:
-                    return null;
+                await _context.Locations.LoadAsync().ConfigureAwait(false);
+                return await _context.Locations.ToListAsync().ConfigureAwait(false);
             }
+
+            if (typeof(ContractInterfaces.IService).IsAssignableFrom(typeof(T)))
+            {
+                await _context.Services.LoadAsync().ConfigureAwait(false);
+                return await _context.Services.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
+            }
+
+            if (typeof(ContractInterfaces.IMetric).IsAssignableFrom(typeof(T)))
+            {
+                await _context.Metrics.LoadAsync().ConfigureAwait(false);
+                return await _context.Metrics.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
+            }
+
+            if (typeof(ContractInterfaces.IFormula).IsAssignableFrom(typeof(T)))
+            {
+                await _context.Formulas.LoadAsync().ConfigureAwait(false);
+                return await _context.Formulas.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
+            }
+
+            if (typeof(ContractInterfaces.IStatistic).IsAssignableFrom(typeof(T)))
+            {
+                await _context.Statistics.LoadAsync().ConfigureAwait(false);
+                return await _context.Statistics.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
+            }
+
+            if (typeof(ContractInterfaces.IDatabaseRevision).IsAssignableFrom(typeof(T)))
+            {
+                await _context.Revisions.LoadAsync().ConfigureAwait(false);
+                return await _context.Revisions.ToListAsync().ConfigureAwait(false);
+            }
+
+            return null;
         }
 
-        public async Task Update(T item)
+        public virtual async Task Update(T item)
         {
-            switch (typeof(T))
-            {
-                case ILocation _:
-                    Context.Locations.Update(item as Location);
-                    break;
-                case IService _:
-                    Context.Services.Update(item as Service);
-                    break;
-                case IMetric _:
-                    Context.Metrics.Update(item as Metric);
-                    break;
-                case IFormula _:
-                    Context.Formulas.Update(item as Formula);
-                    break;
-                case IStatistic _:
-                    Context.Statistics.Update(item as Statistic);
-                    break;
-                case IDatabaseRevision _:
-                    Context.Revisions.Update(item as Revision);
-                    break;
-                default:
-                    return;
-            }
+//            switch (typeof(T))
+//            {
+//                case ILocation _:
+//                    _context.Locations.Update(item as Location);
+//                    break;
+//                case IService _:
+//                    _context.Services.Update(item as Service);
+//                    break;
+//                case IMetric _:
+//                    _context.Metrics.Update(item as Metric);
+//                    break;
+//                case IFormula _:
+//                    _context.Formulas.Update(item as Formula);
+//                    break;
+//                case IStatistic _:
+//                    _context.Statistics.Update(item as Statistic);
+//                    break;
+//                case IDatabaseRevision _:
+//                    _context.Revisions.Update(item as DatabaseRevision);
+//                    break;
+//                default:
+//                    return;
+//            }
 
-            await Context.SaveChangesAsync().ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
             OnDatabaseChange();
         }
 
-        public async Task Delete(T item)
+        public virtual async Task Delete(T item)
         {
-            switch (typeof(T))
-            {
-                case ILocation _:
-                    Context.Locations.Remove(item as Location);
-                    break;
-                case IService _:
-                    Context.Services.Remove(item as Service);
-                    break;
-                case IMetric _:
-                    Context.Metrics.Remove(item as Metric);
-                    break;
-                case IFormula _:
-                    Context.Formulas.Remove(item as Formula);
-                    break;
-                case IStatistic _:
-                    Context.Statistics.Remove(item as Statistic);
-                    break;
-                case IDatabaseRevision _:
-                    Context.Revisions.Remove(item as Revision);
-                    break;
-                default:
-                    return;
-            }
+//            switch (typeof(T))
+//            {
+//                case ILocation _:
+//                    _context.Locations.Remove(item as Location);
+//                    break;
+//                case IService _:
+//                    _context.Services.Remove(item as Service);
+//                    break;
+//                case IMetric _:
+//                    _context.Metrics.Remove(item as Metric);
+//                    break;
+//                case IFormula _:
+//                    _context.Formulas.Remove(item as Formula);
+//                    break;
+//                case IStatistic _:
+//                    _context.Statistics.Remove(item as Statistic);
+//                    break;
+//                case IDatabaseRevision _:
+//                    _context.Revisions.Remove(item as DatabaseRevision);
+//                    break;
+//                default:
+//                    return;
+//            }
 
-            await Context.SaveChangesAsync().ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
             OnDatabaseChange();
         }
 
-        public async Task<T> Create(T item)
+        public virtual async Task<T> Create(T item)
         {
-//            T createdItem;
-            switch (typeof(T))
+            switch (item)
             {
-                case ILocation _:
-                    await Context.Locations.AddAsync(item as Location).ConfigureAwait(false);
-                    await Context.SaveChangesAsync().ConfigureAwait(false);
+                case ContractModels.Location _:
+                    await _context.Locations.AddAsync(item as BaseModels.Location).ConfigureAwait(false);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
                     break;
-                case IService _:
-                    await Context.Services.AddAsync(item as Service).ConfigureAwait(false);
-                    await Context.SaveChangesAsync().ConfigureAwait(false);
+                case ContractModels.Service _:
+                    await _context.Services.AddAsync(item as BaseModels.Service).ConfigureAwait(false);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
                     break;
-                case IMetric _:
-                    await Context.Metrics.AddAsync(item as Metric).ConfigureAwait(false);
-                    await Context.SaveChangesAsync().ConfigureAwait(false);
+                case ContractModels.Metric _:
+                    await _context.Metrics.AddAsync(item as BaseModels.Metric).ConfigureAwait(false);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
                     break;
-                case IFormula _:
-                    await Context.Formulas.AddAsync(item as Formula).ConfigureAwait(false);
-                    await Context.SaveChangesAsync().ConfigureAwait(false);
+                case ContractModels.Formula _:
+                    await _context.Formulas.AddAsync(item as BaseModels.Formula).ConfigureAwait(false);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
                     break;
-                case IStatistic _:
-                    await Context.Statistics.AddAsync(item as Statistic).ConfigureAwait(false);
-                    await Context.SaveChangesAsync().ConfigureAwait(false);
+                case ContractModels.Statistic _:
+                    await _context.Statistics.AddAsync(item as BaseModels.Statistic).ConfigureAwait(false);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
                     break;
-                case IDatabaseRevision _:
-                    await Context.Revisions.AddAsync(item as Revision).ConfigureAwait(false);
-                    await Context.SaveChangesAsync().ConfigureAwait(false);
+                case ContractModels.DatabaseRevision _:
+                    await _context.Revisions.AddAsync(_mapper.Map<BaseModels.DatabaseRevision>(item)).ConfigureAwait(false);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
 //                    createdItem = await _context.DatabaseRevisions.FindAsync((item as DatabaseRevision).Id)
 //                                                .ConfigureAwait(false) as T;
                     break;
@@ -141,10 +159,10 @@ namespace DataAccess
 
             OnDatabaseChange();
             var items = await Get().ConfigureAwait(false);
-            return items.FirstOrDefault(arg => arg == item);
+            return items.OfType<T>().FirstOrDefault<T>(arg => arg == item);
         }
 
-        private void OnDatabaseChange()
+        private static void OnDatabaseChange()
         { }
     }
 }
