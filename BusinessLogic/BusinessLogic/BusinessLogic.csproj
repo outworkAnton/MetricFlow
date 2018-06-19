@@ -4,7 +4,7 @@
     <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="6.2.2" />
+    <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="CompareNETObjects" Version="4.53.0" />
     <PackageReference Include="Google.Apis" Version="1.34.0" />
     <PackageReference Include="Google.Apis.Core" Version="1.34.0" />
