@@ -22,45 +22,52 @@ namespace DataAccess
             _mapper = mapper;
         }
 
-        public virtual async Task<IEnumerable> Get()
+        public virtual async Task<IReadOnlyCollection<T>> Get()
         {
+            IEnumerable items = null;
             if (typeof(DAContractInterfaces.ILocation).IsAssignableFrom(typeof(T)))
             {
                 await _context.Locations.LoadAsync().ConfigureAwait(false);
-                return await _context.Locations.ToListAsync().ConfigureAwait(false);
+                items = _mapper.Map<IEnumerable<DAContractModels.Location>>(
+                    await _context.Locations.ToListAsync().ConfigureAwait(false));
             }
 
             if (typeof(DAContractInterfaces.IService).IsAssignableFrom(typeof(T)))
             {
                 await _context.Services.LoadAsync().ConfigureAwait(false);
-                return await _context.Services.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
+                items = _mapper.Map<IEnumerable<DAContractModels.Service>>(
+                    await _context.Services.ToListAsync().ConfigureAwait(false));
             }
 
             if (typeof(DAContractInterfaces.IMetric).IsAssignableFrom(typeof(T)))
             {
                 await _context.Metrics.LoadAsync().ConfigureAwait(false);
-                return await _context.Metrics.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
+                items = _mapper.Map<IEnumerable<DAContractModels.Metric>>(
+                    await _context.Metrics.ToListAsync().ConfigureAwait(false));
             }
 
             if (typeof(DAContractInterfaces.IFormula).IsAssignableFrom(typeof(T)))
             {
                 await _context.Formulas.LoadAsync().ConfigureAwait(false);
-                return await _context.Formulas.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
+                items = _mapper.Map<IEnumerable<DAContractModels.Formula>>(
+                    await _context.Formulas.ToListAsync().ConfigureAwait(false));
             }
 
             if (typeof(DAContractInterfaces.IStatistic).IsAssignableFrom(typeof(T)))
             {
                 await _context.Statistics.LoadAsync().ConfigureAwait(false);
-                return await _context.Statistics.ToListAsync().ConfigureAwait(false) as IEnumerable<T>;
+                items = _mapper.Map<IEnumerable<DAContractModels.Statistic>>(
+                    await _context.Statistics.ToListAsync().ConfigureAwait(false));
             }
 
             if (typeof(DAContractInterfaces.IDatabaseRevision).IsAssignableFrom(typeof(T)))
             {
                 await _context.Revisions.LoadAsync().ConfigureAwait(false);
-                return await _context.Revisions.ToListAsync().ConfigureAwait(false);
+                items = _mapper.Map<IEnumerable<DAContractModels.DatabaseRevision>>(
+                    await _context.Revisions.ToListAsync().ConfigureAwait(false));
             }
 
-            return null;
+            return items?.OfType<T>().ToArray();
         }
 
         public virtual async Task Update(T item)
@@ -172,10 +179,12 @@ namespace DataAccess
 
             OnDatabaseChange();
             var items = await Get().ConfigureAwait(false);
-            return items.OfType<T>().FirstOrDefault<T>(arg => arg == item);
+            return items.FirstOrDefault(arg => arg == item);
         }
 
         private static void OnDatabaseChange()
-        { }
+        {
+            //TODO : implement logic for mark and store database changes
+        }
     }
 }

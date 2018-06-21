@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using DataAccess.Contract;
@@ -8,14 +8,10 @@ namespace DataAccess
 {
     public class DatabaseRevisionRepository : DataAccessRepository<DatabaseRevision>, IDatabaseRevisionRepository
     {
-        private readonly IMapper _mapper;
-
         public DatabaseRevisionRepository(DataAccessContext context, IMapper mapper) : base(context, mapper)
-        {
-            _mapper = mapper;
-        }
+        { }
 
-        public override async Task<IEnumerable> Get()
+        public override async Task<IReadOnlyCollection<DatabaseRevision>> Get()
         {
             return await base.Get().ConfigureAwait(false);
         }

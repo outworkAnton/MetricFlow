@@ -40,7 +40,7 @@ namespace MetricFlow.ViewModels
         {
             try
             {
-                await _revisionService.DownloadLatestDatabaseRevision().ConfigureAwait(false);
+                await _revisionService.DownloadLatestDatabaseRevision();
             }
             catch (NetworkException networkException)
             {

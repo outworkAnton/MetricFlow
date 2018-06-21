@@ -28,7 +28,7 @@ namespace BusinessLogic
         [DllImport("wininet.dll")]
         private static extern bool InternetGetConnectedState(out int description, int reservedValue);
 
-        static readonly string[] Scopes = {DriveService.Scope.DriveReadonly};
+        static readonly string[] Scopes = {DriveService.Scope.Drive};
         private const string ApplicationName = "MetricFlow";
         private static readonly DriveService Service;
         private const string FileId = "1tElrrts1g2GR8Tny-xxd3p0N4gAaoGJm";

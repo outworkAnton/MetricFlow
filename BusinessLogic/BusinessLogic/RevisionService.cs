@@ -21,7 +21,7 @@ namespace BusinessLogic
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _revisions = _repository.Get().GetAwaiter().GetResult().OfType<DAContractInterfaces.IDatabaseRevision>();
+            _revisions = _repository.Get().GetAwaiter().GetResult();
         }
 
         public BLContractInterfaces.IDatabaseRevision GetRevisionById(string id)
