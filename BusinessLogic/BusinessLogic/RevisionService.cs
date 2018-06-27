@@ -15,19 +15,28 @@ namespace BusinessLogic
     {
         private readonly IMapper _mapper;
         private readonly IDatabaseRevisionRepository _repository;
-        private readonly IEnumerable<DAContractInterfaces.IDatabaseRevision> _revisions;
+        private readonly IEnumerable<BLContractInterfaces.IDatabaseRevision> _revisions;
 
         public RevisionService(IDatabaseRevisionRepository repository, IMapper mapper)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _revisions = _repository.Get().GetAwaiter().GetResult();
+            _revisions = _repository
+                         .Get()
+                         .GetAwaiter()
+                         .GetResult()
+                         .Select(revision => _mapper.Map<BLContractInterfaces.IDatabaseRevision>(revision))
+                         .ToList();
+        }
+
+        public IEnumerable<BLContractInterfaces.IDatabaseRevision> GetAll()
+        {
+            return _revisions;
         }
 
         public BLContractInterfaces.IDatabaseRevision GetRevisionById(string id)
         {
-            return _mapper.Map<BLContractInterfaces.IDatabaseRevision>(_revisions?
-                .FirstOrDefault(revision => revision.Id == id));
+            return _revisions?.FirstOrDefault(revision => revision.Id == id);
         }
 
         public async Task DownloadLatestDatabaseRevision()
@@ -35,7 +44,8 @@ namespace BusinessLogic
             var latestLocalRevision = _revisions?
                                       .OrderByDescending(revision => revision.Modified)
                                       .FirstOrDefault();
-            if (GoogleDriveHelper.NeedDownload(_mapper.Map<BLContractInterfaces.IDatabaseRevision>(latestLocalRevision)))
+            if (GoogleDriveHelper.NeedDownload(latestLocalRevision)
+            )
             {
                 var latestRemoteRevision = await GoogleDriveHelper
                                                  .GetLatestRemoteRevision()
