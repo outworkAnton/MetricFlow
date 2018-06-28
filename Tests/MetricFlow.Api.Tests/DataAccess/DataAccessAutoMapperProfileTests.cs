@@ -2,7 +2,7 @@
 using DataAccess.DI;
 using NUnit.Framework;
 
-namespace MetricFlow.Tests.DataAccess
+namespace MetricFlow.Api.Tests.DataAccess
 {
     [TestFixture]
     public class DataAccessAutoMapperProfileTests

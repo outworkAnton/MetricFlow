@@ -1,26 +1,21 @@
 ﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using BusinessLogic;
 using BusinessLogic.Contract;
-using BLI = BusinessLogic.Contract.Interfaces;
-using BLM = BusinessLogic.Contract.Models;
 using BusinessLogic.DI;
 using DataAccess.Contract;
-using DAI = DataAccess.Contract.Interfaces;
-using DAM = DataAccess.Contract.Models;
 using KellermanSoftware.CompareNetObjects;
 using Moq;
 using NUnit.Framework;
+using BLI = BusinessLogic.Contract.Interfaces;
+using BLM = BusinessLogic.Contract.Models;
 
-namespace MetricFlow.Tests.BusinessLogic
+namespace MetricFlow.Api.Tests.BusinessLogic
 {
     [TestFixture]
     public class RevisionServiceTests
     {
         private IDatabaseRevisionRepository _repository;
-        private IRevisionService _revisionService;
         private IMapper _mapper;
 
         private readonly BLI.IDatabaseRevision _expectedRevision =
@@ -71,7 +66,6 @@ namespace MetricFlow.Tests.BusinessLogic
 //                                  }
 //                              }.AsEnumerable()));
             _repository = repositoryMock.Object;
-            _revisionService = new Mock<IRevisionService>().Object;
         }
 
         [Test]

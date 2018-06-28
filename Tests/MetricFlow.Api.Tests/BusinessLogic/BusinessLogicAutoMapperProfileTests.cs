@@ -2,7 +2,7 @@
 using BusinessLogic.DI;
 using NUnit.Framework;
 
-namespace MetricFlow.Tests.BusinessLogic
+namespace MetricFlow.Api.Tests.BusinessLogic
 {
     [TestFixture]
     public class BusinessLogicAutoMapperProfileTests

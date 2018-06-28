@@ -139,8 +139,8 @@ namespace BusinessLogic
             if (revisions != null)
             {
                 revisions.Fields = "*";
-                _remoteRevision = revisions?.Execute()?.Revisions
-                                           ?.OrderByDescending(revision => revision.ModifiedTime)?.FirstOrDefault();
+                _remoteRevision = revisions.Execute()?.Revisions
+                                           ?.OrderByDescending(revision => revision.ModifiedTime).FirstOrDefault();
             }
             else
             {
@@ -152,9 +152,9 @@ namespace BusinessLogic
                 return true;
             }
 
-            return (localRevision.Modified < _remoteRevision.ModifiedTime)
-                   || (_remoteRevision.Id != localRevision.Id)
-                   || (_remoteRevision.Size != localRevision.Size);
+            return localRevision.Modified < _remoteRevision?.ModifiedTime
+                   || _remoteRevision?.Id != localRevision.Id
+                   || _remoteRevision?.Size != localRevision.Size;
         }
 
         public static async Task<IDatabaseRevision> GetLatestRemoteRevision()
@@ -188,11 +188,11 @@ namespace BusinessLogic
                     }
 
                     var remoteRevisionId = _remoteRevision.Id ??
-                                           throw new ArgumentNullException($"Remote revision has no Id value");
+                                           throw new ArgumentNullException("Remote revision has no Id value");
                     var remoteRevisionModified = _remoteRevision.ModifiedTime ??
-                                           throw new ArgumentNullException($"Remote revision has no ModifiedTime value");
+                                           throw new ArgumentNullException("Remote revision has no ModifiedTime value");
                     var remoteRevisionSize = _remoteRevision.Size ??
-                                           throw new ArgumentNullException($"Remote revision has no Size value");
+                                           throw new ArgumentNullException("Remote revision has no Size value");
                     Debug.WriteLine("Database file updated from server");
                     return new DatabaseRevision(remoteRevisionId, remoteRevisionModified, remoteRevisionSize);
                 }
