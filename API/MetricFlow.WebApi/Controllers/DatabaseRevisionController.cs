@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MetricFlow.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/revisions")]
     [ApiController]
-    public class DatabaseRevisionController : Controller
+    public class DatabaseRevisionController : ControllerBase
     {
         private readonly IRevisionService _revisionService;
 
@@ -16,16 +16,15 @@ namespace MetricFlow.WebApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<IEnumerable<string>> GetAllRevisions()
         {
             return new ObjectResult(_revisionService.GetAll());
         }
 
-        // GET api/values/5
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        public ActionResult<string> GetRevisionById(string id)
         {
-            return "value";
+            return new ObjectResult(_revisionService.GetRevisionById(id));
         }
 
         // POST api/values

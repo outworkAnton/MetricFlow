@@ -7,6 +7,12 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection">
+      <Version>4.2.2</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>11.0.2</Version>
+    </PackageReference>
     <ProjectReference Include="..\..\BusinessLogic\BusinessLogic.Contract\BusinessLogic.Contract.csproj" />
     <ProjectReference Include="..\..\BusinessLogic\BusinessLogic.DI\BusinessLogic.DI.csproj" />
     <ProjectReference Include="..\..\DataAccess\DataAccess.Contract\DataAccess.Contract.csproj" />
