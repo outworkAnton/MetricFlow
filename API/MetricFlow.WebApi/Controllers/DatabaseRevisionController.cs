@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 using BusinessLogic.Contract;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +21,13 @@ namespace MetricFlow.WebApi.Controllers
         public ActionResult<IEnumerable<string>> GetAllRevisions()
         {
             return new ObjectResult(_revisionService.GetAll());
+        }
+
+        [HttpGet("DownloadLatestDatabaseRevision")]
+        public async Task<IActionResult> DownloadLatestRevision()
+        {
+            await _revisionService.DownloadLatestDatabaseRevision().ConfigureAwait(false);
+            return Ok();
         }
 
         [HttpGet("{id}")]

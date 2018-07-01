@@ -37,9 +37,9 @@ namespace MetricFlow.WebApi
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddDbContext<DataAccessContext>(options => options
-                .UseSqlite(Configuration
-                    .GetConnectionString("MetricFlowDatabase")));
+//            services.AddDbContext<DataAccessContext>(options => options
+//                .UseSqlite(Configuration
+//                    .GetConnectionString("MetricFlowDatabase")));
             var builder = new ContainerBuilder();
             builder.RegisterModule(new BusinessLogicAutofacModule());
             builder.RegisterModule(new DataAccessAutofacModule());

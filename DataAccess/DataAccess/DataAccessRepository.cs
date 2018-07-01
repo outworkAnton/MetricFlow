@@ -19,6 +19,8 @@ namespace DataAccess
         protected DataAccessRepository(DataAccessContext context, IMapper mapper)
         {
             _context = context;
+            _context.Database.OpenConnection();
+            _context.Database.EnsureCreated();
             _mapper = mapper;
         }
 
@@ -62,9 +64,9 @@ namespace DataAccess
 
             if (typeof(DAContractInterfaces.IDatabaseRevision).IsAssignableFrom(typeof(T)))
             {
-                await _context.Revisions.LoadAsync().ConfigureAwait(false);
+                await _context.DatabaseRevisions.LoadAsync().ConfigureAwait(false);
                 items = _mapper.Map<IEnumerable<DAContractModels.DatabaseRevision>>(
-                    await _context.Revisions.ToListAsync().ConfigureAwait(false));
+                    await _context.DatabaseRevisions.ToListAsync().ConfigureAwait(false));
             }
 
             return items?.OfType<T>().ToArray();
@@ -94,7 +96,7 @@ namespace DataAccess
             }
             else if (typeof(DAContractInterfaces.IDatabaseRevision).IsAssignableFrom(typeof(T)))
             {
-                _context.Revisions.Update(_mapper.Map<DABaseModels.DatabaseRevision>(item));
+                _context.DatabaseRevisions.Update(_mapper.Map<DABaseModels.DatabaseRevision>(item));
             }
             else
             {
@@ -129,7 +131,7 @@ namespace DataAccess
             }
             else if (typeof(DAContractInterfaces.IDatabaseRevision).IsAssignableFrom(typeof(T)))
             {
-                _context.Revisions.Remove(_mapper.Map<DABaseModels.DatabaseRevision>(item));
+                _context.DatabaseRevisions.Remove(_mapper.Map<DABaseModels.DatabaseRevision>(item));
             }
             else
             {
@@ -167,7 +169,7 @@ namespace DataAccess
             }
             else if (typeof(DAContractInterfaces.IDatabaseRevision).IsAssignableFrom(typeof(T)))
             {
-                await _context.Revisions.AddAsync(_mapper.Map<DABaseModels.DatabaseRevision>(item))
+                await _context.DatabaseRevisions.AddAsync(_mapper.Map<DABaseModels.DatabaseRevision>(item))
                               .ConfigureAwait(false);
             }
             else
