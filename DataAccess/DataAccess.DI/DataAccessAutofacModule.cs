@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using DataAccess.Contract;
 using DataAccess.Contract.Interfaces;
+using DataAccess.Repositories;
 
 namespace DataAccess.DI
 {

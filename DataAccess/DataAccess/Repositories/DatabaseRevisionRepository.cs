@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using DataAccess.Contract;
 using DataAccess.Contract.Models;
+using DABaseModels = DataAccess.Models;
 
-namespace DataAccess
+namespace DataAccess.Repositories
 {
     public class DatabaseRevisionRepository : DataAccessRepository<DatabaseRevision>, IDatabaseRevisionRepository
     {
@@ -28,7 +30,12 @@ namespace DataAccess
 
         public override async Task<DatabaseRevision> Create(DatabaseRevision databaseRevision)
         {
-            return await base.Create(databaseRevision).ConfigureAwait(false);
+            await Context.DatabaseRevisions.AddAsync(Mapper.Map<DABaseModels.DatabaseRevision>(databaseRevision))
+                         .ConfigureAwait(false);
+            await Context.SaveChangesAsync().ConfigureAwait(false);
+
+            var items = await Get().ConfigureAwait(false);
+            return items.FirstOrDefault(arg => arg.Id == databaseRevision.Id);
         }
     }
 }

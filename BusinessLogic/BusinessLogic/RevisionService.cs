@@ -48,7 +48,7 @@ namespace BusinessLogic
             )
             {
                 var latestRemoteRevision = await GoogleDriveHelper
-                                                 .GetLatestRemoteRevision()
+                                                 .DownloadRevision()
                                                  .ConfigureAwait(false);
                 if (latestRemoteRevision != null)
                 {
@@ -56,6 +56,14 @@ namespace BusinessLogic
                                      .ConfigureAwait(false);
                 }
             }
+        }
+
+        public bool Changed()
+        {
+            return _revisions?
+                   .OrderByDescending(revision => revision.Modified)
+                   .FirstOrDefault()
+                   ?.Changed == 1;
         }
     }
 }

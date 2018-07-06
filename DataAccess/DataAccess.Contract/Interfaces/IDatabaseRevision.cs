@@ -7,5 +7,6 @@ namespace DataAccess.Contract.Interfaces
         string Id { get; set; }
         DateTime Modified { get; set; }
         long Size { get; set; }
+        int Changed { get; set; }
     }
 }

@@ -157,7 +157,7 @@ namespace BusinessLogic
                    || _remoteRevision?.Size != localRevision.Size;
         }
 
-        public static async Task<IDatabaseRevision> GetLatestRemoteRevision()
+        public static async Task<IDatabaseRevision> DownloadRevision()
         {
             try
             {
@@ -194,7 +194,7 @@ namespace BusinessLogic
                     var remoteRevisionSize = _remoteRevision.Size ??
                                            throw new ArgumentNullException("Remote revision has no Size value");
                     Debug.WriteLine("Database file updated from server");
-                    return new DatabaseRevision(remoteRevisionId, remoteRevisionModified, remoteRevisionSize);
+                    return new DatabaseRevision(remoteRevisionId, remoteRevisionModified, remoteRevisionSize, 0);
                 }
 
                 return null;
@@ -205,7 +205,7 @@ namespace BusinessLogic
             }
         }
 
-        public static IUploadProgress UpdateRemoteRevision()
+        public static IUploadProgress UploadRevision()
         {
             try
             {

@@ -9,19 +9,19 @@ using DAContractInterfaces = DataAccess.Contract.Interfaces;
 using DAContractModels = DataAccess.Contract.Models;
 using DABaseModels = DataAccess.Models;
 
-namespace DataAccess
+namespace DataAccess.Repositories
 {
     public abstract class DataAccessRepository<T> : IDataAccessRepository<T> where T : class
     {
-        private readonly DataAccessContext _context;
-        private readonly IMapper _mapper;
+        protected readonly DataAccessContext Context;
+        protected readonly IMapper Mapper;
 
         protected DataAccessRepository(DataAccessContext context, IMapper mapper)
         {
-            _context = context;
-            _context.Database.OpenConnection();
-            _context.Database.EnsureCreated();
-            _mapper = mapper;
+            Context = context;
+            Context.Database.OpenConnection();
+            Context.Database.EnsureCreated();
+            Mapper = mapper;
         }
 
         public virtual async Task<IReadOnlyCollection<T>> Get()
@@ -29,44 +29,44 @@ namespace DataAccess
             IEnumerable items = null;
             if (typeof(DAContractInterfaces.ILocation).IsAssignableFrom(typeof(T)))
             {
-                await _context.Locations.LoadAsync().ConfigureAwait(false);
-                items = _mapper.Map<IEnumerable<DAContractModels.Location>>(
-                    await _context.Locations.ToListAsync().ConfigureAwait(false));
+                await Context.Locations.LoadAsync().ConfigureAwait(false);
+                items = Mapper.Map<IEnumerable<DAContractModels.Location>>(
+                    await Context.Locations.ToListAsync().ConfigureAwait(false));
             }
 
             if (typeof(DAContractInterfaces.IService).IsAssignableFrom(typeof(T)))
             {
-                await _context.Services.LoadAsync().ConfigureAwait(false);
-                items = _mapper.Map<IEnumerable<DAContractModels.Service>>(
-                    await _context.Services.ToListAsync().ConfigureAwait(false));
+                await Context.Services.LoadAsync().ConfigureAwait(false);
+                items = Mapper.Map<IEnumerable<DAContractModels.Service>>(
+                    await Context.Services.ToListAsync().ConfigureAwait(false));
             }
 
             if (typeof(DAContractInterfaces.IMetric).IsAssignableFrom(typeof(T)))
             {
-                await _context.Metrics.LoadAsync().ConfigureAwait(false);
-                items = _mapper.Map<IEnumerable<DAContractModels.Metric>>(
-                    await _context.Metrics.ToListAsync().ConfigureAwait(false));
+                await Context.Metrics.LoadAsync().ConfigureAwait(false);
+                items = Mapper.Map<IEnumerable<DAContractModels.Metric>>(
+                    await Context.Metrics.ToListAsync().ConfigureAwait(false));
             }
 
             if (typeof(DAContractInterfaces.IFormula).IsAssignableFrom(typeof(T)))
             {
-                await _context.Formulas.LoadAsync().ConfigureAwait(false);
-                items = _mapper.Map<IEnumerable<DAContractModels.Formula>>(
-                    await _context.Formulas.ToListAsync().ConfigureAwait(false));
+                await Context.Formulas.LoadAsync().ConfigureAwait(false);
+                items = Mapper.Map<IEnumerable<DAContractModels.Formula>>(
+                    await Context.Formulas.ToListAsync().ConfigureAwait(false));
             }
 
             if (typeof(DAContractInterfaces.IStatistic).IsAssignableFrom(typeof(T)))
             {
-                await _context.Statistics.LoadAsync().ConfigureAwait(false);
-                items = _mapper.Map<IEnumerable<DAContractModels.Statistic>>(
-                    await _context.Statistics.ToListAsync().ConfigureAwait(false));
+                await Context.Statistics.LoadAsync().ConfigureAwait(false);
+                items = Mapper.Map<IEnumerable<DAContractModels.Statistic>>(
+                    await Context.Statistics.ToListAsync().ConfigureAwait(false));
             }
 
             if (typeof(DAContractInterfaces.IDatabaseRevision).IsAssignableFrom(typeof(T)))
             {
-                await _context.DatabaseRevisions.LoadAsync().ConfigureAwait(false);
-                items = _mapper.Map<IEnumerable<DAContractModels.DatabaseRevision>>(
-                    await _context.DatabaseRevisions.ToListAsync().ConfigureAwait(false));
+                await Context.DatabaseRevisions.LoadAsync().ConfigureAwait(false);
+                items = Mapper.Map<IEnumerable<DAContractModels.DatabaseRevision>>(
+                    await Context.DatabaseRevisions.ToListAsync().ConfigureAwait(false));
             }
 
             return items?.OfType<T>().ToArray();
@@ -76,34 +76,34 @@ namespace DataAccess
         {
             if (typeof(DAContractInterfaces.ILocation).IsAssignableFrom(typeof(T)))
             {
-                _context.Locations.Update(_mapper.Map<DABaseModels.Location>(item));
+                Context.Locations.Update(Mapper.Map<DABaseModels.Location>(item));
             }
             else if (typeof(DAContractInterfaces.IService).IsAssignableFrom(typeof(T)))
             {
-                _context.Services.Update(_mapper.Map<DABaseModels.Service>(item));
+                Context.Services.Update(Mapper.Map<DABaseModels.Service>(item));
             }
             else if (typeof(DAContractInterfaces.IMetric).IsAssignableFrom(typeof(T)))
             {
-                _context.Metrics.Update(_mapper.Map<DABaseModels.Metric>(item));
+                Context.Metrics.Update(Mapper.Map<DABaseModels.Metric>(item));
             }
             else if (typeof(DAContractInterfaces.IFormula).IsAssignableFrom(typeof(T)))
             {
-                _context.Formulas.Update(_mapper.Map<DABaseModels.Formula>(item));
+                Context.Formulas.Update(Mapper.Map<DABaseModels.Formula>(item));
             }
             else if (typeof(DAContractInterfaces.IStatistic).IsAssignableFrom(typeof(T)))
             {
-                _context.Statistics.Update(_mapper.Map<DABaseModels.Statistic>(item));
+                Context.Statistics.Update(Mapper.Map<DABaseModels.Statistic>(item));
             }
             else if (typeof(DAContractInterfaces.IDatabaseRevision).IsAssignableFrom(typeof(T)))
             {
-                _context.DatabaseRevisions.Update(_mapper.Map<DABaseModels.DatabaseRevision>(item));
+                Context.DatabaseRevisions.Update(Mapper.Map<DABaseModels.DatabaseRevision>(item));
             }
             else
             {
                 return;
             }
 
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            await Context.SaveChangesAsync().ConfigureAwait(false);
             OnDatabaseChange();
         }
 
@@ -111,65 +111,62 @@ namespace DataAccess
         {
             if (typeof(DAContractInterfaces.ILocation).IsAssignableFrom(typeof(T)))
             {
-                _context.Locations.Remove(_mapper.Map<DABaseModels.Location>(item));
+                Context.Locations.Remove(Mapper.Map<DABaseModels.Location>(item));
             }
             else if (typeof(DAContractInterfaces.IService).IsAssignableFrom(typeof(T)))
             {
-                _context.Services.Remove(_mapper.Map<DABaseModels.Service>(item));
+                Context.Services.Remove(Mapper.Map<DABaseModels.Service>(item));
             }
             else if (typeof(DAContractInterfaces.IMetric).IsAssignableFrom(typeof(T)))
             {
-                _context.Metrics.Remove(_mapper.Map<DABaseModels.Metric>(item));
+                Context.Metrics.Remove(Mapper.Map<DABaseModels.Metric>(item));
             }
             else if (typeof(DAContractInterfaces.IFormula).IsAssignableFrom(typeof(T)))
             {
-                _context.Formulas.Remove(_mapper.Map<DABaseModels.Formula>(item));
+                Context.Formulas.Remove(Mapper.Map<DABaseModels.Formula>(item));
             }
             else if (typeof(DAContractInterfaces.IStatistic).IsAssignableFrom(typeof(T)))
             {
-                _context.Statistics.Remove(_mapper.Map<DABaseModels.Statistic>(item));
+                Context.Statistics.Remove(Mapper.Map<DABaseModels.Statistic>(item));
             }
             else if (typeof(DAContractInterfaces.IDatabaseRevision).IsAssignableFrom(typeof(T)))
             {
-                _context.DatabaseRevisions.Remove(_mapper.Map<DABaseModels.DatabaseRevision>(item));
+                Context.DatabaseRevisions.Remove(Mapper.Map<DABaseModels.DatabaseRevision>(item));
             }
             else
             {
                 return;
             }
 
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            await Context.SaveChangesAsync().ConfigureAwait(false);
             OnDatabaseChange();
         }
 
         public virtual async Task<T> Create(T item)
         {
             if (typeof(DAContractInterfaces.ILocation).IsAssignableFrom(typeof(T)))
-                await _context.Locations.AddAsync(_mapper.Map<DABaseModels.Location>(item))
+            {
+                await Context.Locations.AddAsync(Mapper.Map<DABaseModels.Location>(item))
                               .ConfigureAwait(false);
+            }
             else if (typeof(DAContractInterfaces.IService).IsAssignableFrom(typeof(T)))
             {
-                await _context.Services.AddAsync(_mapper.Map<DABaseModels.Service>(item))
+                await Context.Services.AddAsync(Mapper.Map<DABaseModels.Service>(item))
                               .ConfigureAwait(false);
             }
             else if (typeof(DAContractInterfaces.IMetric).IsAssignableFrom(typeof(T)))
             {
-                await _context.Metrics.AddAsync(_mapper.Map<DABaseModels.Metric>(item))
+                await Context.Metrics.AddAsync(Mapper.Map<DABaseModels.Metric>(item))
                               .ConfigureAwait(false);
             }
             else if (typeof(DAContractInterfaces.IFormula).IsAssignableFrom(typeof(T)))
             {
-                await _context.Formulas.AddAsync(_mapper.Map<DABaseModels.Formula>(item))
+                await Context.Formulas.AddAsync(Mapper.Map<DABaseModels.Formula>(item))
                               .ConfigureAwait(false);
             }
             else if (typeof(DAContractInterfaces.IStatistic).IsAssignableFrom(typeof(T)))
             {
-                await _context.Statistics.AddAsync(_mapper.Map<DABaseModels.Statistic>(item))
-                              .ConfigureAwait(false);
-            }
-            else if (typeof(DAContractInterfaces.IDatabaseRevision).IsAssignableFrom(typeof(T)))
-            {
-                await _context.DatabaseRevisions.AddAsync(_mapper.Map<DABaseModels.DatabaseRevision>(item))
+                await Context.Statistics.AddAsync(Mapper.Map<DABaseModels.Statistic>(item))
                               .ConfigureAwait(false);
             }
             else
@@ -177,7 +174,7 @@ namespace DataAccess
                 return null;
             }
 
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            await Context.SaveChangesAsync().ConfigureAwait(false);
 
             OnDatabaseChange();
             var items = await Get().ConfigureAwait(false);

@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using BusinessLogic.Contract;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace MetricFlow.WebApi.Controllers
 {
@@ -18,12 +19,20 @@ namespace MetricFlow.WebApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<string>> GetAllRevisions()
+        public IActionResult GetAllRevisions()
         {
-            return new ObjectResult(_revisionService.GetAll());
+            var revisions = _revisionService.GetAll();
+            return Ok(JsonConvert.SerializeObject(revisions));
         }
 
-        [HttpGet("DownloadLatestDatabaseRevision")]
+        [HttpGet("changed")]
+        public IActionResult IsDatabaseChanged()
+        {
+            var changed = _revisionService.Changed();
+            return Ok(JsonConvert.SerializeObject(changed));
+        }
+
+        [HttpGet("download")]
         public async Task<IActionResult> DownloadLatestRevision()
         {
             await _revisionService.DownloadLatestDatabaseRevision().ConfigureAwait(false);

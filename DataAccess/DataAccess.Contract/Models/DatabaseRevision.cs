@@ -8,5 +8,6 @@ namespace DataAccess.Contract.Models
         public string Id { get; set; }
         public DateTime Modified { get; set; }
         public long Size { get; set; }
+        public int Changed { get; set; }
     }
 }
