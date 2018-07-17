@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using BusinessLogic.Contract;
+using BusinessLogic.Contract.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -28,21 +31,36 @@ namespace MetricFlow.WebApi.Controllers
         [HttpGet("changed")]
         public IActionResult IsDatabaseChanged()
         {
-            var changed = _revisionService.Changed();
+            bool changed = _revisionService.Changed();
             return Ok(JsonConvert.SerializeObject(changed));
         }
 
         [HttpGet("download")]
         public async Task<IActionResult> DownloadLatestRevision()
         {
-            await _revisionService.DownloadLatestDatabaseRevision().ConfigureAwait(false);
-            return Ok();
+            try
+            {
+                await _revisionService.DownloadLatestDatabaseRevision().ConfigureAwait(false);
+                return Ok();
+            }
+            catch (ServiceException serviceException)
+            {
+                return StatusCode(503, serviceException.Message);
+            }
         }
 
         [HttpGet("{id}")]
-        public ActionResult<string> GetRevisionById(string id)
+        public IActionResult GetRevisionById(string id)
         {
-            return new ObjectResult(_revisionService.GetRevisionById(id));
+            try
+            {
+                var revision = _revisionService.GetRevisionById(id) ?? throw new Exception();
+                return Ok(revision);
+            }
+            catch (Exception e)
+            {
+                return NotFound($"Revision with Id: {id} not found");
+            }
         }
 
         // POST api/values

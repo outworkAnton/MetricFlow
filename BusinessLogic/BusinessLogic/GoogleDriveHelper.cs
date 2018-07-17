@@ -25,9 +25,6 @@ namespace BusinessLogic
 {
     public static class GoogleDriveHelper
     {
-        [DllImport("wininet.dll")]
-        private static extern bool InternetGetConnectedState(out int description, int reservedValue);
-
         static readonly string[] Scopes = {DriveService.Scope.Drive};
         private const string ApplicationName = "MetricFlow";
         private static readonly DriveService Service;
@@ -37,7 +34,7 @@ namespace BusinessLogic
 
         static GoogleDriveHelper()
         {
-            Service = GetService().GetAwaiter().GetResult();
+            Service = GetService();
             DatabaseFileName = GetDatabaseFileName();
         }
 
@@ -45,16 +42,26 @@ namespace BusinessLogic
 
         static bool IsConnectedToInternet()
         {
-            return InternetGetConnectedState(out _, 0);
+            try
+            {
+                using (new WebClient().OpenRead("https://drive.google.com"))
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        static async Task<DriveService> GetService()
+        static DriveService GetService()
         {
             try
             {
                 if (!IsConnectedToInternet())
                 {
-                    throw new NetworkException("No Internet connection");
+                    throw new NetworkException("Connection to Google Drive server failed");
                 }
 
                 UserCredential userCredential;
@@ -64,13 +71,13 @@ namespace BusinessLogic
                     credPath = Path.Combine(credPath, ".credentials/metric-flow.json");
                     Debug.WriteLine("Credential file saved to: " + credPath);
 
-                    userCredential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                                                                           GoogleClientSecrets.Load(stream).Secrets,
-                                                                           Scopes,
-                                                                           Environment.UserName,
-                                                                           CancellationToken.None,
-                                                                           new FileDataStore(credPath, true))
-                                                                       .ConfigureAwait(false);
+                    userCredential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                                                                     GoogleClientSecrets.Load(stream).Secrets,
+                                                                     Scopes,
+                                                                     Environment.UserName,
+                                                                     CancellationToken.None,
+                                                                     new FileDataStore(credPath, true))
+                                                                 .GetAwaiter().GetResult();
                 }
 
                 var service = new DriveService(new BaseClientService.Initializer
@@ -99,24 +106,9 @@ namespace BusinessLogic
 
         static string GetDatabaseFileName()
         {
-            try
-            {
-                var databaseDirectory = Path.GetDirectoryName(Process.GetCurrentProcess()
-                                                                     .MainModule
-                                                                     .FileName) + "\\Database";
-                if (!Directory.Exists(databaseDirectory))
-                {
-                    Debug.WriteLine("Directory of database not exist");
-                    Directory.CreateDirectory(databaseDirectory);
-                    Debug.WriteLine("Directory of database was created");
-                }
-
-                return databaseDirectory + "\\Metric.Flow.Database";
-            }
-            catch (Exception exception)
-            {
-                throw new FileException(exception.Message);
-            }
+            return Path.GetDirectoryName(Process.GetCurrentProcess()
+                                                .MainModule
+                                                .FileName) + "\\Metric.Flow.Database";
         }
 
         private static string GetMimeType(string fileName)
@@ -190,9 +182,10 @@ namespace BusinessLogic
                     var remoteRevisionId = _remoteRevision.Id ??
                                            throw new ArgumentNullException("Remote revision has no Id value");
                     var remoteRevisionModified = _remoteRevision.ModifiedTime ??
-                                           throw new ArgumentNullException("Remote revision has no ModifiedTime value");
+                                                 throw new ArgumentNullException(
+                                                     "Remote revision has no ModifiedTime value");
                     var remoteRevisionSize = _remoteRevision.Size ??
-                                           throw new ArgumentNullException("Remote revision has no Size value");
+                                             throw new ArgumentNullException("Remote revision has no Size value");
                     Debug.WriteLine("Database file updated from server");
                     return new DatabaseRevision(remoteRevisionId, remoteRevisionModified, remoteRevisionSize, 0);
                 }
@@ -209,8 +202,6 @@ namespace BusinessLogic
         {
             try
             {
-                //TODO: implement method for detect local DB changes
-
                 var body = new File
                 {
                     Name = Path.GetFileName(DatabaseFileName),
