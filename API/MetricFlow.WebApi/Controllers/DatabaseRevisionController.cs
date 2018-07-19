@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+
 using BusinessLogic.Contract;
 using BusinessLogic.Contract.Exceptions;
+
 using Microsoft.AspNetCore.Mvc;
+
 using Newtonsoft.Json;
 
 namespace MetricFlow.WebApi.Controllers
@@ -54,28 +57,36 @@ namespace MetricFlow.WebApi.Controllers
         {
             try
             {
-                var revision = _revisionService.GetRevisionById(id) ?? throw new Exception();
-                return Ok(revision);
+                var revision = _revisionService.GetRevisionById(id) ??
+                    throw new Exception();
+                return Ok(JsonConvert.SerializeObject(revision));
             }
-            catch (Exception e)
+            catch
             {
                 return NotFound($"Revision with Id: {id} not found");
             }
         }
 
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody] string value)
-        { }
+        [HttpGet("upload")]
+        public async Task<IActionResult> UpdateRemoteRevisionAsync()
+        {
+            try
+            {
+                await _revisionService.UploadRevision().ConfigureAwait(false);
+                return Ok();
+            }
+            catch (ServiceException serviceException)
+            {
+                return StatusCode(409, serviceException.Message);
+            }
+        }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        { }
+        public void Put(int id, [FromBody] string value) { }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
-        { }
+        public void Delete(int id) { }
     }
 }

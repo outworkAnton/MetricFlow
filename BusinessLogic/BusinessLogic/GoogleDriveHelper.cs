@@ -7,9 +7,11 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+
 using BusinessLogic.Contract.Exceptions;
 using BusinessLogic.Contract.Interfaces;
 using BusinessLogic.Models;
+
 using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Download;
@@ -18,6 +20,7 @@ using Google.Apis.Drive.v3.Data;
 using Google.Apis.Services;
 using Google.Apis.Upload;
 using Google.Apis.Util.Store;
+
 using Microsoft.Win32;
 using File = Google.Apis.Drive.v3.Data.File;
 
@@ -25,7 +28,7 @@ namespace BusinessLogic
 {
     public static class GoogleDriveHelper
     {
-        static readonly string[] Scopes = {DriveService.Scope.Drive};
+        static readonly string[] Scopes = { DriveService.Scope.Drive };
         private const string ApplicationName = "MetricFlow";
         private static readonly DriveService Service;
         private const string FileId = "1tElrrts1g2GR8Tny-xxd3p0N4gAaoGJm";
@@ -44,7 +47,7 @@ namespace BusinessLogic
         {
             try
             {
-                using (new WebClient().OpenRead("https://drive.google.com"))
+                using(new WebClient().OpenRead("https://drive.google.com"))
                 {
                     return true;
                 }
@@ -65,25 +68,25 @@ namespace BusinessLogic
                 }
 
                 UserCredential userCredential;
-                using (var stream = new FileStream("client_id.json", FileMode.Open, FileAccess.Read))
+                using(var stream = new FileStream("client_id.json", FileMode.Open, FileAccess.Read))
                 {
                     var credPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
                     credPath = Path.Combine(credPath, ".credentials/metric-flow.json");
                     Debug.WriteLine("Credential file saved to: " + credPath);
 
                     userCredential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                                                                     GoogleClientSecrets.Load(stream).Secrets,
-                                                                     Scopes,
-                                                                     Environment.UserName,
-                                                                     CancellationToken.None,
-                                                                     new FileDataStore(credPath, true))
-                                                                 .GetAwaiter().GetResult();
+                            GoogleClientSecrets.Load(stream).Secrets,
+                            Scopes,
+                            Environment.UserName,
+                            CancellationToken.None,
+                            new FileDataStore(credPath, true))
+                        .GetAwaiter().GetResult();
                 }
 
                 var service = new DriveService(new BaseClientService.Initializer
                 {
                     HttpClientInitializer = userCredential,
-                    ApplicationName = ApplicationName
+                        ApplicationName = ApplicationName
                 });
                 Debug.WriteLine("Drive API service was created");
                 return service;
@@ -93,8 +96,8 @@ namespace BusinessLogic
                 Debug.WriteLine("Google Drive service API was threw an exception\n" + apiException);
 
                 throw new ServiceException("Service error was occured with " +
-                                           Enum.Parse(typeof(HttpStatusCode), apiException.HttpStatusCode.ToString()) +
-                                           " error\n" + apiException);
+                    Enum.Parse(typeof(HttpStatusCode), apiException.HttpStatusCode.ToString()) +
+                    " error\n" + apiException);
             }
             catch (IOException ioException)
             {
@@ -107,8 +110,8 @@ namespace BusinessLogic
         static string GetDatabaseFileName()
         {
             return Path.GetDirectoryName(Process.GetCurrentProcess()
-                                                .MainModule
-                                                .FileName) + "\\Metric.Flow.Database";
+                .MainModule
+                .FileName) + "\\Metric.Flow.Database";
         }
 
         private static string GetMimeType(string fileName)
@@ -117,7 +120,8 @@ namespace BusinessLogic
             var ext = Path.GetExtension(fileName)?.ToLower();
             var regKey =
                 Registry.ClassesRoot.OpenSubKey(
-                    ext ?? throw new FileException("Couldn't get file type"));
+                    ext ??
+                    throw new FileException("Couldn't get file type"));
             if (regKey?.GetValue("Content Type") != null)
                 mimeType = regKey.GetValue("Content Type").ToString();
             return mimeType;
@@ -131,8 +135,8 @@ namespace BusinessLogic
             if (revisions != null)
             {
                 revisions.Fields = "*";
-                _remoteRevision = revisions.Execute()?.Revisions
-                                           ?.OrderByDescending(revision => revision.ModifiedTime).FirstOrDefault();
+                _remoteRevision = revisions.Execute()?.Revisions ?
+                    .OrderByDescending(revision => revision.ModifiedTime).FirstOrDefault();
             }
             else
             {
@@ -144,9 +148,9 @@ namespace BusinessLogic
                 return true;
             }
 
-            return localRevision.Modified < _remoteRevision?.ModifiedTime
-                   || _remoteRevision?.Id != localRevision.Id
-                   || _remoteRevision?.Size != localRevision.Size;
+            return localRevision.Modified < _remoteRevision?.ModifiedTime ||
+                _remoteRevision?.Id != localRevision.Id ||
+                _remoteRevision?.Size != localRevision.Size;
         }
 
         public static async Task<IDatabaseRevision> DownloadRevision()
@@ -157,12 +161,11 @@ namespace BusinessLogic
                 Debug.WriteLine("Get database file from server");
                 IDownloadProgress status;
 
-                using (var stream = new FileStream(
+                using(var stream = new FileStream(
                     DatabaseFileName,
                     FileMode.OpenOrCreate,
                     FileAccess.ReadWrite,
-                    FileShare.ReadWrite)
-                )
+                    FileShare.ReadWrite))
                 {
                     status = await request.DownloadAsync(stream).ConfigureAwait(false);
                 }
@@ -180,12 +183,12 @@ namespace BusinessLogic
                     }
 
                     var remoteRevisionId = _remoteRevision.Id ??
-                                           throw new ArgumentNullException("Remote revision has no Id value");
+                        throw new ArgumentNullException("Remote revision has no Id value");
                     var remoteRevisionModified = _remoteRevision.ModifiedTime ??
-                                                 throw new ArgumentNullException(
-                                                     "Remote revision has no ModifiedTime value");
+                        throw new ArgumentNullException(
+                            "Remote revision has no ModifiedTime value");
                     var remoteRevisionSize = _remoteRevision.Size ??
-                                             throw new ArgumentNullException("Remote revision has no Size value");
+                        throw new ArgumentNullException("Remote revision has no Size value");
                     Debug.WriteLine("Database file updated from server");
                     return new DatabaseRevision(remoteRevisionId, remoteRevisionModified, remoteRevisionSize, 0);
                 }
@@ -198,7 +201,7 @@ namespace BusinessLogic
             }
         }
 
-        public static IUploadProgress UploadRevision()
+        public static async Task<bool> UploadRevision()
         {
             try
             {
@@ -207,18 +210,17 @@ namespace BusinessLogic
                     Name = Path.GetFileName(DatabaseFileName),
                     Description = "File update automatically by MetricFlow application",
                     MimeType = GetMimeType(DatabaseFileName),
-                    Parents = new List<string> {"1ylBG0aHKWIKhi2w6hSCmEz9vW9DVBpgU"}
+                    Parents = new List<string> { "1ylBG0aHKWIKhi2w6hSCmEz9vW9DVBpgU" }
                 };
 
-                using (var stream =
-                    new FileStream(DatabaseFileName
-                        , FileMode.Open, FileAccess.Read,
+                using(var stream =
+                    new FileStream(DatabaseFileName, FileMode.Open, FileAccess.Read,
                         FileShare.Read))
                 {
                     var request = Service.Files.Update(body, FileId, stream, body.MimeType);
                     Debug.WriteLine("Send database file to server");
-                    request.Upload();
-                    return request.GetProgress();
+                    var result = await request.UploadAsync().ConfigureAwait(false);
+                    return result.Status == UploadStatus.Completed;
                 }
             }
             catch (Exception exception)

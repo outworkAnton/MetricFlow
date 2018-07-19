@@ -65,5 +65,10 @@ namespace BusinessLogic
                    .FirstOrDefault()
                    ?.Changed == 1;
         }
+
+        public async Task<bool> UploadRevision()
+        {
+            return await GoogleDriveHelper.UploadRevision().ConfigureAwait(false);
+        }
     }
 }

@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Tests/MetricFlow.Api.Tests/bin/Debug/netcoreapp2.1/MetricFlow.Api.Tests.dll",
+            "program": "${workspaceFolder}/API/MetricFlow.WebApi/bin/Debug/netcoreapp2.1/MetricFlow.WebApi.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Tests/MetricFlow.Api.Tests",
+            "cwd": "${workspaceFolder}/API/MetricFlow.WebApi",
             // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
             "console": "internalConsole",
             "stopAtEntry": false,

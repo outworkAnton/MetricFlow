@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Tests/MetricFlow.Api.Tests/MetricFlow.Api.Tests.csproj"
+                "${workspaceFolder}"
             ],
             "problemMatcher": "$msCompile"
         }

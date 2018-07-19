@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using BusinessLogic.Contract.Interfaces;
 
 namespace BusinessLogic.Contract
@@ -10,5 +11,6 @@ namespace BusinessLogic.Contract
         IDatabaseRevision GetRevisionById(string id);
         Task DownloadLatestDatabaseRevision();
         bool Changed();
+        Task<bool> UploadRevision();
     }
 }
