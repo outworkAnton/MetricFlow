@@ -13,21 +13,6 @@ namespace DataAccess.Repositories
         public DatabaseRevisionRepository(DataAccessContext context, IMapper mapper) : base(context, mapper)
         { }
 
-        public override async Task<IReadOnlyCollection<DatabaseRevision>> Get()
-        {
-            return await base.Get().ConfigureAwait(false);
-        }
-
-        public override async Task Update(DatabaseRevision databaseRevision)
-        {
-            await base.Update(databaseRevision).ConfigureAwait(false);
-        }
-
-        public override async Task Delete(DatabaseRevision databaseRevision)
-        {
-            await base.Delete(databaseRevision).ConfigureAwait(false);
-        }
-
         public override async Task<DatabaseRevision> Create(DatabaseRevision databaseRevision)
         {
             await Context.DatabaseRevisions.AddAsync(Mapper.Map<DABaseModels.DatabaseRevision>(databaseRevision))
