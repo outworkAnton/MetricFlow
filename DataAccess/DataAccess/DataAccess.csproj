@@ -12,11 +12,6 @@
     <PackageReference Include="System.Configuration.Abstractions" Version="2.0.2.45" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="AutoMapper, Version=6.2.2.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005">
-      <HintPath>..\..\..\..\Users\Mazurov Anton\.nuget\packages\automapper\6.2.2\lib\netstandard1.3\AutoMapper.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="DataAccess.DI\**" />
     <Compile Remove="DataAccess.Contract\**" />
   </ItemGroup>
