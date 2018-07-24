@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using AutoMapper;
+
 using BusinessLogic.Contract;
 using BLContractInterfaces = BusinessLogic.Contract.Interfaces;
 using DataAccess.Contract;
@@ -19,14 +21,16 @@ namespace BusinessLogic
 
         public RevisionService(IDatabaseRevisionRepository repository, IMapper mapper)
         {
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _repository = repository ??
+                throw new ArgumentNullException(nameof(repository));
+            _mapper = mapper ??
+                throw new ArgumentNullException(nameof(mapper));
             _revisions = _repository
-                         .Get()
-                         .GetAwaiter()
-                         .GetResult()
-                         .Select(revision => _mapper.Map<BLContractInterfaces.IDatabaseRevision>(revision))
-                         .ToList();
+                .Get()
+                .GetAwaiter()
+                .GetResult()
+                .Select(revision => _mapper.Map<BLContractInterfaces.IDatabaseRevision>(revision))
+                .ToList();
         }
 
         public IEnumerable<BLContractInterfaces.IDatabaseRevision> GetAll()
@@ -42,28 +46,31 @@ namespace BusinessLogic
         public async Task DownloadLatestDatabaseRevision()
         {
             var latestLocalRevision = _revisions?
-                                      .OrderByDescending(revision => revision.Modified)
-                                      .FirstOrDefault();
-            if (GoogleDriveHelper.NeedDownload(latestLocalRevision)
-            )
+                .OrderByDescending(revision => revision.Modified)
+                .FirstOrDefault();
+            if (GoogleDriveHelper.NeedDownload(latestLocalRevision))
             {
                 var latestRemoteRevision = await GoogleDriveHelper
-                                                 .DownloadRevision()
-                                                 .ConfigureAwait(false);
+                    .DownloadRevision()
+                    .ConfigureAwait(false);
                 if (latestRemoteRevision != null)
                 {
                     await _repository.Create(_mapper.Map<DAContractModels.DatabaseRevision>(latestRemoteRevision))
-                                     .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                 }
+            }
+            else
+            {
+                throw new InvalidOperationException();
             }
         }
 
         public bool Changed()
         {
             return _revisions?
-                   .OrderByDescending(revision => revision.Modified)
-                   .FirstOrDefault()
-                   ?.Changed == 1;
+                .OrderByDescending(revision => revision.Modified)
+                .FirstOrDefault() ?
+                .Changed == 1;
         }
 
         public async Task<bool> UploadRevision()

@@ -37,7 +37,7 @@ namespace BusinessLogic
 
         static GoogleDriveHelper()
         {
-            Service = GetService();
+            Service = GetServiceAsync().GetAwaiter().GetResult();
             DatabaseFileName = GetDatabaseFileName();
         }
 
@@ -58,7 +58,7 @@ namespace BusinessLogic
             }
         }
 
-        static DriveService GetService()
+        static async Task<DriveService> GetServiceAsync()
         {
             try
             {
@@ -74,13 +74,12 @@ namespace BusinessLogic
                     credPath = Path.Combine(credPath, ".credentials/metric-flow.json");
                     Debug.WriteLine("Credential file saved to: " + credPath);
 
-                    userCredential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    userCredential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                             GoogleClientSecrets.Load(stream).Secrets,
                             Scopes,
-                            Environment.UserName,
+                            "Convex",
                             CancellationToken.None,
-                            new FileDataStore(credPath, true))
-                        .GetAwaiter().GetResult();
+                            new FileDataStore(credPath, true));
                 }
 
                 var service = new DriveService(new BaseClientService.Initializer
@@ -112,19 +111,6 @@ namespace BusinessLogic
             return Path.GetDirectoryName(Process.GetCurrentProcess()
                 .MainModule
                 .FileName) + "\\Metric.Flow.Database";
-        }
-
-        private static string GetMimeType(string fileName)
-        {
-            var mimeType = "application/unknown";
-            var ext = Path.GetExtension(fileName)?.ToLower();
-            var regKey =
-                Registry.ClassesRoot.OpenSubKey(
-                    ext ??
-                    throw new FileException("Couldn't get file type"));
-            if (regKey?.GetValue("Content Type") != null)
-                mimeType = regKey.GetValue("Content Type").ToString();
-            return mimeType;
         }
 
         #endregion
@@ -208,9 +194,9 @@ namespace BusinessLogic
                 var body = new File
                 {
                     Name = Path.GetFileName(DatabaseFileName),
+                    Kind = "drive#file",
                     Description = "File update automatically by MetricFlow application",
-                    MimeType = GetMimeType(DatabaseFileName),
-                    Parents = new List<string> { "1ylBG0aHKWIKhi2w6hSCmEz9vW9DVBpgU" }
+                    MimeType = "application/octet-stream",
                 };
 
                 using(var stream =
@@ -218,9 +204,13 @@ namespace BusinessLogic
                         FileShare.Read))
                 {
                     var request = Service.Files.Update(body, FileId, stream, body.MimeType);
+                    request.AddParents = "1ylBG0aHKWIKhi2w6hSCmEz9vW9DVBpgU";
                     Debug.WriteLine("Send database file to server");
                     var result = await request.UploadAsync().ConfigureAwait(false);
-                    return result.Status == UploadStatus.Completed;
+
+                    return (result.Status == UploadStatus.Completed && result.Exception == null) ?
+                        true :
+                        throw new Exception(result.Exception.Message);
                 }
             }
             catch (Exception exception)

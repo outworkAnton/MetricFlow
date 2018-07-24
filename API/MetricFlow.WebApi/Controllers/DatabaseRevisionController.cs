@@ -44,11 +44,15 @@ namespace MetricFlow.WebApi.Controllers
             try
             {
                 await _revisionService.DownloadLatestDatabaseRevision().ConfigureAwait(false);
-                return Ok();
+                return Ok("The latest database revision was successfully downloaded");
             }
             catch (ServiceException serviceException)
             {
                 return StatusCode(503, serviceException.Message);
+            }
+            catch (InvalidOperationException)
+            {
+                return Ok("The database revision doesn't need to be updated");
             }
         }
 
@@ -73,7 +77,7 @@ namespace MetricFlow.WebApi.Controllers
             try
             {
                 await _revisionService.UploadRevision().ConfigureAwait(false);
-                return Ok();
+                return Ok("The remote database revision was successfully updated");
             }
             catch (ServiceException serviceException)
             {
