@@ -17,21 +17,25 @@ namespace BusinessLogic
     {
         private readonly IMapper _mapper;
         private readonly IDatabaseRevisionRepository _repository;
-        private readonly IEnumerable<BLContractInterfaces.IDatabaseRevision> _revisions;
+        private IEnumerable<BLContractInterfaces.IDatabaseRevision> _revisions;
 
         public RevisionService(IDatabaseRevisionRepository repository, IMapper mapper)
         {
-            _repository = repository ??
+            _repository = repository
+                ??
                 throw new ArgumentNullException(nameof(repository));
-            _mapper = mapper ??
+            _mapper = mapper
+                ??
                 throw new ArgumentNullException(nameof(mapper));
-            _revisions = _repository
-                .Get()
-                .GetAwaiter()
-                .GetResult()
-                .Select(revision => _mapper.Map<BLContractInterfaces.IDatabaseRevision>(revision))
-                .ToList();
+            LoadRevisions();
         }
+
+        private void LoadRevisions() => _revisions = _repository
+            .Get()
+            .GetAwaiter()
+            .GetResult()
+            .Select(revision => _mapper.Map<BLContractInterfaces.IDatabaseRevision>(revision))
+            .ToList();
 
         public IEnumerable<BLContractInterfaces.IDatabaseRevision> GetAll()
         {
@@ -69,13 +73,33 @@ namespace BusinessLogic
         {
             return _revisions?
                 .OrderByDescending(revision => revision.Modified)
-                .FirstOrDefault() ?
-                .Changed == 1;
+                .FirstOrDefault()
+               ?.Changed == 1;
         }
 
         public async Task<bool> UploadRevision()
         {
             return await GoogleDriveHelper.UploadRevision().ConfigureAwait(false);
+        }
+
+        public void CleanRevisions()
+        {
+            if (_revisions.Count() == 1)
+            {
+                return;
+            };
+            var lastRevision = _revisions?
+                .OrderByDescending(revision => revision.Modified)
+                .FirstOrDefault()
+                ??
+                throw new NullReferenceException();
+            foreach (var revision in _revisions)
+            {
+                _repository.Delete(_mapper.Map<DAContractModels.DatabaseRevision>(revision));
+            }
+            lastRevision.Changed = 1;
+            _repository.Create(_mapper.Map<DAContractModels.DatabaseRevision>(lastRevision));
+            LoadRevisions();
         }
     }
 }

@@ -61,7 +61,8 @@ namespace MetricFlow.WebApi.Controllers
         {
             try
             {
-                var revision = _revisionService.GetRevisionById(id) ??
+                var revision = _revisionService.GetRevisionById(id)
+                    ??
                     throw new Exception();
                 return Ok(JsonConvert.SerializeObject(revision));
             }
@@ -85,12 +86,22 @@ namespace MetricFlow.WebApi.Controllers
             }
         }
 
+        [HttpDelete()]
+        public IActionResult CleanRevisions()
+        {
+            try
+            {
+                _revisionService.CleanRevisions();
+                return Ok("All revisions except the last have been successfully removed");
+            }
+            catch (NullReferenceException nullReferenceException)
+            {
+                return StatusCode(409, nullReferenceException.Message);
+            }
+        }
+
         // PUT api/values/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value) { }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id) { }
     }
 }
