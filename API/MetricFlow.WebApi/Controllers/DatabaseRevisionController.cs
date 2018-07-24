@@ -27,8 +27,15 @@ namespace MetricFlow.WebApi.Controllers
         [HttpGet]
         public IActionResult GetAllRevisions()
         {
-            var revisions = _revisionService.GetAll();
-            return Ok(JsonConvert.SerializeObject(revisions));
+            try
+            {
+                var revisions = _revisionService.GetAll();
+                return Ok(JsonConvert.SerializeObject(revisions));
+            }
+            catch (Exception exception)
+            {
+                return StatusCode(500, exception.Message);
+            }
         }
 
         [HttpGet("changed")]
@@ -94,9 +101,9 @@ namespace MetricFlow.WebApi.Controllers
                 _revisionService.CleanRevisions();
                 return Ok("All revisions except the last have been successfully removed");
             }
-            catch (NullReferenceException nullReferenceException)
+            catch (NullReferenceException)
             {
-                return StatusCode(409, nullReferenceException.Message);
+                return StatusCode(404, "No revisions found");
             }
         }
 
