@@ -13,7 +13,7 @@ namespace DataAccess.DI
                    .As<IDatabaseRevisionRepository>()
                    .InstancePerLifetimeScope();
 
-            builder.Register(e => new DataAccessContext())
+            builder.RegisterType<DataAccessContext>()
                    .As<DataAccessContext>()
                    .InstancePerLifetimeScope();
         }

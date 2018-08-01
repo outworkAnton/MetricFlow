@@ -71,10 +71,7 @@ namespace BusinessLogic
 
         public bool Changed()
         {
-            return _revisions?
-                .OrderByDescending(revision => revision.Modified)
-                .FirstOrDefault()
-               ?.Changed == 1;
+            return _repository.Changed();
         }
 
         public async Task<bool> UploadRevision()

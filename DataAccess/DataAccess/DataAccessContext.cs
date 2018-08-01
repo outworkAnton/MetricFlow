@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using DataAccess.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace DataAccess
 {
@@ -13,10 +14,14 @@ namespace DataAccess
         public DbSet<Statistic> Statistics { get; set; }
         public DbSet<DatabaseRevision> DatabaseRevisions { get; set; }
         public DbSet<Log> Logs { get; set; }
+        public string _connectionString { get; }
+
+        public DataAccessContext(IConfiguration configuration) => _connectionString = configuration.GetSection("ConnectionStrings:MetricFlowDatabase")
+                                     .Value;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connection = new SqliteConnection("Data Source = Metric.Flow.Database;");
+            var connection = new SqliteConnection(_connectionString);
             optionsBuilder.UseSqlite(connection);
         }
     }

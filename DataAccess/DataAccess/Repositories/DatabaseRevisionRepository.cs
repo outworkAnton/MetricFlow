@@ -13,6 +13,14 @@ namespace DataAccess.Repositories
         public DatabaseRevisionRepository(DataAccessContext context, IMapper mapper) : base(context, mapper)
         { }
 
+        public bool Changed()
+        {
+            return Context.DatabaseRevisions?
+                .OrderByDescending(revision => revision.Modified)
+                .FirstOrDefault()
+               ?.Changed == 1;
+        }
+
         public override async Task<DatabaseRevision> Create(DatabaseRevision databaseRevision)
         {
             await Context.DatabaseRevisions.AddAsync(Mapper.Map<DABaseModels.DatabaseRevision>(databaseRevision))

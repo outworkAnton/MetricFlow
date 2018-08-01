@@ -3,5 +3,7 @@
 namespace DataAccess.Contract
 {
     public interface IDatabaseRevisionRepository : IDataAccessRepository<DatabaseRevision>
-    { }
+    {
+        bool Changed();
+    }
 }
