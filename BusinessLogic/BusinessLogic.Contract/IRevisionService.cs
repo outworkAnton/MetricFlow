@@ -10,7 +10,7 @@ namespace BusinessLogic.Contract
         IEnumerable<IDatabaseRevision> GetAll();
         IDatabaseRevision GetRevisionById(string id);
         Task DownloadLatestDatabaseRevision();
-        bool Changed();
+        Task<bool> Changed();
         Task<bool> UploadRevision();
         void CleanRevisions();
     }

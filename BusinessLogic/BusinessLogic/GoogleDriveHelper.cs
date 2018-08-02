@@ -12,6 +12,8 @@ using BusinessLogic.Contract.Exceptions;
 using BusinessLogic.Contract.Interfaces;
 using BusinessLogic.Models;
 
+using DataAccess.Contract;
+
 using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Download;
@@ -28,7 +30,9 @@ namespace BusinessLogic
 {
     public static class GoogleDriveHelper
     {
-        static readonly string[] Scopes = { DriveService.Scope.Drive };
+        static readonly string[] Scopes = {
+            DriveService.Scope.Drive
+        };
         private const string ApplicationName = "MetricFlow";
         private static readonly DriveService Service;
         private const string FileId = "1tElrrts1g2GR8Tny-xxd3p0N4gAaoGJm";
@@ -70,16 +74,16 @@ namespace BusinessLogic
                 UserCredential userCredential;
                 using(var stream = new FileStream("client_id.json", FileMode.Open, FileAccess.Read))
                 {
-                    var credPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                    var credPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                     credPath = Path.Combine(credPath, ".credentials/metric-flow.json");
-                    Debug.WriteLine("Credential file saved to: " + credPath);
 
                     userCredential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                            GoogleClientSecrets.Load(stream).Secrets,
-                            Scopes,
-                            "Convex",
-                            CancellationToken.None,
-                            new FileDataStore(credPath, true));
+                        GoogleClientSecrets.Load(stream).Secrets,
+                        Scopes,
+                        "Convex",
+                        CancellationToken.None,
+                        new FileDataStore(credPath));
+                    Debug.WriteLine("Credential file saved to: " + credPath);
                 }
 
                 var service = new DriveService(new BaseClientService.Initializer
@@ -94,15 +98,15 @@ namespace BusinessLogic
             {
                 Debug.WriteLine("Google Drive service API was threw an exception\n" + apiException);
 
-                throw new ServiceException("Service error was occured with " +
-                    Enum.Parse(typeof(HttpStatusCode), apiException.HttpStatusCode.ToString()) +
-                    " error\n" + apiException);
+                throw new ServiceException("Service error was occured with "
+                    + Enum.Parse(typeof(HttpStatusCode), apiException.HttpStatusCode.ToString())
+                    + " error\n" + apiException);
             }
             catch (IOException ioException)
             {
                 throw new FileException(
-                    "There is a problem locating or opening database file\nFile or directory is lost or unavailable\n" +
-                    ioException);
+                    "There is a problem locating or opening database file\nFile or directory is lost or unavailable\n"
+                    + ioException);
             }
         }
 
@@ -121,8 +125,8 @@ namespace BusinessLogic
             if (revisions != null)
             {
                 revisions.Fields = "*";
-                _remoteRevision = revisions.Execute()?.Revisions ?
-                    .OrderByDescending(revision => revision.ModifiedTime).FirstOrDefault();
+                _remoteRevision = revisions.Execute()?.Revisions
+                   ?.OrderByDescending(revision => revision.ModifiedTime).FirstOrDefault();
             }
             else
             {
@@ -134,9 +138,9 @@ namespace BusinessLogic
                 return true;
             }
 
-            return localRevision.Modified < _remoteRevision?.ModifiedTime ||
-                _remoteRevision?.Id != localRevision.Id ||
-                _remoteRevision?.Size != localRevision.Size;
+            return localRevision.Modified < _remoteRevision?.ModifiedTime
+                || _remoteRevision?.Id != localRevision.Id
+                || _remoteRevision?.Size != localRevision.Size;
         }
 
         public static async Task<IDatabaseRevision> DownloadRevision()
@@ -168,12 +172,15 @@ namespace BusinessLogic
                         throw new ServiceException(status.Exception?.Message);
                     }
 
-                    var remoteRevisionId = _remoteRevision.Id ??
+                    var remoteRevisionId = _remoteRevision.Id
+                        ??
                         throw new ArgumentNullException("Remote revision has no Id value");
-                    var remoteRevisionModified = _remoteRevision.ModifiedTime ??
+                    var remoteRevisionModified = _remoteRevision.ModifiedTime
+                        ??
                         throw new ArgumentNullException(
                             "Remote revision has no ModifiedTime value");
-                    var remoteRevisionSize = _remoteRevision.Size ??
+                    var remoteRevisionSize = _remoteRevision.Size
+                        ??
                         throw new ArgumentNullException("Remote revision has no Size value");
                     Debug.WriteLine("Database file updated from server");
                     return new DatabaseRevision(remoteRevisionId, remoteRevisionModified, remoteRevisionSize, 0);
@@ -187,10 +194,14 @@ namespace BusinessLogic
             }
         }
 
-        public static async Task<bool> UploadRevision()
+        public static async Task<bool> UploadRevision(IDatabaseRevisionRepository repository)
         {
             try
             {
+                if (!await repository.Changed().ConfigureAwait(false))
+                {
+                    return false;
+                }
                 var body = new File
                 {
                     Name = Path.GetFileName(DatabaseFileName),
@@ -208,9 +219,30 @@ namespace BusinessLogic
                     Debug.WriteLine("Send database file to server");
                     var result = await request.UploadAsync().ConfigureAwait(false);
 
-                    return (result.Status == UploadStatus.Completed && result.Exception == null) ?
-                        true :
-                        throw new Exception(result.Exception.Message);
+                    if (result.Status == UploadStatus.Completed && result.Exception == null)
+                    {
+                        var revisions = Service?.Revisions?.List(FileId);
+                        Revision newRevision;
+                        if (revisions != null)
+                        {
+                            revisions.Fields = "*";
+                            newRevision = revisions.Execute()?.Revisions
+                               ?.OrderByDescending(revision => revision.ModifiedTime).FirstOrDefault();
+                            var lastLocalRevision = await repository.GetLatestLocalRevision().ConfigureAwait(false);
+                            lastLocalRevision.Changed = 0;
+                            await repository.Update(lastLocalRevision).ConfigureAwait(false); //TODO: Update not working
+                            await repository.Create(new DataAccess.Contract.Models.DatabaseRevision
+                            {
+                                Id = newRevision.Id,
+                                    Modified = newRevision.ModifiedTime.Value,
+                                    Size = newRevision.Size.Value,
+                                    Changed = 0
+                            }).ConfigureAwait(false);
+                        }
+                        return true;
+                    }
+
+                    throw new Exception(result.Exception.Message);
                 }
             }
             catch (Exception exception)

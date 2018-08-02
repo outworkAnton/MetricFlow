@@ -39,9 +39,9 @@ namespace MetricFlow.WebApi.Controllers
         }
 
         [HttpGet("changed")]
-        public IActionResult IsDatabaseChanged()
+        public async Task<IActionResult> IsDatabaseChangedAsync()
         {
-            bool changed = _revisionService.Changed();
+            bool changed = await _revisionService.Changed().ConfigureAwait(false);
             return Ok(JsonConvert.SerializeObject(changed));
         }
 
@@ -80,12 +80,18 @@ namespace MetricFlow.WebApi.Controllers
         }
 
         [HttpGet("upload")]
-        public async Task<IActionResult> UpdateRemoteRevisionAsync()
+        public async Task<IActionResult> UpdateRemoteRevision()
         {
             try
             {
-                await _revisionService.UploadRevision().ConfigureAwait(false);
-                return Ok("The remote database revision was successfully updated");
+                if (await _revisionService.UploadRevision().ConfigureAwait(false))
+                {
+                    return Ok("The remote database revision was successfully updated");
+                }
+                else
+                {
+                    return Ok("Database has no changes");
+                }
             }
             catch (ServiceException serviceException)
             {
@@ -109,6 +115,7 @@ namespace MetricFlow.WebApi.Controllers
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value) { }
+        public void Put(int id, [FromBody] string value)
+        {}
     }
 }

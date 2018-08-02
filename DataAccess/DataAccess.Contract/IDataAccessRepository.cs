@@ -7,7 +7,7 @@ namespace DataAccess.Contract
     {
         Task<IReadOnlyCollection<T>>Get();
         Task Update(T item);
-        Task Delete(T databaseRevision);
+        Task Delete(T item);
         Task<T> Create(T item);
     }
 }

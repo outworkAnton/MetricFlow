@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using AutoMapper;
+
 using DataAccess.Contract;
+
 using Microsoft.EntityFrameworkCore;
 using DAContractInterfaces = DataAccess.Contract.Interfaces;
 using DAContractModels = DataAccess.Contract.Models;
@@ -103,8 +106,7 @@ namespace DataAccess.Repositories
                 return;
             }
 
-            await Context.SaveChangesAsync().ConfigureAwait(false);
-            OnDatabaseChange();
+            await OnDatabaseChange().ConfigureAwait(false);
         }
 
         public virtual async Task Delete(T item)
@@ -138,8 +140,7 @@ namespace DataAccess.Repositories
                 return;
             }
 
-            await Context.SaveChangesAsync().ConfigureAwait(false);
-            OnDatabaseChange();
+            await OnDatabaseChange().ConfigureAwait(false);
         }
 
         public virtual async Task<T> Create(T item)
@@ -147,43 +148,51 @@ namespace DataAccess.Repositories
             if (typeof(DAContractInterfaces.ILocation).IsAssignableFrom(typeof(T)))
             {
                 await Context.Locations.AddAsync(Mapper.Map<DABaseModels.Location>(item))
-                              .ConfigureAwait(false);
+                    .ConfigureAwait(false);
             }
             else if (typeof(DAContractInterfaces.IService).IsAssignableFrom(typeof(T)))
             {
                 await Context.Services.AddAsync(Mapper.Map<DABaseModels.Service>(item))
-                              .ConfigureAwait(false);
+                    .ConfigureAwait(false);
             }
             else if (typeof(DAContractInterfaces.IMetric).IsAssignableFrom(typeof(T)))
             {
                 await Context.Metrics.AddAsync(Mapper.Map<DABaseModels.Metric>(item))
-                              .ConfigureAwait(false);
+                    .ConfigureAwait(false);
             }
             else if (typeof(DAContractInterfaces.IFormula).IsAssignableFrom(typeof(T)))
             {
                 await Context.Formulas.AddAsync(Mapper.Map<DABaseModels.Formula>(item))
-                              .ConfigureAwait(false);
+                    .ConfigureAwait(false);
             }
             else if (typeof(DAContractInterfaces.IStatistic).IsAssignableFrom(typeof(T)))
             {
                 await Context.Statistics.AddAsync(Mapper.Map<DABaseModels.Statistic>(item))
-                              .ConfigureAwait(false);
+                    .ConfigureAwait(false);
             }
             else
             {
                 return null;
             }
 
-            await Context.SaveChangesAsync().ConfigureAwait(false);
-
-            OnDatabaseChange();
+            await OnDatabaseChange().ConfigureAwait(false);
             var items = await Get().ConfigureAwait(false);
             return items.FirstOrDefault(arg => arg == item);
         }
 
-        private static void OnDatabaseChange()
+        private async Task OnDatabaseChange()
         {
-            //TODO : implement logic for mark and store database changes
+            await Context.DatabaseRevisions.LoadAsync().ConfigureAwait(false);
+            var lastRevision = Context.DatabaseRevisions
+                .Local
+                .OrderByDescending(revision => revision.Modified)
+                .FirstOrDefault();
+            if (lastRevision.Changed == 0)
+            {
+                lastRevision.Changed = 1;
+                Context.DatabaseRevisions.Update(lastRevision);
+            }
+            await Context.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

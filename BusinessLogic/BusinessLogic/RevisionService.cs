@@ -69,14 +69,14 @@ namespace BusinessLogic
             }
         }
 
-        public bool Changed()
+        public async Task<bool> Changed()
         {
-            return _repository.Changed();
+            return await _repository.Changed().ConfigureAwait(false);
         }
 
         public async Task<bool> UploadRevision()
         {
-            return await GoogleDriveHelper.UploadRevision().ConfigureAwait(false);
+            return await GoogleDriveHelper.UploadRevision(_repository).ConfigureAwait(false);
         }
 
         public void CleanRevisions()
