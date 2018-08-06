@@ -50,7 +50,13 @@ namespace BusinessLogic
 
         public async Task DownloadLatestDatabaseRevision()
         {
-            var latestLocalRevision = await GetLatestLocalRevisionInfo().ConfigureAwait(false);
+            BLContractInterfaces.IDatabaseRevision latestLocalRevision = null;
+            try
+            {
+                latestLocalRevision = await GetLatestLocalRevisionInfo().ConfigureAwait(false);
+            }
+            catch (NullReferenceException)
+            {}
             if (await GoogleDriveHelper.NeedDownload(latestLocalRevision).ConfigureAwait(false))
             {
                 var latestRemoteRevision = await GoogleDriveHelper
