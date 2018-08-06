@@ -12,6 +12,8 @@ namespace BusinessLogic.Contract
         Task DownloadLatestDatabaseRevision();
         Task<bool> Changed();
         Task<bool> UploadRevision();
-        void CleanRevisions();
+        Task CleanRevisions();
+        Task<IDatabaseRevision> GetLatestLocalRevisionInfo();
+        Task<IDatabaseRevision> GetLatestRemoteRevisionInfo();
     }
 }

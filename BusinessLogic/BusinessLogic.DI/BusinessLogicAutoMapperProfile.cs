@@ -12,7 +12,8 @@ namespace BusinessLogic.DI
         public BusinessLogicAutoMapperProfile()
         {
             CreateMap<DAContractInterfaces.IDatabaseRevision, BLContractInterfaces.IDatabaseRevision>()
-                .Include<DAContractModels.DatabaseRevision, BLContractModels.DatabaseRevision>();
+                .Include<DAContractModels.DatabaseRevision, BLContractModels.DatabaseRevision>()
+                .ReverseMap();
             CreateMap<DAContractInterfaces.IFormula, BLContractInterfaces.IFormula>()
                 .Include<DAContractModels.Formula, BLContractModels.Formula>();
             CreateMap<DAContractInterfaces.ILocation, BLContractInterfaces.ILocation>()
@@ -52,11 +53,11 @@ namespace BusinessLogic.DI
 
             CreateMap<BLBaseModels.DatabaseRevision, DAContractModels.DatabaseRevision>()
                 .ReverseMap();
-//            CreateMap<BLBaseModels.Formula, DAContractModels.Formula>();
-//            CreateMap<BLBaseModels.Location, DAContractModels.Location>();
-//            CreateMap<BLBaseModels.Metric, DAContractModels.Metric>();
-//            CreateMap<BLBaseModels.Service, DAContractModels.Service>();
-//            CreateMap<BLBaseModels.Statistic, DAContractModels.Statistic>();
+            //            CreateMap<BLBaseModels.Formula, DAContractModels.Formula>();
+            //            CreateMap<BLBaseModels.Location, DAContractModels.Location>();
+            //            CreateMap<BLBaseModels.Metric, DAContractModels.Metric>();
+            //            CreateMap<BLBaseModels.Service, DAContractModels.Service>();
+            //            CreateMap<BLBaseModels.Statistic, DAContractModels.Statistic>();
         }
     }
 }

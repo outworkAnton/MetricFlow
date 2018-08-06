@@ -41,7 +41,7 @@ namespace BusinessLogic
 
         static GoogleDriveHelper()
         {
-            Service = GetServiceAsync().GetAwaiter().GetResult();
+            Service = GetService().GetAwaiter().GetResult();
             DatabaseFileName = GetDatabaseFileName();
         }
 
@@ -62,7 +62,7 @@ namespace BusinessLogic
             }
         }
 
-        static async Task<DriveService> GetServiceAsync()
+        static async Task<DriveService> GetService()
         {
             try
             {
@@ -119,19 +119,9 @@ namespace BusinessLogic
 
         #endregion
 
-        public static bool NeedDownload(IDatabaseRevision localRevision)
+        public static async Task<bool> NeedDownload(IDatabaseRevision localRevision)
         {
-            var revisions = Service?.Revisions?.List(FileId);
-            if (revisions != null)
-            {
-                revisions.Fields = "*";
-                _remoteRevision = revisions.Execute()?.Revisions
-                   ?.OrderByDescending(revision => revision.ModifiedTime).FirstOrDefault();
-            }
-            else
-            {
-                return false;
-            }
+            _remoteRevision = await GetLatestRemoteRevisionInfo().ConfigureAwait(false);
 
             if (localRevision == null)
             {
@@ -141,6 +131,18 @@ namespace BusinessLogic
             return localRevision.Modified < _remoteRevision?.ModifiedTime
                 || _remoteRevision?.Id != localRevision.Id
                 || _remoteRevision?.Size != localRevision.Size;
+        }
+
+        public static async Task<Revision> GetLatestRemoteRevisionInfo()
+        {
+
+            var revisionsRequest = Service?.Revisions?.List(FileId)
+                ??
+                throw new NullReferenceException();
+            revisionsRequest.Fields = "*";
+            var listOfRevisions = await revisionsRequest.ExecuteAsync().ConfigureAwait(false);
+            return listOfRevisions?.Revisions
+               ?.OrderByDescending(revision => revision.ModifiedTime).FirstOrDefault();
         }
 
         public static async Task<IDatabaseRevision> DownloadRevision()

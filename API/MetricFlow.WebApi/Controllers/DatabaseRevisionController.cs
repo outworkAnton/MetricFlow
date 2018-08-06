@@ -113,6 +113,34 @@ namespace MetricFlow.WebApi.Controllers
             }
         }
 
+        [HttpGet("lastlocal")]
+        public async Task<IActionResult> GetLatestLocalRevisionInfoAsync()
+        {
+            try
+            {
+                var revisionInfo = await _revisionService.GetLatestLocalRevisionInfo().ConfigureAwait(false);
+                return Ok(JsonConvert.SerializeObject(revisionInfo));
+            }
+            catch (NullReferenceException)
+            {
+                return StatusCode(404, "No revisions found");
+            }
+        }
+
+        [HttpGet("lastremote")]
+        public async Task<IActionResult> GetLatestRemoteRevisionInfoAsync()
+        {
+            try
+            {
+                var revisionInfo = await _revisionService.GetLatestRemoteRevisionInfo().ConfigureAwait(false);
+                return Ok(JsonConvert.SerializeObject(revisionInfo));
+            }
+            catch (NullReferenceException)
+            {
+                return StatusCode(404, "No revisions found");
+            }
+        }
+
         // PUT api/values/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)

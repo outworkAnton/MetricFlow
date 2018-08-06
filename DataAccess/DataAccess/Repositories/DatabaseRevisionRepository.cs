@@ -34,6 +34,12 @@ namespace DataAccess.Repositories
             return items.FirstOrDefault(arg => arg.Id == databaseRevision.Id);
         }
 
+        public override async Task Update(IDatabaseRevision databaseRevision)
+        {
+            Context.DatabaseRevisions.Update(Mapper.Map<DABaseModels.DatabaseRevision>(databaseRevision));
+            await Context.SaveChangesAsync().ConfigureAwait(false);
+        }
+
         public async Task<IDatabaseRevision> GetLatestLocalRevision()
         {
             await Context.DatabaseRevisions.LoadAsync().ConfigureAwait(false);

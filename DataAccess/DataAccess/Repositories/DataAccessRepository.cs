@@ -97,14 +97,12 @@ namespace DataAccess.Repositories
             {
                 Context.Statistics.Update(Mapper.Map<DABaseModels.Statistic>(item));
             }
-            else if (typeof(DAContractInterfaces.IDatabaseRevision).IsAssignableFrom(typeof(T)))
-            {
-                Context.DatabaseRevisions.Update(Mapper.Map<DABaseModels.DatabaseRevision>(item));
-            }
             else
             {
                 return;
             }
+
+            await Context.SaveChangesAsync().ConfigureAwait(false);
 
             await OnDatabaseChange().ConfigureAwait(false);
         }
@@ -140,6 +138,8 @@ namespace DataAccess.Repositories
                 return;
             }
 
+            await Context.SaveChangesAsync().ConfigureAwait(false);
+
             await OnDatabaseChange().ConfigureAwait(false);
         }
 
@@ -174,6 +174,8 @@ namespace DataAccess.Repositories
             {
                 return null;
             }
+
+            await Context.SaveChangesAsync().ConfigureAwait(false);
 
             await OnDatabaseChange().ConfigureAwait(false);
             var items = await Get().ConfigureAwait(false);

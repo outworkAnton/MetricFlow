@@ -7,6 +7,7 @@ using AutoMapper;
 
 using BusinessLogic.Contract;
 using BLContractInterfaces = BusinessLogic.Contract.Interfaces;
+using BLContractModels = BusinessLogic.Contract.Models;
 using DataAccess.Contract;
 using DAContractInterfaces = DataAccess.Contract.Interfaces;
 using DAContractModels = DataAccess.Contract.Models;
@@ -49,10 +50,8 @@ namespace BusinessLogic
 
         public async Task DownloadLatestDatabaseRevision()
         {
-            var latestLocalRevision = _revisions?
-                .OrderByDescending(revision => revision.Modified)
-                .FirstOrDefault();
-            if (GoogleDriveHelper.NeedDownload(latestLocalRevision))
+            var latestLocalRevision = await GetLatestLocalRevisionInfo().ConfigureAwait(false);
+            if (await GoogleDriveHelper.NeedDownload(latestLocalRevision).ConfigureAwait(false))
             {
                 var latestRemoteRevision = await GoogleDriveHelper
                     .DownloadRevision()
@@ -79,24 +78,37 @@ namespace BusinessLogic
             return await GoogleDriveHelper.UploadRevision(_repository).ConfigureAwait(false);
         }
 
-        public void CleanRevisions()
+        public async Task CleanRevisions()
         {
             if (_revisions.Count() == 1)
             {
                 return;
             };
-            var lastRevision = _revisions?
-                .OrderByDescending(revision => revision.Modified)
-                .FirstOrDefault()
-                ??
-                throw new NullReferenceException();
+            var lastRevision = await GetLatestLocalRevisionInfo().ConfigureAwait(false);
             foreach (var revision in _revisions)
             {
-                _repository.Delete(_mapper.Map<DAContractModels.DatabaseRevision>(revision));
+                await _repository.Delete(_mapper.Map<DAContractModels.DatabaseRevision>(revision)).ConfigureAwait(false);
             }
             lastRevision.Changed = 1;
-            _repository.Create(_mapper.Map<DAContractModels.DatabaseRevision>(lastRevision));
+            await _repository.Create(_mapper.Map<DAContractModels.DatabaseRevision>(lastRevision)).ConfigureAwait(false);
             LoadRevisions();
+        }
+
+        public async Task<BLContractInterfaces.IDatabaseRevision> GetLatestLocalRevisionInfo()
+        {
+            var daRevision = await _repository.GetLatestLocalRevision().ConfigureAwait(false)
+                ??
+                throw new NullReferenceException();
+            return _mapper.Map<BLContractInterfaces.IDatabaseRevision>(daRevision);
+        }
+
+        public async Task<BLContractInterfaces.IDatabaseRevision> GetLatestRemoteRevisionInfo()
+        {
+            var gdhRevision = await GoogleDriveHelper.GetLatestRemoteRevisionInfo().ConfigureAwait(false)
+                ??
+                throw new NullReferenceException();
+            BLContractInterfaces.IDatabaseRevision lastRevision = new BLContractModels.DatabaseRevision(gdhRevision.Id, gdhRevision.ModifiedTime.Value, gdhRevision.Size.Value, 0);
+            return lastRevision;
         }
     }
 }
