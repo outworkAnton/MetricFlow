@@ -12,7 +12,7 @@ using BusinessLogic.Contract.Exceptions;
 using BusinessLogic.Contract.Interfaces;
 using BusinessLogic.Models;
 
-using DataAccess.Contract;
+using DataAccess.Contract.Repositories;
 
 using Google;
 using Google.Apis.Auth.OAuth2;

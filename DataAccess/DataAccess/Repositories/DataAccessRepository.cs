@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
-using DataAccess.Contract;
+using DataAccess.Contract.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 using DAContractInterfaces = DataAccess.Contract.Interfaces;

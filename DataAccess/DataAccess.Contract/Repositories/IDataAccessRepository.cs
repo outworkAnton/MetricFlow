@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DataAccess.Contract
+namespace DataAccess.Contract.Repositories
 {
     public interface IDataAccessRepository<T> where T: class
     {

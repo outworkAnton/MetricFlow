@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
-using DataAccess.Contract;
 using DataAccess.Contract.Interfaces;
 using DataAccess.Contract.Models;
+using DataAccess.Contract.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 using DABaseModels = DataAccess.Models;

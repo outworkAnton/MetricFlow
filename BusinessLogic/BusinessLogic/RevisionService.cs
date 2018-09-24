@@ -8,7 +8,7 @@ using AutoMapper;
 using BusinessLogic.Contract;
 using BLContractInterfaces = BusinessLogic.Contract.Interfaces;
 using BLContractModels = BusinessLogic.Contract.Models;
-using DataAccess.Contract;
+using DataAccess.Contract.Repositories;
 using DAContractInterfaces = DataAccess.Contract.Interfaces;
 using DAContractModels = DataAccess.Contract.Models;
 
