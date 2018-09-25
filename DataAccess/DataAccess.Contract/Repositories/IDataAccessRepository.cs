@@ -7,6 +7,7 @@ namespace DataAccess.Contract.Repositories
     {
         Task<IReadOnlyCollection<T>>Get();
         Task Update(T item);
+        Task<T> Find(string id);
         Task Delete(T item);
         Task<T> Create(T item);
     }

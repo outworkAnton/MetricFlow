@@ -103,8 +103,37 @@ namespace DataAccess.Repositories
             }
 
             await Context.SaveChangesAsync().ConfigureAwait(false);
+        }
+        
+        public virtual async Task<T> Find(string id)
+        {
+            T foundedItem;
+            if (typeof(DAContractInterfaces.ILocation).IsAssignableFrom(typeof(T)))
+            {
+                foundedItem = await Context.Locations.FindAsync(id).ConfigureAwait(false) as T;
+            }
+            else if (typeof(DAContractInterfaces.IService).IsAssignableFrom(typeof(T)))
+            {
+                foundedItem = await Context.Services.FindAsync(id).ConfigureAwait(false) as T;
+            }
+            else if (typeof(DAContractInterfaces.IMetric).IsAssignableFrom(typeof(T)))
+            {
+                foundedItem = await Context.Metrics.FindAsync(id).ConfigureAwait(false) as T;
+            }
+            else if (typeof(DAContractInterfaces.IFormula).IsAssignableFrom(typeof(T)))
+            {
+                foundedItem = await Context.Formulas.FindAsync(id).ConfigureAwait(false) as T;
+            }
+            else if (typeof(DAContractInterfaces.IStatistic).IsAssignableFrom(typeof(T)))
+            {
+                foundedItem = await Context.Statistics.FindAsync(id).ConfigureAwait(false) as T;
+            }
+            else
+            {
+                return null;
+            }
 
-            await OnDatabaseChange().ConfigureAwait(false);
+            return foundedItem;
         }
 
         public virtual async Task Delete(T item)
@@ -139,8 +168,6 @@ namespace DataAccess.Repositories
             }
 
             await Context.SaveChangesAsync().ConfigureAwait(false);
-
-            await OnDatabaseChange().ConfigureAwait(false);
         }
 
         public virtual async Task<T> Create(T item)
@@ -177,24 +204,8 @@ namespace DataAccess.Repositories
 
             await Context.SaveChangesAsync().ConfigureAwait(false);
 
-            await OnDatabaseChange().ConfigureAwait(false);
             var items = await Get().ConfigureAwait(false);
             return items.FirstOrDefault(arg => arg == item);
-        }
-
-        private async Task OnDatabaseChange()
-        {
-            await Context.DatabaseRevisions.LoadAsync().ConfigureAwait(false);
-            var lastRevision = Context.DatabaseRevisions
-                .Local
-                .OrderByDescending(revision => revision.Modified)
-                .FirstOrDefault();
-            if (lastRevision.Changed == 0)
-            {
-                lastRevision.Changed = 1;
-                Context.DatabaseRevisions.Update(lastRevision);
-            }
-            await Context.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }
