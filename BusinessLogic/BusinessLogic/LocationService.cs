@@ -41,5 +41,10 @@ namespace BusinessLogic
         {
             return _locations;
         }
+
+        public BLContractInterfaces.ILocation GetLocationById(string id)
+        {
+            return _locations?.FirstOrDefault(location => location.Id == id);
+        }
     }
 }

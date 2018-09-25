@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+
 using BusinessLogic.Contract;
 using BusinessLogic.Contract.Exceptions;
+
 using Microsoft.AspNetCore.Mvc;
+
 using Newtonsoft.Json;
 
 namespace MetricFlow.WebApi.Controllers
@@ -32,6 +35,22 @@ namespace MetricFlow.WebApi.Controllers
             catch (Exception exception)
             {
                 return StatusCode(500, exception.Message);
+            }
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetRevisionById(string id)
+        {
+            try
+            {
+                var revision = _locationService.GetLocationById(id)
+                    ??
+                    throw new Exception();
+                return Ok(JsonConvert.SerializeObject(revision));
+            }
+            catch
+            {
+                return NotFound($"Location with Id: {id} not found");
             }
         }
     }
