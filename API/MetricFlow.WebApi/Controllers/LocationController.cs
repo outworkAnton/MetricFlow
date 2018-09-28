@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-
+using BusinessLogic;
 using BusinessLogic.Contract;
 using BusinessLogic.Contract.Exceptions;
 using BusinessLogic.Contract.Interfaces;
+
 using Microsoft.AspNetCore.Mvc;
 
 using Newtonsoft.Json;
@@ -17,12 +18,9 @@ namespace MetricFlow.WebApi.Controllers
     [ApiController]
     public class LocationController : ControllerBase
     {
-        private readonly IBusinessLogicService<ILocation> _locationService;
+        private readonly ILocationService _locationService;
 
-        public LocationController(IBusinessLogicService<ILocation> locationService)
-        {
-            _locationService = locationService;
-        }
+        public LocationController(ILocationService locationService) => _locationService = locationService;
 
         [HttpGet]
         public IActionResult GetAllLocations()
@@ -44,21 +42,23 @@ namespace MetricFlow.WebApi.Controllers
             try
             {
                 var revision = await _locationService.GetItemById(id).ConfigureAwait(false);
-                return revision == null ? throw new Exception() : Ok(JsonConvert.SerializeObject(revision));
+                return revision == null
+                    ? throw new Exception()
+                    : Ok(JsonConvert.SerializeObject(revision));
             }
             catch
             {
                 return NotFound($"Location with Id: {id} not found");
             }
         }
-        
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLocation(string id)
         {
             try
             {
                 var locationForDelete = await _locationService.GetItemById(id).ConfigureAwait(false);
-                await _locationService.Delete(locationForDelete).ConfigureAwait(false);
+                await _locationService.DeleteAsync(locationForDelete).ConfigureAwait(false);
                 return Ok($"Location with id {id} have been successfully removed");
             }
             catch
@@ -66,19 +66,23 @@ namespace MetricFlow.WebApi.Controllers
                 return NotFound($"Location with Id: {id} not found");
             }
         }
-        
+
         [HttpPut]
         public async Task<IActionResult> CreateLocation([FromBody] string name, bool active)
         {
             try
             {
-                var locationForDelete = await _locationService.GetItemById(id).ConfigureAwait(false);
-                await _locationService.Delete(locationForDelete).ConfigureAwait(false);
-                return Ok($"Location with id {id} have been successfully removed");
+                var createdLocation = await _locationService.Create(new dynamic[]
+                {
+                    new Guid(),
+                    name,
+                    active
+                }).ConfigureAwait(false) ?? throw new Exception("No errors in creation process but location didn't created");
+                return Ok(JsonConvert.SerializeObject(createdLocation));
             }
-            catch
+            catch (Exception exception)
             {
-                return NotFound($"Location with Id: {id} not found");
+                return StatusCode(500, exception.Message);
             }
         }
     }

@@ -104,7 +104,7 @@ namespace DataAccess.Repositories
 
             await Context.SaveChangesAsync().ConfigureAwait(false);
         }
-        
+
         public virtual async Task<T> Find(string id)
         {
             T foundedItem;

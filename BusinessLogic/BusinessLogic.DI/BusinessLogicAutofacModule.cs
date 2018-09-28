@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using Autofac;
+
 using AutoMapper;
+
 using BusinessLogic.Contract;
+using BusinessLogic.Contract.Interfaces;
 
 namespace BusinessLogic.DI
 {
@@ -10,29 +14,33 @@ namespace BusinessLogic.DI
     {
         protected override void Load(ContainerBuilder builder)
         {
+            // builder.RegisterGeneric(typeof(BusinessLogicService<>))
+            //     .As(typeof(IBusinessLogicService<>))
+            //     .InstancePerLifetimeScope();
+
             builder.RegisterType<LocationService>()
-                   .As<ILocationService>()
-                   .InstancePerLifetimeScope();
+                .As<ILocationService>()
+                .InstancePerLifetimeScope();
             builder.RegisterType<FormulaService>()
-                   .As<IFormulaService>()
-                   .InstancePerLifetimeScope();
+                .As<IFormulaService>()
+                .InstancePerLifetimeScope();
             builder.RegisterType<MetricService>()
-                   .As<IMetricService>()
-                   .InstancePerLifetimeScope();
+                .As<IMetricService>()
+                .InstancePerLifetimeScope();
             builder.RegisterType<RevisionService>()
-                   .As<IRevisionService>()
-                   .InstancePerLifetimeScope();
+                .As<IRevisionService>()
+                .InstancePerLifetimeScope();
             builder.RegisterType<ServiceFlowService>()
-                   .As<IServiceFlowService>()
-                   .InstancePerLifetimeScope();
+                .As<IServiceFlowService>()
+                .InstancePerLifetimeScope();
             builder.RegisterType<StatisticService>()
-                   .As<IStatisticService>()
-                   .InstancePerLifetimeScope();
+                .As<IStatisticService>()
+                .InstancePerLifetimeScope();
 
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             builder.RegisterAssemblyTypes(assemblies)
-                   .Where(t => typeof(Profile).IsAssignableFrom(t) && !t.IsAbstract && t.IsPublic)
-                   .As<Profile>();
+                .Where(t => typeof(Profile).IsAssignableFrom(t) && !t.IsAbstract && t.IsPublic)
+                .As<Profile>();
 
             builder.Register(c => new MapperConfiguration(cfg =>
             {
@@ -42,9 +50,9 @@ namespace BusinessLogic.DI
                 }
             })).AsSelf().SingleInstance();
             builder.Register(c => c.Resolve<MapperConfiguration>()
-                                   .CreateMapper(c.Resolve))
-                   .As<IMapper>()
-                   .InstancePerLifetimeScope();
+                    .CreateMapper(c.Resolve))
+                .As<IMapper>()
+                .InstancePerLifetimeScope();
         }
     }
 }

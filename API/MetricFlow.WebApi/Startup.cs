@@ -37,8 +37,8 @@ namespace MetricFlow.WebApi
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             var builder = new ContainerBuilder();
-            builder.RegisterModule(new BusinessLogicAutofacModule());
             builder.RegisterModule(new DataAccessAutofacModule());
+            builder.RegisterModule(new BusinessLogicAutofacModule());
             builder.Populate(services);
             var container = builder.Build();
             return new AutofacServiceProvider(container);

@@ -10,8 +10,12 @@ namespace DataAccess.DI
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<DatabaseRevisionRepository>()
-                .As<IDatabaseRevisionRepository>()
+            builder.RegisterType<DataAccessRepository<ILocation>>()
+                .As<IDataAccessRepository<ILocation>>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<LocationRepository>()
+                .As<ILocationRepository>()
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<DataAccessContext>()

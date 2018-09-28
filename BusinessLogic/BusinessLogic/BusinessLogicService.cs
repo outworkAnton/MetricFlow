@@ -2,58 +2,56 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using AutoMapper;
+
 using BusinessLogic.Contract;
-using DataAccess.Contract.Interfaces;
+
 using DataAccess.Contract.Repositories;
-using BLContractInterfaces = BusinessLogic.Contract.Interfaces;
-using DAContractModels = DataAccess.Contract.Models;
 
 namespace BusinessLogic
 {
-    public abstract class BusinessLogicService<T> : IBusinessLogicService<T> where T: class
+    public abstract class BusinessLogicService<TBL, TDA> : IBusinessLogicService<TBL, TDA> where TBL : class where TDA : class
     {
         private readonly IMapper _mapper;
-        private readonly IDataAccessRepository<T> _repository;
-        private IEnumerable<T> _items;
+        private readonly IDataAccessRepository<TDA> _repository;
+        private IEnumerable<TBL> _items;
 
-        protected BusinessLogicService(IDataAccessRepository<T> repository, IMapper mapper)
+        protected BusinessLogicService(IDataAccessRepository<TDA> repository, IMapper mapper)
         {
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _repository = repository
+                ??
+                throw new ArgumentNullException(nameof(repository));
+            _mapper = mapper
+                ??
+                throw new ArgumentNullException(nameof(mapper));
             LoadItems();
         }
-        
+
         private void LoadItems() => _items = _repository
             .Get()
             .GetAwaiter()
             .GetResult()
-            .Select(item => _mapper.Map<T>(item))
+            .Select(item => _mapper.Map<TBL>(item))
             .ToList();
-        
-        public virtual IReadOnlyCollection<T> GetAllItems()
+
+        public virtual IReadOnlyCollection<TBL> GetAllItems() => _items.ToArray();
+
+        public virtual async Task<TBL> GetItemById(string id)
         {
-            return _items.ToArray();
+            var foundedItem = await _repository.Find(id).ConfigureAwait(false);
+            return _mapper.Map<TBL>(foundedItem);
         }
 
-        public virtual async Task<T> GetItemById(string id)
-        {
-            return await _repository.Find(id).ConfigureAwait(false);
-        }
+        public virtual async Task UpdateAsync(TBL item) => await _repository.Update(_mapper.Map<TDA>(item)).ConfigureAwait(false);
 
-        public virtual Task<T> Update(T item)
-        {
-            throw new System.NotImplementedException();
-        }
+        public virtual async Task DeleteAsync(TBL item) => await _repository.Delete(_mapper.Map<TDA>(item)).ConfigureAwait(false);
 
-        public virtual Task Delete(T item)
+        public virtual async Task<TBL> Create(params dynamic[] parameters)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public virtual Task<T> Create(T item)
-        {
-            throw new System.NotImplementedException();
+            var tmpItemModel = (TBL)Activator.CreateInstance(typeof(TBL), parameters);
+            var createdItemModel = await _repository.Create(_mapper.Map<TDA>(tmpItemModel)).ConfigureAwait(false);
+            return _mapper.Map<TBL>(createdItemModel);
         }
     }
 }

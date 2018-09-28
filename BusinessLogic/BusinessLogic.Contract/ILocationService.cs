@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using BusinessLogic.Contract.Interfaces;
+using BL = BusinessLogic.Contract.Interfaces;
+using DA = DataAccess.Contract.Interfaces;
 
 namespace BusinessLogic.Contract
 {
-    public interface ILocationService
-    {
-        
-    }
+    public interface ILocationService : IBusinessLogicService<BL.ILocation, DA.ILocation>
+        {
+
+        }
 }
