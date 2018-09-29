@@ -24,14 +24,13 @@ namespace DataAccess.Repositories
             return lastRevision?.Changed == 1;
         }
 
-        public override async Task<IDatabaseRevision> Create(IDatabaseRevision databaseRevision)
+        public override async Task Create(IDatabaseRevision databaseRevision)
         {
             await Context.DatabaseRevisions.AddAsync(Mapper.Map<DABaseModels.DatabaseRevision>(databaseRevision))
                 .ConfigureAwait(false);
             await Context.SaveChangesAsync().ConfigureAwait(false);
 
             var items = await Get().ConfigureAwait(false);
-            return items.FirstOrDefault(arg => arg.Id == databaseRevision.Id);
         }
 
         public override async Task Update(IDatabaseRevision databaseRevision)

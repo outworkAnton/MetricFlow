@@ -9,6 +9,6 @@ namespace BusinessLogic.Contract
         Task<TBL> GetItemById(string id);
         Task UpdateAsync(TBL item);
         Task DeleteAsync(TBL item);
-        Task<TBL> Create(params dynamic[] parameters);
+        Task Create(TBL item);
     }
 }

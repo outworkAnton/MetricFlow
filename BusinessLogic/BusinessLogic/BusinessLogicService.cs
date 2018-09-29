@@ -47,11 +47,9 @@ namespace BusinessLogic
 
         public virtual async Task DeleteAsync(TBL item) => await _repository.Delete(_mapper.Map<TDA>(item)).ConfigureAwait(false);
 
-        public virtual async Task<TBL> Create(params dynamic[] parameters)
+        public virtual async Task Create(TBL item)
         {
-            var tmpItemModel = (TBL)Activator.CreateInstance(typeof(TBL), parameters);
-            var createdItemModel = await _repository.Create(_mapper.Map<TDA>(tmpItemModel)).ConfigureAwait(false);
-            return _mapper.Map<TBL>(createdItemModel);
+            await _repository.Create(_mapper.Map<TDA>(item)).ConfigureAwait(false);
         }
     }
 }

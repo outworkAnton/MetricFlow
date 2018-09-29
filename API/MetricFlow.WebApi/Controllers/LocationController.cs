@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+
 using BusinessLogic;
 using BusinessLogic.Contract;
 using BusinessLogic.Contract.Exceptions;
 using BusinessLogic.Contract.Interfaces;
+using BusinessLogic.Contract.Models;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,10 +43,10 @@ namespace MetricFlow.WebApi.Controllers
         {
             try
             {
-                var revision = await _locationService.GetItemById(id).ConfigureAwait(false);
-                return revision == null
-                    ? throw new Exception()
-                    : Ok(JsonConvert.SerializeObject(revision));
+                var location = await _locationService.GetItemById(id).ConfigureAwait(false);
+                return location == null
+                    ?
+                    throw new Exception() : Ok(JsonConvert.SerializeObject(location));
             }
             catch
             {
@@ -67,17 +69,15 @@ namespace MetricFlow.WebApi.Controllers
             }
         }
 
-        [HttpPut]
-        public async Task<IActionResult> CreateLocation([FromBody] string name, bool active)
+        [HttpPost]
+        public async Task<IActionResult> CreateLocation([FromBody] Location location)
         {
             try
             {
-                var createdLocation = await _locationService.Create(new dynamic[]
-                {
-                    new Guid(),
-                    name,
-                    active
-                }).ConfigureAwait(false) ?? throw new Exception("No errors in creation process but location didn't created");
+                await _locationService.Create(location).ConfigureAwait(false);
+                var createdLocation = GetLocationById(location.Id)
+                    ??
+                    throw new Exception("No errors in creation process but location didn't created");
                 return Ok(JsonConvert.SerializeObject(createdLocation));
             }
             catch (Exception exception)

@@ -110,23 +110,23 @@ namespace DataAccess.Repositories
             T foundedItem;
             if (typeof(DAContractInterfaces.ILocation).IsAssignableFrom(typeof(T)))
             {
-                foundedItem = await Context.Locations.FindAsync(id).ConfigureAwait(false) as T;
+                foundedItem = await Context.Locations.FindAsync(id).ConfigureAwait(false)as T;
             }
             else if (typeof(DAContractInterfaces.IService).IsAssignableFrom(typeof(T)))
             {
-                foundedItem = await Context.Services.FindAsync(id).ConfigureAwait(false) as T;
+                foundedItem = await Context.Services.FindAsync(id).ConfigureAwait(false)as T;
             }
             else if (typeof(DAContractInterfaces.IMetric).IsAssignableFrom(typeof(T)))
             {
-                foundedItem = await Context.Metrics.FindAsync(id).ConfigureAwait(false) as T;
+                foundedItem = await Context.Metrics.FindAsync(id).ConfigureAwait(false)as T;
             }
             else if (typeof(DAContractInterfaces.IFormula).IsAssignableFrom(typeof(T)))
             {
-                foundedItem = await Context.Formulas.FindAsync(id).ConfigureAwait(false) as T;
+                foundedItem = await Context.Formulas.FindAsync(id).ConfigureAwait(false)as T;
             }
             else if (typeof(DAContractInterfaces.IStatistic).IsAssignableFrom(typeof(T)))
             {
-                foundedItem = await Context.Statistics.FindAsync(id).ConfigureAwait(false) as T;
+                foundedItem = await Context.Statistics.FindAsync(id).ConfigureAwait(false)as T;
             }
             else
             {
@@ -170,7 +170,7 @@ namespace DataAccess.Repositories
             await Context.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        public virtual async Task<T> Create(T item)
+        public virtual async Task Create(T item)
         {
             if (typeof(DAContractInterfaces.ILocation).IsAssignableFrom(typeof(T)))
             {
@@ -199,13 +199,10 @@ namespace DataAccess.Repositories
             }
             else
             {
-                return null;
+                return;
             }
 
             await Context.SaveChangesAsync().ConfigureAwait(false);
-
-            var items = await Get().ConfigureAwait(false);
-            return items.FirstOrDefault(arg => arg == item);
         }
     }
 }

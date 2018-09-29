@@ -9,6 +9,6 @@ namespace DataAccess.Contract.Repositories
         Task Update(T item);
         Task<T> Find(string id);
         Task Delete(T item);
-        Task<T> Create(T item);
+        Task Create(T item);
     }
 }
