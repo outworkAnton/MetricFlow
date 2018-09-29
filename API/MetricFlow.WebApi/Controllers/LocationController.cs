@@ -45,8 +45,8 @@ namespace MetricFlow.WebApi.Controllers
             {
                 var location = await _locationService.GetItemById(id).ConfigureAwait(false);
                 return location == null
-                    ?
-                    throw new Exception() : Ok(JsonConvert.SerializeObject(location));
+                    ? throw new Exception() 
+                    : Ok(JsonConvert.SerializeObject(location));
             }
             catch
             {
@@ -75,10 +75,10 @@ namespace MetricFlow.WebApi.Controllers
             try
             {
                 await _locationService.Create(location).ConfigureAwait(false);
-                var createdLocation = GetLocationById(location.Id)
-                    ??
-                    throw new Exception("No errors in creation process but location didn't created");
-                return Ok(JsonConvert.SerializeObject(createdLocation));
+                var createdLocation = await _locationService.GetItemById(location.Id).ConfigureAwait(false);
+                return createdLocation == null
+                    ? throw new Exception("No errors in creation process but location didn't created")
+                    : Ok(JsonConvert.SerializeObject(createdLocation));
             }
             catch (Exception exception)
             {

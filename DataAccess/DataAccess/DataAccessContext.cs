@@ -12,7 +12,6 @@ namespace DataAccess
         public DbSet<Metric> Metrics { get; set; }
         public DbSet<Formula> Formulas { get; set; }
         public DbSet<Statistic> Statistics { get; set; }
-        public DbSet<DatabaseRevision> DatabaseRevisions { get; set; }
         public DbSet<Log> Logs { get; set; }
         public string _connectionString { get; }
 

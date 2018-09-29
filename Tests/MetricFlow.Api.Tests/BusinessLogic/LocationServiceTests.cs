@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
-
+using System.Threading.Tasks;
 using AutoMapper;
 
 using BusinessLogic;
 using BusinessLogic.DI;
-
+using BusinessLogic.Models;
 using DataAccess.Contract.Repositories;
 
 using KellermanSoftware.CompareNetObjects;
@@ -20,15 +20,15 @@ using DACM = DataAccess.Contract.Models;
 namespace MetricFlow.Api.Tests.BusinessLogic
 {
     [TestFixture]
-    public class RevisionServiceTests
+    public class LocationServiceTests
     {
         #region Init
 
-        private IDatabaseRevisionRepository _repository;
+        private ILocationRepository _repository;
         private IMapper _mapper;
 
-        private readonly BLI.IDatabaseRevision _expectedRevision =
-            new BLM.DatabaseRevision("fc37fe97-c355-4f6e-80f7-3641787e0624", new DateTime(2018, 05, 22), 53216, 1);
+        private readonly BLI.ILocation _expectedLocation =
+            new Location("fc37fe97-c355-4f6e-80f7-3641787e0624", "Test location", 1);
 
         private static readonly CompareLogic Comparer = new CompareLogic(new ComparisonConfig()
         {
@@ -45,37 +45,33 @@ namespace MetricFlow.Api.Tests.BusinessLogic
         {
             var config = new MapperConfiguration(cfg => cfg.AddProfile(new BusinessLogicAutoMapperProfile()));
             _mapper = config.CreateMapper();
-            var repositoryMock = new Mock<IDatabaseRevisionRepository>();
+            var repositoryMock = new Mock<ILocationRepository>();
             repositoryMock.Setup(repository => repository.Get())
                 .ReturnsAsync(new []
                 {
-                    new DACM.DatabaseRevision()
+                    new DACM.Location()
                         {
                             Id = "62cff683-a485-4eab-8cba-0be75db507cf",
-                                Modified = new DateTime(2018, 12, 24),
-                                Size = 12345,
-                                Changed = 0
+                            Name = "Home",
+                            Active = 0
                         },
-                        new DACM.DatabaseRevision()
+                        new DACM.Location()
                         {
                             Id = "5b21ef66-d4d3-435c-835c-dac5e59b6dbf",
-                                Modified = new DateTime(2017, 03, 05),
-                                Size = 25874,
-                                Changed = 1
+                            Name = "Work",
+                            Active = 0
                         },
-                        new DACM.DatabaseRevision()
+                        new DACM.Location()
                         {
                             Id = "31d4f4bd-67ff-4f51-af70-59e3ce983a9c",
-                                Modified = new DateTime(2018, 11, 22),
-                                Size = 54321,
-                                Changed = 0
+                            Name = "Apartment",
+                            Active = 0
                         },
-                        new DACM.DatabaseRevision()
+                        new DACM.Location()
                         {
                             Id = "fc37fe97-c355-4f6e-80f7-3641787e0624",
-                                Modified = new DateTime(2018, 05, 22),
-                                Size = 53216,
-                                Changed = 1
+                            Name = "Test location",
+                            Active = 1
                         }
                 });
             _repository = repositoryMock.Object;
@@ -84,11 +80,11 @@ namespace MetricFlow.Api.Tests.BusinessLogic
         #endregion
 
         [Test]
-        public void GetRevisionById_HasValidId_Success()
+        public async Task GetLocationById_HasValidId_Success()
         {
-            var revisionService = new RevisionService(_repository, _mapper);
-            var actualRevision = revisionService.GetRevisionById("fc37fe97-c355-4f6e-80f7-3641787e0624");
-            Comparer.Compare(_expectedRevision, actualRevision);
+            var locationService = new LocationService(_repository, _mapper);
+            var actualLocation = await locationService.GetItemById("fc37fe97-c355-4f6e-80f7-3641787e0624").ConfigureAwait(false);
+            Comparer.Compare(_expectedLocation, actualLocation);
         }
     }
 }

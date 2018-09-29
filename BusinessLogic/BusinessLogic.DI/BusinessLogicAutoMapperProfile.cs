@@ -11,9 +11,6 @@ namespace BusinessLogic.DI
     {
         public BusinessLogicAutoMapperProfile()
         {
-            CreateMap<DAContractInterfaces.IDatabaseRevision, BLContractInterfaces.IDatabaseRevision>()
-                .Include<DAContractModels.DatabaseRevision, BLContractModels.DatabaseRevision>()
-                .ReverseMap();
             CreateMap<DAContractInterfaces.IFormula, BLContractInterfaces.IFormula>()
                 .Include<DAContractModels.Formula, BLContractModels.Formula>();
             CreateMap<DAContractInterfaces.ILocation, BLContractInterfaces.ILocation>()
@@ -25,8 +22,6 @@ namespace BusinessLogic.DI
             CreateMap<DAContractInterfaces.IStatistic, BLContractInterfaces.IStatistic>()
                 .Include<DAContractModels.Statistic, BLContractModels.Statistic>();
 
-            CreateMap<DAContractModels.DatabaseRevision, BLContractModels.DatabaseRevision>()
-                .ReverseMap();
             CreateMap<DAContractModels.Formula, BLContractModels.Formula>()
                 .ReverseMap();
             CreateMap<DAContractModels.Location, BLContractModels.Location>()
@@ -38,8 +33,6 @@ namespace BusinessLogic.DI
             CreateMap<DAContractModels.Statistic, BLContractModels.Statistic>()
                 .ReverseMap();
 
-            CreateMap<BLBaseModels.DatabaseRevision, BLContractModels.DatabaseRevision>()
-                .ReverseMap();
             CreateMap<BLBaseModels.Formula, BLContractModels.Formula>()
                 .ReverseMap();
             CreateMap<BLBaseModels.Location, BLContractModels.Location>()
@@ -51,8 +44,6 @@ namespace BusinessLogic.DI
             CreateMap<BLBaseModels.Statistic, BLContractModels.Statistic>()
                 .ReverseMap();
 
-            CreateMap<BLBaseModels.DatabaseRevision, DAContractModels.DatabaseRevision>()
-                .ReverseMap();
             CreateMap<BLBaseModels.Formula, DAContractModels.Formula>()
                 .ReverseMap();
             CreateMap<BLBaseModels.Location, DAContractModels.Location>()

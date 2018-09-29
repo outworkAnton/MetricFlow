@@ -65,13 +65,6 @@ namespace DataAccess.Repositories
                     await Context.Statistics.ToListAsync().ConfigureAwait(false));
             }
 
-            if (typeof(DAContractInterfaces.IDatabaseRevision).IsAssignableFrom(typeof(T)))
-            {
-                await Context.DatabaseRevisions.LoadAsync().ConfigureAwait(false);
-                items = Mapper.Map<IEnumerable<DAContractModels.DatabaseRevision>>(
-                    await Context.DatabaseRevisions.ToListAsync().ConfigureAwait(false));
-            }
-
             return items?.OfType<T>().ToArray();
         }
 
@@ -157,10 +150,6 @@ namespace DataAccess.Repositories
             else if (typeof(DAContractInterfaces.IStatistic).IsAssignableFrom(typeof(T)))
             {
                 Context.Statistics.Remove(Mapper.Map<DABaseModels.Statistic>(item));
-            }
-            else if (typeof(DAContractInterfaces.IDatabaseRevision).IsAssignableFrom(typeof(T)))
-            {
-                Context.DatabaseRevisions.Remove(Mapper.Map<DABaseModels.DatabaseRevision>(item));
             }
             else
             {

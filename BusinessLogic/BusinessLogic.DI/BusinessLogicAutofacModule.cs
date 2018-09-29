@@ -27,9 +27,6 @@ namespace BusinessLogic.DI
             builder.RegisterType<MetricService>()
                 .As<IMetricService>()
                 .InstancePerLifetimeScope();
-            builder.RegisterType<RevisionService>()
-                .As<IRevisionService>()
-                .InstancePerLifetimeScope();
             builder.RegisterType<ServiceFlowService>()
                 .As<IServiceFlowService>()
                 .InstancePerLifetimeScope();
