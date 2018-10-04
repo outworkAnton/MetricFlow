@@ -14,10 +14,6 @@ namespace BusinessLogic.DI
     {
         protected override void Load(ContainerBuilder builder)
         {
-            // builder.RegisterGeneric(typeof(BusinessLogicService<>))
-            //     .As(typeof(IBusinessLogicService<>))
-            //     .InstancePerLifetimeScope();
-
             builder.RegisterType<LocationService>()
                 .As<ILocationService>()
                 .InstancePerLifetimeScope();
