@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using BusinessLogic.Contract.Interfaces;
+﻿using BL = BusinessLogic.Contract.Interfaces;
+using DA = DataAccess.Contract.Interfaces;
 
 namespace BusinessLogic.Contract
 {
-    public interface IServiceFlowService
-    {
-        IEnumerable<IService> GetAll();
-    }
+    public interface IServiceFlowService : IBusinessLogicService<BL.IService, DA.IService>
+        {
+
+        }
 }
