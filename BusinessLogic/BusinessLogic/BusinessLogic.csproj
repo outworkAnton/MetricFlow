@@ -5,15 +5,12 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="7.0.1" />
-    <PackageReference Include="CompareNETObjects" Version="4.55.0" />
-    <PackageReference Include="Google.Apis" Version="1.35.2" />
-    <PackageReference Include="Google.Apis.Core" Version="1.35.2" />
-    <PackageReference Include="Google.Apis.Drive.v3" Version="1.35.2.1354" />
+    <PackageReference Include="CompareNETObjects" Version="4.56.0" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="2.1.0" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0" />
     <PackageReference Include="NLog" Version="4.5.10" />
     <PackageReference Include="NLog.Config" Version="4.5.10" />
-    <PackageReference Include="System.Data.SQLite" Version="1.0.109.1" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.109.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DataAccess\DataAccess.Contract\DataAccess.Contract.csproj" />
