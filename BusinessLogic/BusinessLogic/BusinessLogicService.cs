@@ -43,7 +43,10 @@ namespace BusinessLogic
             return _mapper.Map<TBL>(foundedItem);
         }
 
-        public virtual async Task Update(TBL item) => await _repository.Update(_mapper.Map<TDA>(item)).ConfigureAwait(false);
+        public virtual async Task Update(TBL item)
+        {
+            await _repository.Update(_mapper.Map<TDA>(item)).ConfigureAwait(false);
+        }
 
         public virtual async Task Delete(TBL item) => await _repository.Delete(_mapper.Map<TDA>(item)).ConfigureAwait(false);
 

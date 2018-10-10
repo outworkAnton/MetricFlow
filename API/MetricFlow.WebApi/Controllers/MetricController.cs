@@ -3,36 +3,24 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using BusinessLogic.Contract;
+using BL = BusinessLogic.Contract.Interfaces;
+using DA = DataAccess.Contract.Interfaces;
 using BusinessLogic.Contract.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using BusinessLogic.Contract;
 
 namespace MetricFlow.WebApi.Controllers
 {
     [Route("api/metrics")]
     [ApiController]
-    public class MetricController : ControllerBase
+    public class MetricController : GenericController<BL.IMetric,DA.IMetric>
     {
         private readonly IMetricService _metricService;
 
-        public MetricController(IMetricService metricService)
+        public MetricController(IMetricService metricService) : base(metricService)
         {
             _metricService = metricService;
-        }
-
-        [HttpGet]
-        public IActionResult GetAllMetrics()
-        {
-            try
-            {
-                var metrics = _metricService.GetAll();
-                return Ok(JsonConvert.SerializeObject(metrics));
-            }
-            catch (Exception exception)
-            {
-                return StatusCode(500, exception.Message);
-            }
         }
     }
 }

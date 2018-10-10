@@ -72,22 +72,42 @@ namespace DataAccess.Repositories
         {
             if (typeof(DAContractInterfaces.ILocation).IsAssignableFrom(typeof(T)))
             {
+                var oldItem = await Context.Locations.FindAsync((item as DABaseModels.Location).Id).ConfigureAwait(false);
+                (item as DABaseModels.Location).Name = oldItem.Name;
+                (item as DABaseModels.Location).Active = oldItem.Active;
                 Context.Locations.Update(Mapper.Map<DABaseModels.Location>(item));
             }
             else if (typeof(DAContractInterfaces.IService).IsAssignableFrom(typeof(T)))
             {
+                var oldItem = await Context.Services.FindAsync((item as DABaseModels.Service).Id).ConfigureAwait(false);
+                (item as DABaseModels.Service).Name = oldItem.Name;
+                (item as DABaseModels.Service).Active = oldItem.Active;
                 Context.Services.Update(Mapper.Map<DABaseModels.Service>(item));
             }
             else if (typeof(DAContractInterfaces.IMetric).IsAssignableFrom(typeof(T)))
             {
+                var oldItem = await Context.Metrics.FindAsync((item as DABaseModels.Metric).Id).ConfigureAwait(false);
+                (item as DABaseModels.Metric).Name = oldItem.Name;
+                (item as DABaseModels.Metric).Active = oldItem.Active;
                 Context.Metrics.Update(Mapper.Map<DABaseModels.Metric>(item));
             }
             else if (typeof(DAContractInterfaces.IFormula).IsAssignableFrom(typeof(T)))
             {
+                var oldItem = await Context.Formulas.FindAsync((item as DABaseModels.Formula).Id).ConfigureAwait(false);
+                (item as DABaseModels.Formula).Name = oldItem.Name;
+                (item as DABaseModels.Formula).Active = oldItem.Active;
                 Context.Formulas.Update(Mapper.Map<DABaseModels.Formula>(item));
             }
             else if (typeof(DAContractInterfaces.IStatistic).IsAssignableFrom(typeof(T)))
             {
+                var oldItem = await Context.Statistics.FindAsync((item as DABaseModels.Statistic).Id).ConfigureAwait(false);
+                (item as DABaseModels.Statistic).LocationId = oldItem.LocationId;
+                (item as DABaseModels.Statistic).ServiceId = oldItem.ServiceId;
+                (item as DABaseModels.Statistic).MetricId = oldItem.ServiceId;
+                (item as DABaseModels.Statistic).FormulaId = oldItem.ServiceId;
+                (item as DABaseModels.Statistic).Year = oldItem.Year;
+                (item as DABaseModels.Statistic).Month = oldItem.Month;
+                (item as DABaseModels.Statistic).Value = oldItem.Value;
                 Context.Statistics.Update(Mapper.Map<DABaseModels.Statistic>(item));
             }
             else

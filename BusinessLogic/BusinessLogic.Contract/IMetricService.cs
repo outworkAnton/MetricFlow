@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using BusinessLogic.Contract.Interfaces;
+﻿using BL = BusinessLogic.Contract.Interfaces;
+using DA = DataAccess.Contract.Interfaces;
 
 namespace BusinessLogic.Contract
 {
-    public interface IMetricService
+    public interface IMetricService : IBusinessLogicService<BL.IMetric, DA.IMetric>
     {
-        IEnumerable<IMetric> GetAll();
+
     }
 }

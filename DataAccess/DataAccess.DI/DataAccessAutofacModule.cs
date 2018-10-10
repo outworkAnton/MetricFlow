@@ -13,9 +13,21 @@ namespace DataAccess.DI
             builder.RegisterType<DataAccessRepository<ILocation>>()
                 .As<IDataAccessRepository<ILocation>>()
                 .InstancePerLifetimeScope();
+            builder.RegisterType<DataAccessRepository<IService>>()
+                .As<IDataAccessRepository<IService>>()
+                .InstancePerLifetimeScope();
+            builder.RegisterType<DataAccessRepository<IMetric>>()
+                .As<IDataAccessRepository<IMetric>>()
+                .InstancePerLifetimeScope();
 
             builder.RegisterType<LocationRepository>()
                 .As<ILocationRepository>()
+                .InstancePerLifetimeScope();
+            builder.RegisterType<MetricRepository>()
+                .As<IMetricRepository>()
+                .InstancePerLifetimeScope();
+            builder.RegisterType<ServiceRepository>()
+                .As<IServiceRepository>()
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<DataAccessContext>()
