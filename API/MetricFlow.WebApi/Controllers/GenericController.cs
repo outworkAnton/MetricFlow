@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using BusinessLogic.Contract;
+using BusinessLogic.Contract.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -40,7 +41,7 @@ namespace MetricFlow.WebApi.Controllers
             }
             catch
             {
-                return NotFound($"{nameof(TBL)} with Id: {id} not found");
+                return NotFound($"{typeof(TBL).Name} with Id: {id} not found");
             }
         }
 
@@ -50,11 +51,11 @@ namespace MetricFlow.WebApi.Controllers
             try
             {
                 await _businessLogicService.Update(item).ConfigureAwait(false);
-                return Ok($"{nameof(TBL)} have been successfully updated");
+                return Ok($"{typeof(TBL).Name} have been successfully updated");
             }
             catch
             {
-                return NotFound($"{nameof(TBL)} not found");
+                return NotFound($"{typeof(TBL).Name} not found");
             }
         }
 
@@ -64,11 +65,11 @@ namespace MetricFlow.WebApi.Controllers
             try
             {
                 await _businessLogicService.Delete(item).ConfigureAwait(false);
-                return Ok($"{nameof(TBL)} have been successfully removed");
+                return Ok($"{typeof(TBL).Name} have been successfully removed");
             }
             catch
             {
-                return NotFound($"{nameof(TBL)} not found");
+                return NotFound($"{typeof(TBL).Name} not found");
             }
         }
 
@@ -78,7 +79,7 @@ namespace MetricFlow.WebApi.Controllers
             try
             {
                 await _businessLogicService.Create(item).ConfigureAwait(false);
-                return Ok($"{nameof(TBL)} have been successfuly created");
+                return Ok($"{typeof(TBL).Name} have been successfuly created");
             }
             catch (Exception exception)
             {

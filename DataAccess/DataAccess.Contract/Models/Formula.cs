@@ -1,8 +1,6 @@
-﻿using DataAccess.Contract.Interfaces;
-
-namespace DataAccess.Contract.Models
+﻿namespace DataAccess.Contract.Models
 {
-    public class Formula : IFormula
+    public class Formula
     {
         public string Id { get; set; }
         public string Name { get; set; }

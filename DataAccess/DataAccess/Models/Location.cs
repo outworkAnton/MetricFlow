@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using DataAccess.Contract.Interfaces;
 
 namespace DataAccess.Models
 {
-    public class Location : ILocation
+    public class Location
     {
         [Key]
         public string Id { get; set; }

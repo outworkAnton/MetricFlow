@@ -3,7 +3,6 @@ using BLBaseModels = BusinessLogic.Models;
 using BLContractModels = BusinessLogic.Contract.Models;
 using BLContractInterfaces = BusinessLogic.Contract.Interfaces;
 using DAContractModels = DataAccess.Contract.Models;
-using DAContractInterfaces = DataAccess.Contract.Interfaces;
 
 namespace BusinessLogic.DI
 {
@@ -11,17 +10,6 @@ namespace BusinessLogic.DI
     {
         public BusinessLogicAutoMapperProfile()
         {
-            CreateMap<DAContractInterfaces.IFormula, BLContractInterfaces.IFormula>()
-                .Include<DAContractModels.Formula, BLContractModels.Formula>();
-            CreateMap<DAContractInterfaces.ILocation, BLContractInterfaces.ILocation>()
-                .Include<DAContractModels.Location, BLContractModels.Location>();
-            CreateMap<DAContractInterfaces.IMetric, BLContractInterfaces.IMetric>()
-                .Include<DAContractModels.Metric, BLContractModels.Metric>();
-            CreateMap<DAContractInterfaces.IService, BLContractInterfaces.IService>()
-                .Include<DAContractModels.Service, BLContractModels.Service>();
-            CreateMap<DAContractInterfaces.IStatistic, BLContractInterfaces.IStatistic>()
-                .Include<DAContractModels.Statistic, BLContractModels.Statistic>();
-
             CreateMap<DAContractModels.Formula, BLContractModels.Formula>()
                 .ReverseMap();
             CreateMap<DAContractModels.Location, BLContractModels.Location>()

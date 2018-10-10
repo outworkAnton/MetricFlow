@@ -39,7 +39,6 @@ namespace MetricFlow.WebApi
             var builder = new ContainerBuilder();
             builder.RegisterModule(new DataAccessAutofacModule());
             builder.RegisterModule(new BusinessLogicAutofacModule());
-            builder.RegisterModule(new ApiAutofacModule());
             builder.Populate(services);
             var container = builder.Build();
             return new AutofacServiceProvider(container);

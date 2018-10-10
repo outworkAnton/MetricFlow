@@ -6,6 +6,7 @@ using AutoMapper;
 using BusinessLogic;
 using BusinessLogic.DI;
 using BusinessLogic.Models;
+using BusinessLogic.Services;
 using DataAccess.Contract.Repositories;
 
 using KellermanSoftware.CompareNetObjects;
@@ -13,8 +14,6 @@ using KellermanSoftware.CompareNetObjects;
 using Moq;
 
 using NUnit.Framework;
-using BLI = BusinessLogic.Contract.Interfaces;
-using BLM = BusinessLogic.Contract.Models;
 using DACM = DataAccess.Contract.Models;
 
 namespace MetricFlow.Api.Tests.BusinessLogic
@@ -27,7 +26,7 @@ namespace MetricFlow.Api.Tests.BusinessLogic
         private ILocationRepository _repository;
         private IMapper _mapper;
 
-        private readonly BLI.ILocation _expectedLocation =
+        private readonly Location _expectedLocation =
             new Location("fc37fe97-c355-4f6e-80f7-3641787e0624", "Test location", 1);
 
         private static readonly CompareLogic Comparer = new CompareLogic(new ComparisonConfig()

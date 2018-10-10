@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using DataAccess.Contract.Interfaces;
 
 namespace DataAccess.Models
 {
-    public class Service : IService
+    public class Service
     {
         [Key]
         public string Id { get; set; }

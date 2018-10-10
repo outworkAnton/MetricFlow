@@ -1,23 +1,19 @@
-﻿using System.Collections.Generic;
-
-using AutoMapper;
-
-using BusinessLogic.Contract;
-using BLContractInterfaces = BusinessLogic.Contract.Interfaces;
-using BLContractModels = BusinessLogic.Contract.Models;
-using DataAccess.Contract.Repositories;
-using DAContractInterfaces = DataAccess.Contract.Interfaces;
-using DAContractModels = DataAccess.Contract.Models;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
+using BusinessLogic.Contract;
+using BusinessLogic.Contract.Interfaces;
+using BusinessLogic.Contract.Models;
+using DataAccess.Contract.Repositories;
 
-namespace BusinessLogic
+namespace BusinessLogic.Services
 {
     public class FormulaService : IFormulaService
     {
         private readonly IMapper _mapper;
         private readonly IFormulaRepository _repository;
-        private IEnumerable<BLContractInterfaces.IFormula> _formulas;
+        private IEnumerable<Formula> _formulas;
         public FormulaService(IFormulaRepository repository, IMapper mapper)
         {
             _repository = repository
@@ -33,10 +29,10 @@ namespace BusinessLogic
             .Get()
             .GetAwaiter()
             .GetResult()
-            .Select(formula => _mapper.Map<BLContractInterfaces.IFormula>(formula))
+            .Select(formula => _mapper.Map<Formula>(formula))
             .ToList();
 
-        public IEnumerable<BLContractInterfaces.IFormula> GetAll()
+        public IEnumerable<Formula> GetAll()
         {
             return _formulas;
         }

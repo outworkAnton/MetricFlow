@@ -1,36 +1,18 @@
-﻿using BusinessLogic.Contract.Interfaces;
-
-namespace BusinessLogic.Contract.Models
+﻿namespace BusinessLogic.Contract.Models
 {
-    public class Service : IService
+    public class Service
     {
         public Service(string id, string name, string locationId, int active)
         {
-            this.Id = id;
-            this.Name = name;
-            this.LocationId = locationId;
-            this.Active = active;
+            Id = id;
+            Name = name;
+            LocationId = locationId;
+            Active = active;
+        }
 
-        }
-        public string Id
-        {
-            get;
-            set;
-        }
-        public string Name
-        {
-            get;
-            set;
-        }
-        public string LocationId
-        {
-            get;
-            set;
-        }
-        public int Active
-        {
-            get;
-            set;
-        }
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string LocationId { get; set; }
+        public int Active { get; set; }
     }
 }

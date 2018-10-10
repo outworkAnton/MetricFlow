@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace BusinessLogic.Contract
+namespace BusinessLogic.Contract.Interfaces
 {
     public interface IBusinessLogicService<TBL, TDA> where TBL: class where TDA: class
     {
