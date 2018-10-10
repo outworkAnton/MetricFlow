@@ -1,8 +1,6 @@
-﻿using DataAccess.Contract.Interfaces;
-
-namespace DataAccess.Contract.Models
+﻿namespace DataAccess.Contract.Models
 {
-    public class Statistic : IStatistic
+    public class Statistic
     {
         public string Id { get; set; }
         public int Year { get; set; }

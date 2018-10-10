@@ -38,17 +38,17 @@ namespace DataAccess
             get;
             set;
         }
-        public string _connectionString
+        public string ConnectionString
         {
             get;
         }
 
-        public DataAccessContext(IConfiguration configuration) => _connectionString = configuration.GetSection("ConnectionStrings:MetricFlowDatabase")
+        public DataAccessContext(IConfiguration configuration) => ConnectionString = configuration.GetSection("ConnectionStrings:MetricFlowDatabase")
             .Value;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connection = new SqliteConnection(_connectionString);
+            var connection = new SqliteConnection(ConnectionString);
             optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             optionsBuilder.UseSqlite(connection);
         }

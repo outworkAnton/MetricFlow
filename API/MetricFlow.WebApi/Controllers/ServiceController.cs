@@ -2,7 +2,8 @@ using System;
 using System.Threading.Tasks;
 
 using BusinessLogic.Contract;
-using BusinessLogic.Models;
+using BusinessLogic.Contract.Interfaces;
+using BusinessLogic.Contract.Models;
 
 using Microsoft.AspNetCore.Mvc;
 

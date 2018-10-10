@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BusinessLogic.Contract;
 using BusinessLogic.Contract.Exceptions;
+using BusinessLogic.Contract.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 

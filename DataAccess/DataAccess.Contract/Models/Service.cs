@@ -1,8 +1,6 @@
-﻿using DataAccess.Contract.Interfaces;
-
-namespace DataAccess.Contract.Models
+﻿namespace DataAccess.Contract.Models
 {
-    public class Service : IService
+    public class Service
     {
         public string Id { get; set; }
         public string Name { get; set; }

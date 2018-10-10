@@ -1,6 +1,5 @@
 ﻿using Autofac;
 
-using DataAccess.Contract.Interfaces;
 using DataAccess.Contract.Repositories;
 using DataAccess.Repositories;
 
@@ -10,16 +9,6 @@ namespace DataAccess.DI
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<DataAccessRepository<ILocation>>()
-                .As<IDataAccessRepository<ILocation>>()
-                .InstancePerLifetimeScope();
-            builder.RegisterType<DataAccessRepository<IService>>()
-                .As<IDataAccessRepository<IService>>()
-                .InstancePerLifetimeScope();
-            builder.RegisterType<DataAccessRepository<IMetric>>()
-                .As<IDataAccessRepository<IMetric>>()
-                .InstancePerLifetimeScope();
-
             builder.RegisterType<LocationRepository>()
                 .As<ILocationRepository>()
                 .InstancePerLifetimeScope();

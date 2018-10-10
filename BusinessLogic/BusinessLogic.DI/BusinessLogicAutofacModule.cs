@@ -7,6 +7,7 @@ using AutoMapper;
 
 using BusinessLogic.Contract;
 using BusinessLogic.Contract.Interfaces;
+using BusinessLogic.Services;
 
 namespace BusinessLogic.DI
 {

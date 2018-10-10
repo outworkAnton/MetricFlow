@@ -2,16 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 using AutoMapper;
-
 using BusinessLogic.Contract;
-
+using BusinessLogic.Contract.Interfaces;
 using DataAccess.Contract.Repositories;
 
-namespace BusinessLogic
+namespace BusinessLogic.Services
 {
-    public abstract class BusinessLogicService<TBL, TDA> : IBusinessLogicService<TBL, TDA> where TBL : class where TDA : class
+    public abstract class BusinessLogicService<TBL, TDA> : IBusinessLogicService<TBL, TDA>
+        where TBL : class where TDA : class
     {
         private readonly IMapper _mapper;
         private readonly IDataAccessRepository<TDA> _repository;
@@ -20,20 +19,20 @@ namespace BusinessLogic
         protected BusinessLogicService(IDataAccessRepository<TDA> repository, IMapper mapper)
         {
             _repository = repository
-                ??
-                throw new ArgumentNullException(nameof(repository));
+                          ??
+                          throw new ArgumentNullException(nameof(repository));
             _mapper = mapper
-                ??
-                throw new ArgumentNullException(nameof(mapper));
+                      ??
+                      throw new ArgumentNullException(nameof(mapper));
             LoadItems();
         }
 
         private void LoadItems() => _items = _repository
-            .Get()
-            .GetAwaiter()
-            .GetResult()
-            .Select(item => _mapper.Map<TBL>(item))
-            .ToList();
+                                             .Get()
+                                             .GetAwaiter()
+                                             .GetResult()
+                                             .Select(item => _mapper.Map<TBL>(item))
+                                             .ToList();
 
         public virtual IReadOnlyCollection<TBL> GetAllItems() => _items.ToArray();
 
@@ -48,7 +47,8 @@ namespace BusinessLogic
             await _repository.Update(_mapper.Map<TDA>(item)).ConfigureAwait(false);
         }
 
-        public virtual async Task Delete(TBL item) => await _repository.Delete(_mapper.Map<TDA>(item)).ConfigureAwait(false);
+        public virtual async Task Delete(TBL item) =>
+            await _repository.Delete(_mapper.Map<TDA>(item)).ConfigureAwait(false);
 
         public virtual async Task Create(TBL item)
         {

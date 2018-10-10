@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using DataAccess.Contract.Interfaces;
 
 namespace DataAccess.Models
 {
-    public class Metric : IMetric
+    public class Metric
     {
         [Key]
         public string Id { get; set; }
