@@ -18,6 +18,12 @@ namespace DataAccess.DI
             builder.RegisterType<ServiceRepository>()
                 .As<IServiceRepository>()
                 .InstancePerLifetimeScope();
+            builder.RegisterType<FormulaRepository>()
+                .As<IFormulaRepository>()
+                .InstancePerLifetimeScope();
+            builder.RegisterType<StatisticRepository>()
+                .As<IStatisticRepository>()
+                .InstancePerLifetimeScope();
 
             builder.RegisterType<DataAccessContext>()
                 .As<DataAccessContext>()

@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using BusinessLogic.Contract.Models;
+﻿using BL = BusinessLogic.Contract.Models;
+using DA = DataAccess.Contract.Models;
 
 namespace BusinessLogic.Contract.Interfaces
 {
-    public interface IFormulaService
+    public interface IFormulaService : IBusinessLogicService<BL.Formula, DA.Formula>
     {
-        IEnumerable<Formula> GetAll();
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using BusinessLogic.Contract;
 using BusinessLogic.Contract.Interfaces;
 using DataAccess.Contract.Repositories;
 
@@ -28,11 +27,11 @@ namespace BusinessLogic.Services
         }
 
         private void LoadItems() => _items = _repository
-                                             .Get()
-                                             .GetAwaiter()
-                                             .GetResult()
-                                             .Select(item => _mapper.Map<TBL>(item))
-                                             .ToList();
+            .Get()
+            .GetAwaiter()
+            .GetResult()
+            .Select(item => _mapper.Map<TBL>(item))
+            .ToList();
 
         public virtual IReadOnlyCollection<TBL> GetAllItems() => _items.ToArray();
 

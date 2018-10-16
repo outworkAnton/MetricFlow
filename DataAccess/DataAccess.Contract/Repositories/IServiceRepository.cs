@@ -4,6 +4,5 @@ namespace DataAccess.Contract.Repositories
 {
     public interface IServiceRepository : IDataAccessRepository<Service>
     {
-
     }
 }

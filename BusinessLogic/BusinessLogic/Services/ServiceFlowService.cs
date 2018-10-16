@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using BusinessLogic.Contract;
 using DataAccess.Contract.Repositories;
 using BL = BusinessLogic.Contract.Models;
 using BLI = BusinessLogic.Contract.Interfaces;
