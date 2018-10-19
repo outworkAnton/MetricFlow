@@ -9,6 +9,11 @@ namespace MetricFlow.WebApi.Controllers
     [ApiController]
     public class MetricController : GenericController<BL.Metric,DA.Metric>
     {
-        public MetricController(BLI.IMetricService metricService) : base(metricService) { }
+        private BLI.IMetricService _metricService;
+
+        public MetricController(BLI.IMetricService metricService) : base(metricService)
+        {
+            _metricService = metricService;
+        }
     }
 }

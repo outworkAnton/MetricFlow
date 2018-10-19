@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-
-using BusinessLogic;
 using BusinessLogic.DI;
 using BusinessLogic.Models;
 using BusinessLogic.Services;
@@ -73,6 +70,7 @@ namespace MetricFlow.Api.Tests.BusinessLogic
                             Active = 1
                         }
                 });
+            repositoryMock.VerifyAll();
             _repository = repositoryMock.Object;
         }
 

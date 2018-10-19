@@ -9,6 +9,11 @@ namespace MetricFlow.WebApi.Controllers
     [ApiController]
     public class FormulaController : GenericController<BL.Formula, DA.Formula>
     {
-        public FormulaController(BLI.IFormulaService formulaService) :base(formulaService) { }
+        private BLI.IFormulaService _formulaService;
+
+        public FormulaController(BLI.IFormulaService formulaService) :base(formulaService)
+        {
+            _formulaService = formulaService;
+        }
     }
 }

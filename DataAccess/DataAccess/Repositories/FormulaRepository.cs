@@ -6,6 +6,13 @@ namespace DataAccess.Repositories
 {
     public class FormulaRepository : DataAccessRepository<Formula>, IFormulaRepository
     {
-        public FormulaRepository(DataAccessContext context, IMapper mapper) : base(context, mapper) { }
+        private DataAccessContext _context;
+        private IMapper _mapper;
+
+        public FormulaRepository(DataAccessContext context, IMapper mapper) : base(context, mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
     }
 }

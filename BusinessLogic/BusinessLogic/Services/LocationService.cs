@@ -8,6 +8,13 @@ namespace BusinessLogic.Services
 {
     public class LocationService : BusinessLogicService<BL.Location, DA.Location>, BLI.ILocationService
     {
-        public LocationService(ILocationRepository repository, IMapper mapper) : base(repository, mapper) { }
+        private ILocationRepository _repository;
+        private IMapper _mapper;
+        
+        public LocationService(ILocationRepository repository, IMapper mapper) : base(repository, mapper)
+        {
+            _repository = repository;
+            _mapper = mapper;
+        }
     }
 }

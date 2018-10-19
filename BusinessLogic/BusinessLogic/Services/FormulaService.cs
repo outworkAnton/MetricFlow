@@ -8,6 +8,13 @@ namespace BusinessLogic.Services
 {
     public class FormulaService : BusinessLogicService<BL.Formula, DA.Formula>, BLI.IFormulaService
     {
-        public FormulaService(IFormulaRepository repository, IMapper mapper) : base(repository, mapper) { }
+        private IFormulaRepository _repository;
+        private IMapper _mapper;
+
+        public FormulaService(IFormulaRepository repository, IMapper mapper) : base(repository, mapper)
+        {
+            _repository = repository;
+            _mapper = mapper;
+        }
     }
 }

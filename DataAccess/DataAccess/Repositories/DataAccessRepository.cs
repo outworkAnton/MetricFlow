@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,8 +9,6 @@ using AutoMapper;
 using DataAccess.Contract.Repositories;
 
 using Microsoft.EntityFrameworkCore;
-
-using Remotion.Linq.Utilities;
 using DAContractModels = DataAccess.Contract.Models;
 using DABaseModels = DataAccess.Models;
 
@@ -17,15 +16,15 @@ namespace DataAccess.Repositories
 {
     public abstract class DataAccessRepository<T> : IDataAccessRepository<T> where T : class, new()
     {
-        protected readonly DataAccessContext Context;
-        protected readonly IMapper Mapper;
+        private readonly DataAccessContext _context;
+        private readonly IMapper _mapper;
 
         protected DataAccessRepository(DataAccessContext context, IMapper mapper)
         {
-            Context = context;
-            Context.Database.OpenConnection();
-            Context.Database.EnsureCreated();
-            Mapper = mapper;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _context.Database.OpenConnection();
+            _context.Database.EnsureCreated();
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public virtual async Task<IReadOnlyCollection<T>> Get()
@@ -36,29 +35,29 @@ namespace DataAccess.Repositories
             switch (item)
             {
                 case DAContractModels.Location _:
-                    await Context.Locations.LoadAsync().ConfigureAwait(false);
-                    items = Mapper.Map<IEnumerable<DAContractModels.Location>>(
-                        await Context.Locations.ToListAsync().ConfigureAwait(false));
+                    await _context.Locations.LoadAsync().ConfigureAwait(false);
+                    items = _mapper.Map<IEnumerable<DAContractModels.Location>>(
+                        await _context.Locations.ToListAsync().ConfigureAwait(false));
                     break;
                 case DAContractModels.Service _:
-                    await Context.Services.LoadAsync().ConfigureAwait(false);
-                    items = Mapper.Map<IEnumerable<DAContractModels.Service>>(
-                        await Context.Services.ToListAsync().ConfigureAwait(false));
+                    await _context.Services.LoadAsync().ConfigureAwait(false);
+                    items = _mapper.Map<IEnumerable<DAContractModels.Service>>(
+                        await _context.Services.ToListAsync().ConfigureAwait(false));
                     break;
                 case DAContractModels.Metric _:
-                    await Context.Metrics.LoadAsync().ConfigureAwait(false);
-                    items = Mapper.Map<IEnumerable<DAContractModels.Metric>>(
-                        await Context.Metrics.ToListAsync().ConfigureAwait(false));
+                    await _context.Metrics.LoadAsync().ConfigureAwait(false);
+                    items = _mapper.Map<IEnumerable<DAContractModels.Metric>>(
+                        await _context.Metrics.ToListAsync().ConfigureAwait(false));
                     break;
                 case DAContractModels.Formula _:
-                    await Context.Formulas.LoadAsync().ConfigureAwait(false);
-                    items = Mapper.Map<IEnumerable<DAContractModels.Formula>>(
-                        await Context.Formulas.ToListAsync().ConfigureAwait(false));
+                    await _context.Formulas.LoadAsync().ConfigureAwait(false);
+                    items = _mapper.Map<IEnumerable<DAContractModels.Formula>>(
+                        await _context.Formulas.ToListAsync().ConfigureAwait(false));
                     break;
                 case DAContractModels.Statistic _:
-                    await Context.Statistics.LoadAsync().ConfigureAwait(false);
-                    items = Mapper.Map<IEnumerable<DAContractModels.Statistic>>(
-                        await Context.Statistics.ToListAsync().ConfigureAwait(false));
+                    await _context.Statistics.LoadAsync().ConfigureAwait(false);
+                    items = _mapper.Map<IEnumerable<DAContractModels.Statistic>>(
+                        await _context.Statistics.ToListAsync().ConfigureAwait(false));
                     break;
             }
 
@@ -71,34 +70,34 @@ namespace DataAccess.Repositories
             {
                 case DAContractModels.Location _:
                     {
-                        Context.Locations.Update(Mapper.Map<DABaseModels.Location>(item));
+                        _context.Locations.Update(_mapper.Map<DABaseModels.Location>(item));
                         break;
                     }
                 case DAContractModels.Service _:
                     {
-                        Context.Services.Update(Mapper.Map<DABaseModels.Service>(item));
+                        _context.Services.Update(_mapper.Map<DABaseModels.Service>(item));
                         break;
                     }
                 case DAContractModels.Metric _:
                     {
-                        Context.Metrics.Update(Mapper.Map<DABaseModels.Metric>(item));
+                        _context.Metrics.Update(_mapper.Map<DABaseModels.Metric>(item));
                         break;
                     }
                 case DAContractModels.Formula _:
                     {
-                        Context.Formulas.Update(Mapper.Map<DABaseModels.Formula>(item));
+                        _context.Formulas.Update(_mapper.Map<DABaseModels.Formula>(item));
                         break;
                     }
                 case DAContractModels.Statistic _:
                     {
-                        Context.Statistics.Update(Mapper.Map<DABaseModels.Statistic>(item));
+                        _context.Statistics.Update(_mapper.Map<DABaseModels.Statistic>(item));
                         break;
                     }
                 default:
                     return;
             }
 
-            await Context.SaveChangesAsync().ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
         public virtual async Task<T> Find(string id)
@@ -108,27 +107,27 @@ namespace DataAccess.Repositories
             {
                 case DAContractModels.Location _:
                     {
-                        foundedItem = Mapper.Map<DAContractModels.Location>(await Context.Locations.FindAsync(id).ConfigureAwait(false)) as T;
+                        foundedItem = _mapper.Map<DAContractModels.Location>(await _context.Locations.FindAsync(id).ConfigureAwait(false)) as T;
                         break;
                     }
                 case DAContractModels.Service _:
                     {
-                        foundedItem = Mapper.Map<DAContractModels.Service>(await Context.Services.FindAsync(id).ConfigureAwait(false)) as T;
+                        foundedItem = _mapper.Map<DAContractModels.Service>(await _context.Services.FindAsync(id).ConfigureAwait(false)) as T;
                         break;
                     }
                 case DAContractModels.Metric _:
                     {
-                        foundedItem = Mapper.Map<DAContractModels.Metric>(await Context.Metrics.FindAsync(id).ConfigureAwait(false)) as T;
+                        foundedItem = _mapper.Map<DAContractModels.Metric>(await _context.Metrics.FindAsync(id).ConfigureAwait(false)) as T;
                         break;
                     }
                 case DAContractModels.Formula _:
                     {
-                        foundedItem = Mapper.Map<DAContractModels.Formula>(await Context.Formulas.FindAsync(id).ConfigureAwait(false)) as T;
+                        foundedItem = _mapper.Map<DAContractModels.Formula>(await _context.Formulas.FindAsync(id).ConfigureAwait(false)) as T;
                         break;
                     }
                 case DAContractModels.Statistic _:
                     {
-                        foundedItem = Mapper.Map<DAContractModels.Statistic>(await Context.Statistics.FindAsync(id).ConfigureAwait(false)) as T;
+                        foundedItem = _mapper.Map<DAContractModels.Statistic>(await _context.Statistics.FindAsync(id).ConfigureAwait(false)) as T;
                         break;
                     }
                 default:
@@ -146,27 +145,27 @@ namespace DataAccess.Repositories
             {
                 case DAContractModels.Location _:
                     {
-                        Context.Locations.Remove(Mapper.Map<DABaseModels.Location>(item));
+                        _context.Locations.Remove(_mapper.Map<DABaseModels.Location>(item));
                         break;
                     }
                 case DAContractModels.Service _:
                     {
-                        Context.Services.Remove(Mapper.Map<DABaseModels.Service>(item));
+                        _context.Services.Remove(_mapper.Map<DABaseModels.Service>(item));
                         break;
                     }
                 case DAContractModels.Metric _:
                     {
-                        Context.Metrics.Remove(Mapper.Map<DABaseModels.Metric>(item));
+                        _context.Metrics.Remove(_mapper.Map<DABaseModels.Metric>(item));
                         break;
                     }
                 case DAContractModels.Formula _:
                     {
-                        Context.Formulas.Remove(Mapper.Map<DABaseModels.Formula>(item));
+                        _context.Formulas.Remove(_mapper.Map<DABaseModels.Formula>(item));
                         break;
                     }
                 case DAContractModels.Statistic _:
                     {
-                        Context.Statistics.Remove(Mapper.Map<DABaseModels.Statistic>(item));
+                        _context.Statistics.Remove(_mapper.Map<DABaseModels.Statistic>(item));
                         break;
                     }
                 default:
@@ -175,7 +174,7 @@ namespace DataAccess.Repositories
                     }
             }
 
-            await Context.SaveChangesAsync().ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
         public virtual async Task Create(T item)
@@ -184,31 +183,31 @@ namespace DataAccess.Repositories
             {
                 case DAContractModels.Location _:
                     {
-                        await Context.Locations.AddAsync(Mapper.Map<DABaseModels.Location>(item))
+                        await _context.Locations.AddAsync(_mapper.Map<DABaseModels.Location>(item))
                         .ConfigureAwait(false);
                         break;
                     }
                 case DAContractModels.Service _:
                     {
-                        await Context.Services.AddAsync(Mapper.Map<DABaseModels.Service>(item))
+                        await _context.Services.AddAsync(_mapper.Map<DABaseModels.Service>(item))
                         .ConfigureAwait(false);
                         break;
                     }
                 case DAContractModels.Metric _:
                     {
-                        await Context.Metrics.AddAsync(Mapper.Map<DABaseModels.Metric>(item))
+                        await _context.Metrics.AddAsync(_mapper.Map<DABaseModels.Metric>(item))
                         .ConfigureAwait(false);
                         break;
                     }
                 case DAContractModels.Formula _:
                     {
-                        await Context.Formulas.AddAsync(Mapper.Map<DABaseModels.Formula>(item))
+                        await _context.Formulas.AddAsync(_mapper.Map<DABaseModels.Formula>(item))
                         .ConfigureAwait(false);
                         break;
                     }
                 case DAContractModels.Statistic _:
                     {
-                        await Context.Statistics.AddAsync(Mapper.Map<DABaseModels.Statistic>(item))
+                        await _context.Statistics.AddAsync(_mapper.Map<DABaseModels.Statistic>(item))
                         .ConfigureAwait(false);
                         break;
                     }
@@ -218,7 +217,7 @@ namespace DataAccess.Repositories
                     }
             }
 
-            await Context.SaveChangesAsync().ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

@@ -9,6 +9,11 @@ namespace MetricFlow.WebApi.Controllers
     [ApiController]
     public class LocationController : GenericController<BL.Location,DA.Location>
     {
-        public LocationController(BLI.ILocationService locationService) : base(locationService){ }
+        private BLI.ILocationService _locationService;
+
+        public LocationController(BLI.ILocationService locationLocationService) : base(locationLocationService)
+        {
+            _locationService = locationLocationService;
+        }
     }
 }

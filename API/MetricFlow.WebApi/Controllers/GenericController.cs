@@ -8,11 +8,11 @@ namespace MetricFlow.WebApi.Controllers
 {
     public abstract class GenericController<TBL,TDA> : ControllerBase where TBL: class where TDA: class
     {
-        protected readonly IBusinessLogicService<TBL,TDA> BusinessLogicService;
+        private readonly IBusinessLogicService<TBL,TDA> _businessLogicService;
 
         protected GenericController(IBusinessLogicService<TBL,TDA> service)
         {
-            BusinessLogicService = service;
+            _businessLogicService = service;
         }
 
         [HttpGet]
@@ -20,7 +20,7 @@ namespace MetricFlow.WebApi.Controllers
         {
             try
             {
-                var services = BusinessLogicService.GetAllItems();
+                var services = _businessLogicService.GetAllItems();
                 return Ok(JsonConvert.SerializeObject(services));
             }
             catch (Exception exception)
@@ -34,7 +34,7 @@ namespace MetricFlow.WebApi.Controllers
         {
             try
             {
-                var service = await BusinessLogicService.GetItemById(id).ConfigureAwait(false);
+                var service = await _businessLogicService.GetItemById(id).ConfigureAwait(false);
                 return service == null
                     ? throw new Exception()
                     : Ok(JsonConvert.SerializeObject(service));
@@ -50,7 +50,7 @@ namespace MetricFlow.WebApi.Controllers
         {
             try
             {
-                await BusinessLogicService.Update(item).ConfigureAwait(false);
+                await _businessLogicService.Update(item).ConfigureAwait(false);
                 return Ok($"{typeof(TBL).Name} have been successfully updated");
             }
             catch
@@ -64,7 +64,7 @@ namespace MetricFlow.WebApi.Controllers
         {
             try
             {
-                await BusinessLogicService.Delete(item).ConfigureAwait(false);
+                await _businessLogicService.Delete(item).ConfigureAwait(false);
                 return Ok($"{typeof(TBL).Name} have been successfully removed");
             }
             catch
@@ -78,8 +78,8 @@ namespace MetricFlow.WebApi.Controllers
         {
             try
             {
-                await BusinessLogicService.Create(item).ConfigureAwait(false);
-                return Ok($"{typeof(TBL).Name} have been successfuly created");
+                await _businessLogicService.Create(item).ConfigureAwait(false);
+                return Ok($"{typeof(TBL).Name} have been successfully created");
             }
             catch (Exception exception)
             {

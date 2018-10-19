@@ -9,6 +9,11 @@ namespace MetricFlow.WebApi.Controllers
     [ApiController]
     public class StatisticController : GenericController<BL.Statistic, DA.Statistic>
     {
-        public StatisticController(BLI.IStatisticService statisticService) : base(statisticService) { }
+        private BLI.IStatisticService _statisticService;
+
+        public StatisticController(BLI.IStatisticService statisticService) : base(statisticService)
+        {
+            _statisticService = statisticService;
+        }
     }
 }

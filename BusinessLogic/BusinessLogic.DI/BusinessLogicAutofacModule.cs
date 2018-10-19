@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using Autofac;
 
 using AutoMapper;
-
-using BusinessLogic.Contract;
 using BusinessLogic.Contract.Interfaces;
 using BusinessLogic.Services;
 
