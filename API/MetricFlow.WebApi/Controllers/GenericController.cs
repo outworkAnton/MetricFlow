@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using BusinessLogic.Contract.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,7 @@ using Newtonsoft.Json;
 
 namespace MetricFlow.WebApi.Controllers
 {
+    [Route("api/[controller]")]
     public abstract class GenericController<TBL, TDA> : ControllerBase
         where TBL : class where TDA : class
     {
@@ -21,6 +23,7 @@ namespace MetricFlow.WebApi.Controllers
         {
             try
             {
+                Debug.WriteLine($"Try to get all {typeof(TBL).Name} items");
                 var items = _businessLogicService.GetAllItems();
                 return Ok(JsonConvert.SerializeObject(items));
             }
@@ -35,6 +38,7 @@ namespace MetricFlow.WebApi.Controllers
         {
             try
             {
+                Debug.WriteLine($"Try to get {typeof(TBL).Name} with Id: {id}");
                 var item = await _businessLogicService.GetItemById(id).ConfigureAwait(false);
                 return item == null
                     ? throw new Exception()
@@ -51,6 +55,7 @@ namespace MetricFlow.WebApi.Controllers
         {
             try
             {
+                Debug.WriteLine($"Try to update {typeof(TBL).Name} item");
                 await _businessLogicService.Update(item).ConfigureAwait(false);
                 return Ok($"{typeof(TBL).Name} have been successfully updated");
             }
@@ -65,6 +70,7 @@ namespace MetricFlow.WebApi.Controllers
         {
             try
             {
+                Debug.WriteLine($"Try to delete {typeof(TBL).Name} item");
                 await _businessLogicService.Delete(item).ConfigureAwait(false);
                 return Ok($"{typeof(TBL).Name} have been successfully removed");
             }
@@ -79,6 +85,7 @@ namespace MetricFlow.WebApi.Controllers
         {
             try
             {
+                Debug.WriteLine($"Try to create {typeof(TBL).Name} item");
                 await _businessLogicService.Create(item).ConfigureAwait(false);
                 return Ok($"{typeof(TBL).Name} have been successfully created");
             }

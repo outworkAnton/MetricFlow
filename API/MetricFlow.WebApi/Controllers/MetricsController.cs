@@ -5,13 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MetricFlow.WebApi.Controllers
 {
-    [Route("api/metrics")]
     [ApiController]
-    public class MetricController : GenericController<BL.Metric,DA.Metric>
+    public class MetricsController : GenericController<BL.Metric,DA.Metric>
     {
         private BLI.IMetricService _metricService;
 
-        public MetricController(BLI.IMetricService metricService) : base(metricService)
+        public MetricsController(BLI.IMetricService metricService) : base(metricService)
         {
             _metricService = metricService;
         }

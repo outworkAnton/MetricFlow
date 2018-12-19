@@ -5,13 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MetricFlow.WebApi.Controllers
 {
-    [Route("api/formulas")]
     [ApiController]
-    public class FormulaController : GenericController<BL.Formula, DA.Formula>
+    public class FormulasController : GenericController<BL.Formula, DA.Formula>
     {
         private BLI.IFormulaService _formulaService;
 
-        public FormulaController(BLI.IFormulaService formulaService) :base(formulaService)
+        public FormulasController(BLI.IFormulaService formulaService) :base(formulaService)
         {
             _formulaService = formulaService;
         }

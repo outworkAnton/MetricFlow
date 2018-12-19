@@ -5,13 +5,12 @@ using DA = DataAccess.Contract.Models;
 
 namespace MetricFlow.WebApi.Controllers
 {
-    [Route("api/locations")]
     [ApiController]
-    public class LocationController : GenericController<BL.Location, DA.Location>
+    public class LocationsController : GenericController<BL.Location, DA.Location>
     {
         private BLI.ILocationService _locationService;
 
-        public LocationController(BLI.ILocationService locationService) : base(locationService)
+        public LocationsController(BLI.ILocationService locationService) : base(locationService)
         {
             _locationService = locationService;
         }
