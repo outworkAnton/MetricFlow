@@ -6,11 +6,12 @@ using Newtonsoft.Json;
 
 namespace MetricFlow.WebApi.Controllers
 {
-    public abstract class GenericController<TBL,TDA> : ControllerBase where TBL: class where TDA: class
+    public abstract class GenericController<TBL, TDA> : ControllerBase
+        where TBL : class where TDA : class
     {
-        private readonly IBusinessLogicService<TBL,TDA> _businessLogicService;
+        private readonly IBusinessLogicService<TBL, TDA> _businessLogicService;
 
-        protected GenericController(IBusinessLogicService<TBL,TDA> service)
+        protected GenericController(IBusinessLogicService<TBL, TDA> service)
         {
             _businessLogicService = service;
         }
@@ -20,8 +21,8 @@ namespace MetricFlow.WebApi.Controllers
         {
             try
             {
-                var services = _businessLogicService.GetAllItems();
-                return Ok(JsonConvert.SerializeObject(services));
+                var items = _businessLogicService.GetAllItems();
+                return Ok(JsonConvert.SerializeObject(items));
             }
             catch (Exception exception)
             {
@@ -34,10 +35,10 @@ namespace MetricFlow.WebApi.Controllers
         {
             try
             {
-                var service = await _businessLogicService.GetItemById(id).ConfigureAwait(false);
-                return service == null
+                var item = await _businessLogicService.GetItemById(id).ConfigureAwait(false);
+                return item == null
                     ? throw new Exception()
-                    : Ok(JsonConvert.SerializeObject(service));
+                    : Ok(JsonConvert.SerializeObject(item));
             }
             catch
             {

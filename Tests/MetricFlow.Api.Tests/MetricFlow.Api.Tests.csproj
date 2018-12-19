@@ -4,12 +4,12 @@
     <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="7.0.1" />
+      <PackageReference Include="AutoMapper" Version="8.0.0" />
     <PackageReference Include="CompareNETObjects" Version="4.57.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    <PackageReference Include="Moq" Version="4.10.0" />
+      <PackageReference Include="Moq" Version="4.10.1" />
     <PackageReference Include="NUnit" Version="3.11.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
+      <PackageReference Include="NUnit3TestAdapter" Version="3.11.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\BusinessLogic\BusinessLogic.DI\BusinessLogic.DI.csproj" />

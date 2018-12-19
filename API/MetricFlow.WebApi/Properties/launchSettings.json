@@ -18,10 +18,10 @@
       }
     },
     "MetricFlow.WebApi": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "api/values",
-      "applicationUrl": "http://localhost:5500",
+      "commandName": "MetricFlow",
+      "launchBrowser": false,
+      "launchUrl": "api/locations",
+      "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
