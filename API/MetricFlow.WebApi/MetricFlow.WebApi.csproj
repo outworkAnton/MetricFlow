@@ -13,7 +13,7 @@
         <PackageReference Include="Newtonsoft.Json">
             <Version>12.0.1</Version>
         </PackageReference>
-        <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.1" />
         <ProjectReference Include="..\..\BusinessLogic\BusinessLogic.Contract\BusinessLogic.Contract.csproj" />
         <ProjectReference Include="..\..\BusinessLogic\BusinessLogic.DI\BusinessLogic.DI.csproj" />
         <ProjectReference Include="..\..\DataAccess\DataAccess.Contract\DataAccess.Contract.csproj" />
