@@ -1,4 +1,7 @@
 FROM microsoft/dotnet:sdk
+
+LABEL author="Anton Mazurov"
+
 COPY . /app
 
 WORKDIR /app/API/MetricFlow.WebApi
@@ -7,7 +10,7 @@ RUN ["dotnet", "restore"]
 RUN dotnet publish -c Release -o out --no-restore
 
 ENV ASPNETCORE_ENVIRONMENT Production
-ENV ASPNETCORE_URLS http://localhost:5000
+ENV ASPNETCORE_URLS http://*:5000
 EXPOSE 5000
 
 ENTRYPOINT ["dotnet", "out/MetricFlow.WebApi.dll"]

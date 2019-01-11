@@ -22,6 +22,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{127DF807-0A57-4404-82C4-0E5E6F44CBE3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{839DAB6E-0C77-497D-A257-91B1F374B15B}"
+ProjectSection(SolutionItems) = preProject
+	docker-compose.yml = docker-compose.yml
+	Dockerfile.MetricFlowApp = Dockerfile.MetricFlowApp
+	nginx.conf = nginx.conf
+EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricFlow.Api.Tests", "Tests\MetricFlow.Api.Tests\MetricFlow.Api.Tests.csproj", "{28B410F3-D40A-4614-A937-2FBA08EDC144}"
 EndProject
