@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using BusinessLogic.DI;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.HealthChecks;
 
 namespace MetricFlow.WebApi
 {
@@ -24,6 +26,11 @@ namespace MetricFlow.WebApi
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddHealthChecks(checks =>
+            {
+                checks.AddValueTaskCheck("HTTP Endpoint", () => new
+                    ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok")));
+            });
             var builder = new ContainerBuilder();
             builder.RegisterModule(new DataAccessAutofacModule());
             builder.RegisterModule(new BusinessLogicAutofacModule());

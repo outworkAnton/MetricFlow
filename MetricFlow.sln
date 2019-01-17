@@ -26,6 +26,9 @@ ProjectSection(SolutionItems) = preProject
 	docker-compose.yml = docker-compose.yml
 	Dockerfile.MetricFlowApp = Dockerfile.MetricFlowApp
 	nginx.conf = nginx.conf
+	Dockerfile.Nginx = Dockerfile.Nginx
+	.gitlab-ci.yml = .gitlab-ci.yml
+	.dockerignore = .dockerignore
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricFlow.Api.Tests", "Tests\MetricFlow.Api.Tests\MetricFlow.Api.Tests.csproj", "{28B410F3-D40A-4614-A937-2FBA08EDC144}"

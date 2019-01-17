@@ -12,6 +12,7 @@ namespace MetricFlow.WebApi
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseHealthChecks("/healthcheck")
                 .UseUrls("http://*:5000")
                 .UseStartup<Startup>();
     }

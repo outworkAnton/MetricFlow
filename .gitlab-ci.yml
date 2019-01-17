@@ -1,0 +1,31 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+before_script:
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+
+stages:
+  - build
+  - test
+  - deploy
+
+metric-flow-image-build:
+  stage: build
+  script:
+    - docker build -t registry.gitlab.com/outworkanton/metricflow:latest -f Dockerfile.MetricFlowApp
+    - docker push registry.gitlab.com/outworkanton/metricflow:latest
+  only:
+    - master
+
+proxy-image-build:
+  stage: build
+  script:
+    - docker build -t registry.gitlab.com/outworkanton/metricflow:nginx -f Dockerfile.Nginx
+    - docker push registry.gitlab.com/outworkanton/metricflow:nginx
+
+production-deploy:
+  stage: deploy
+  script:
+    - docker-compose up --abort-on-container-exit
