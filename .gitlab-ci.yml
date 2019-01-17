@@ -18,12 +18,16 @@ metric-flow-image-build:
     - docker push registry.gitlab.com/outworkanton/metricflow:latest
   only:
     - master
+  tags:
+    - docker
 
 proxy-image-build:
   stage: build
   script:
     - docker build -t registry.gitlab.com/outworkanton/metricflow:nginx -f Dockerfile.Nginx
     - docker push registry.gitlab.com/outworkanton/metricflow:nginx
+  tags:
+    - docker
 
 production-deploy:
   stage: deploy
