@@ -39,7 +39,7 @@ services:
     image: registry.gitlab.com/outworkanton/metricflow:nginx
     restart: always
     ports:
-      - "5000:5000"
+      - "80:5000"
     networks:
       - metricflow-docker-net
     depends_on:
