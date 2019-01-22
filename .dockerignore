@@ -15,7 +15,6 @@ DataAccess/DataAccess.DI/obj/
 Tests/MetricFlow.Api.Tests/bin/
 Tests/MetricFlow.Api.Tests/obj/
 Tests/Requests
-nginx.conf
 docker-compose.yml
 MetricFlow.sln.DotSettings.user
 API/MetricFlow.WebApi/Metric.Flow.Database
