@@ -32,6 +32,6 @@ proxy-image-build:
 production-deploy:
   stage: deploy
   script:
-    - docker-compose up -d --abort-on-container-exit
+    - docker-compose up -d
   tags:
     - deploy
