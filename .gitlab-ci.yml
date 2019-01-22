@@ -14,22 +14,26 @@ stages:
 metric-flow-image-build:
   stage: build
   script:
-    - docker build -t "CI_REGISTRY_IMAGE":latest .
-    - docker push "CI_REGISTRY_IMAGE":latest
+    - docker build -t "$CI_REGISTRY_IMAGE":latest .
+    - docker push "$CI_REGISTRY_IMAGE":latest
   only:
     - master
   tags:
     - docker
+    - build
 
 proxy-image-build:
   stage: build
   script:
-    - docker build -t "CI_REGISTRY_IMAGE":nginx .
-    - docker push "CI_REGISTRY_IMAGE":nginx
+    - docker build -t "$CI_REGISTRY_IMAGE":nginx .
+    - docker push "$CI_REGISTRY_IMAGE":nginx
   tags:
     - docker
+    - build
 
 production-deploy:
   stage: deploy
   script:
-    - docker-compose up --abort-on-container-exit
+    - docker-compose up -d --abort-on-container-exit
+  tags:
+    - deploy

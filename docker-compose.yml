@@ -6,8 +6,9 @@ networks:
 
 services:
   metric-flow:
-    container_name: 'metric-flow'
+    container_name: 'metric-flow-app'
     image: registry.gitlab.com/outworkanton/metricflow:latest
+    restart: on-failure
     depends_on:
       postgres:
         condition: service_healthy
@@ -22,7 +23,7 @@ services:
       retries: 3
 
   postgres:
-    container_name: 'postgres'
+    container_name: 'postgres-db'
     image: postgres:latest
     ports:
       - "5432"
@@ -33,14 +34,9 @@ services:
       POSTGRES_DB: "metric_flow_db"
     networks:
       - metricflow-docker-net
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 10s
-      retries: 5
 
   proxy:
-    container_name: 'proxy'
+    container_name: 'reverse-proxy'
     image: registry.gitlab.com/outworkanton/metricflow:nginx
     restart: always
     ports:
