@@ -10,8 +10,7 @@ services:
     image: registry.gitlab.com/outworkanton/metricflow:latest
     restart: on-failure
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     expose:
       - "5000"
     networks:
