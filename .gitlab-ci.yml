@@ -20,7 +20,6 @@ metric-flow-image-build:
     - master
   tags:
     - docker
-    - build
 
 proxy-image-build:
   stage: build
@@ -29,7 +28,6 @@ proxy-image-build:
     - docker push "$CI_REGISTRY_IMAGE":nginx
   tags:
     - docker
-    - build
 
 production-deploy:
   stage: deploy
