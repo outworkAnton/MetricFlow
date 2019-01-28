@@ -16,22 +16,22 @@ metric-flow-image-build:
   script:
     - docker build -t "$CI_REGISTRY_IMAGE":latest -f ./Dockerfile.MetricFlowApp .
     - docker push "$CI_REGISTRY_IMAGE":latest
-  only:
-    - master
   tags:
     - docker
 
-proxy-image-build:
-  stage: build
-  script:
-    - docker build -t "$CI_REGISTRY_IMAGE":nginx -f ./Dockerfile.Nginx .
-    - docker push "$CI_REGISTRY_IMAGE":nginx
-  tags:
-    - docker
+#proxy-image-build:
+#  stage: build
+#  script:
+#    - docker build -t "$CI_REGISTRY_IMAGE":nginx -f ./Dockerfile.Nginx .
+#    - docker push "$CI_REGISTRY_IMAGE":nginx
+#  tags:
+#    - docker
 
 production-deploy:
   stage: deploy
   script:
     - docker-compose up -d
+  only:
+    - master
   tags:
     - deploy

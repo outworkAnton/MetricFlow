@@ -5,9 +5,8 @@ LABEL author="Anton Mazurov"
 COPY . /app
 
 WORKDIR /app/API/MetricFlow.WebApi
-RUN ["dotnet", "restore"]
 
-RUN dotnet publish -c Release -o out --no-restore
+RUN dotnet publish -c Release -o out
 
 ENV ASPNETCORE_ENVIRONMENT Production
 ENV ASPNETCORE_URLS http://*:5000
